@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>欢迎您登录{:config("extend.xnrcms_name")} v{:config('extend.xnrcms_var')}</title>
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<!-- Apple devices fullscreen -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<!-- Apple devices fullscreen -->
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+{block name="headcss_before"}{/block}
+<!--CSS File Start-->
+<link rel="stylesheet" href="/static/{$tplName}/layui/css/layui.css" media="all">
+<link rel="stylesheet" href="/static/{$tplName}/style/admin.css" media="all">
+<link rel="stylesheet" href="/static/{$tplName}/style/login.css" media="all">
+{block name="headcss_after"}{/block}
+<!--CSS File End-->
+<script type="text/javascript">
+var CommonJsParame          = {};
+    CommonJsParame.isDev    = parseInt("{:is_dev()}");
+</script>
+{block name="headjs_before"}{/block}
+</head>
+<body>
+{block name="main"}{/block}
+{block name="footjs"}{/block}
+
+{if condition="is_dev() and $listId gt 0"}
+<a lay-event="setListTplField" lay-url="{:url('Devlist/set_list','id='.$listId)}" style="position:fixed;left: 0px;top:50%;height:100px;width:20px;cursor: pointer;">
+    <div class="fbutton">
+        <div title="列表模板设置" class="add" style="height:150px;width:15px;">
+            <span><i class="fa fa-pencil-square-o"></i>列表模板设置</span>
+        </div>
+    </div>
+</a>
+{/if}
+
+{if condition="is_dev() and $formId gt 0"}
+<div class="tDiv" style="height: 0px;border: none;">
+    <div class="tDiv2">
+<a lay-event="setFormTplField" lay-url="{:url('Devform/set_form','id='.$formId)}" style="position:fixed;left: 0px;top:50%;height:100px;width:20px;cursor: pointer;">
+    <div class="fbutton">
+        <div title="表单模板设置" class="add" style="height:150px;width:15px;">
+            <span><i class="fa fa-pencil-square-o"></i>表单模板设置</span>
+        </div>
+    </div>
+</a>
+</div>
+</div>
+{/if}
+</body>
+</html>

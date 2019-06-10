@@ -1,0 +1,12 @@
+.c-img-box{
+    position: relative;
+    display: inline-block;
+    margin-right: 15px;
+}
+.c-img-box .close{
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    font-size: 15px;
+    color: #999;
+}

@@ -1,0 +1,114 @@
+{extend name="public/common"}
+{block name="main"}
+<div class="page">
+{notempty name="listNode"}
+	{include file="public/list/notice" /}
+	<div class="flexigrid">
+		{include file="public/list/search" /}
+		<div style="width: 13.5%; float: left;" id="devapiModuleList">
+			<div class="hDiv">
+			    <div class="hDivBox">
+			        <table cellspacing="0" cellpadding="0" width="100%">
+			            <thead>
+			            <tr>
+			            	<th align="center" width="30%"><div><i class="ico-check"></i></div></th>
+			                <th align="center" width="70%"><div>模块名称</div></th>
+			            </tr>
+			            </thead>
+			        </table>
+			    </div>
+			</div>
+
+			<!--按钮-->
+			<div class="tDiv">
+			    <div class="tDiv2">
+			        <a onclick="return CommonJs.JsAddEdit('新增模块','{:url("Devapi/addModule")}',600,400);">
+                        <div class="fbutton">
+                            <div title="新增模块" class="add">
+                                <span><i class="fa fa-plus"></i>新增模块</span>
+                            </div>
+                        </div>
+			        </a><span>
+			        <a onclick="return CommonJs.JsAddEdit('导出文档','{:url("Devapi/exportApi")}',1200,100);">
+                        <div class="fbutton">
+                            <div title="导出文档" class="add">
+                                <span><i class="fa fa-plus"></i>导出文档</span>
+                            </div>
+                        </div>
+			        </a>
+			    </div>
+			</div>
+			<!--按钮-->
+
+			<div style="height: auto;" class="bDiv">
+			    <table cellspacing="0" cellpadding="0" width="100%" class="flex-table autoht">
+			        <tbody id="listData2">
+			        {volist name="listData2" id="vo"}
+			        <tr data-id="{$vo.id}" data-keys="{$key}">
+						<td  width="30%">
+						<div style="text-align: center;">
+						<a href="javascript:;" onclick="return CommonJs.JsAddEdit('编辑模块','{:url("Devapi/editModule","id=".$vo["id"])}',600,400);">
+						<i class="fa fa-pencil-square-o"></i>
+						</a>
+						<a href="javascript:;" onclick="return CommonJs.JsStatus('{$vo.id}','{:url("Devapi/delModule","id=".$vo["id"])}','删除模块');">
+						<i class="fa fa-trash-o"></i>
+						</a>
+						</div>
+						</td>
+                        <td  width="70%"><div style="display: inline-block">
+                        {$vo.title}</div></td>
+			        </tr>
+			        {/volist}
+			        </tbody>
+			    </table>
+			</div>
+		</div>
+		<div style="width: 86%; float: right;" id="ajax_return">
+			{include file="public/list/table" /}
+		</div>
+	</div>
+	<div class="row">
+	    <div class="col-sm-6 text-right listPage" id="listPage">{$_page|raw}</div>
+	</div>
+{else /}
+	<div style="text-align: center;margin-top: 20px;"><font color="red" size="5">未找到列表模板</font></div>
+{/notempty}
+</div>
+
+<script type="text/javascript">
+
+var menuid 	= "{:input('menuid')}";
+var urls 	= "{:url('devapi/index')}";
+var keys1 	= '{$pageData["mkeys"]}';
+
+$('#devapiModuleList').find('table>tbody >tr').eq(keys1).toggleClass('trSelected');
+
+changeColoeLine();
+
+//表格行点击选中切换
+function changeColoeLine(){
+
+  $('#devapiModuleList').find('table>tbody >tr').on('click',function(e){
+
+  	if (e.target.nodeName == 'I'){
+  		$(this).addClass('trSelected');
+  		return false
+  	}
+
+    $('#devapiModuleList').find('table>tbody >tr').removeClass('trSelected');
+    var mid 		= $(this).attr("data-id");
+    var keys 		= $(this).attr("data-keys");
+    var jumpUrl 	= urls+'?menuid='+menuid+'&keys='+keys + "&mid="+mid;
+
+    if (keys1 == keys) {
+
+    	return false;
+    }
+
+    keys1 	= keys;
+
+    window.location.href = jumpUrl;
+  });
+}
+</script>
+{/block}

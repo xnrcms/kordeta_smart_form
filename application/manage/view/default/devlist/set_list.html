@@ -1,0 +1,309 @@
+{extend name="public/common"}
+{block name="main"}
+<div class="page" style="padding-top:5px;">
+  <div class="flexigrid">
+    <div class="hDiv">
+      <div class="hDivBox">
+        <table cellspacing="0" cellpadding="0" width="100%">
+          <thead>
+              <tr>
+                <th width="20%"><div>表头名称</div></th>
+                <th width="12%"><div>数据标识</div></th>
+                <th width="12%"><div>表头宽度</div></th>
+                <th width="12%"><div>数据类型</div></th>
+                <th width="12%"><div>数据操作</div></th>
+                <th width="12%"><div>表头排序</div></th>
+                <th width="12%"><div>状态</div></th>
+                <th width="8%"><div>操作</div></th>
+              </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+
+    <div class="bDiv" style="height: auto;">
+      <div id="flexigrid" cellpadding="0" cellspacing="0" border="0">
+        <table width="100%">
+          <tbody>
+            {php}$allwidth = 0;{/php}
+            {foreach name="fieldList" item="vo" key="k"}
+              <tr id="devlist_id_{$vo.id}" data-id ="{$vo.id}" data-pid ="{$vo.pid}">
+                <td width="20%">
+                  <div style="text-align: center;">
+                    <input type="text" size="30" class="qsbox" name="title_{$vo.id}" placeholder="请输入表头名称" value="{$vo.title}" style="width: 90%">
+                  </div>
+                </td>
+
+                <td width="12%">
+                  <div style="text-align: center;">
+                    <input type="text" size="30" class="qsbox" name="tag_{$vo.id}" placeholder="请输入数据标识" value="{$vo.tag}" style="width: 90%">
+                  </div>
+                </td>
+
+                <td width="12%">
+                  <div style="text-align: center;">
+                    <input type="text" size="30" class="qsbox" name="width_{$vo.id}" placeholder="请输入表头宽度" value="{$vo.width}" style="width: 90%">
+                    {php}
+                    if($vo['status'] == 1) $allwidth += $vo['width'];
+                    {/php}
+                  </div>
+                </td>
+
+                <td width="12%">
+                  <div style="text-align: center;">
+                    <select name="type_{$vo.id}" id="type_id" class="form-control">
+                      <option value="">选择类型</option>
+                      <option value="string" {if condition="$vo['config']['type'] eq 'string'"}selected{/if} >字符串</option>
+                      <option value="number" {if condition="$vo['config']['type'] eq 'number'"}selected{/if} >数字</option>
+                      <option value="price" {if condition="$vo['config']['type'] eq 'price'"}selected{/if} >价格</option>
+                      <option value="select" {if condition="$vo['config']['type'] eq 'select'"}selected{/if} >枚举</option>
+                      <option value="bool" {if condition="$vo['config']['type'] eq 'bool'"}selected{/if} >布尔</option>
+                      <option value="datetime" {if condition="$vo['config']['type'] eq 'datetime'"}selected{/if} >时间区间</option>
+                      <option value="image" {if condition="$vo['config']['type'] eq 'image'"}selected{/if} >图片</option>
+                      <option value="done" {if condition="$vo['config']['type'] eq 'done'"}selected{/if} >操作</option>
+                      <option value="id" {if condition="$vo['config']['type'] eq 'id'"}selected{/if} >ID</option>
+                  </select>
+                  </div>
+                </td>
+
+                <td width="12%">
+                  <div style="text-align: center;">
+                    <label>
+                      <input type="checkbox" class="checkbox_item" name="edit_{$vo.id}" value="1" {if condition="$vo['config']['edit'] eq 1"}checked{/if}> 可编辑
+                    </label>
+                    <label>
+                      <input type="checkbox" class="checkbox_item" name="search_{$vo.id}" value="2" {if condition="$vo['config']['search'] eq 2"}checked{/if}> 可搜索
+                    </label>
+                  </div>
+                </td>
+
+                <td width="12%">
+                  <div style="text-align: center;">
+                    <input type="text" size="30" class="qsbox" name="sort_{$vo.id}" placeholder="请输入表头排序" value="{$vo.sort}" style="width: 90%">
+                  </div>
+                </td>
+
+                <td width="12%">
+                  <div class="onoff" style="text-align: center;">
+                    <input id="menu_status1_{$vo.id}" name="status_{$vo.id}" value="1" type="radio" {if condition="$vo.status eq 1"}checked{/if}>
+                    <input id="menu_status0_{$vo.id}" name="status_{$vo.id}" value="2" type="radio" {if condition="$vo.status eq 2"}checked{/if}>
+                    <label for="menu_status1_{$vo.id}" class="cb-enable {if condition="$vo.status eq 1"}selected{/if}">启用</label>
+                    <label for="menu_status0_{$vo.id}" class="cb-disable {if condition="$vo.status eq 2"}selected{/if}">禁用</label>
+                  </div>
+                </td>
+                
+                <td width="8%">
+                  <div style="text-align: center;">
+                    <a class="btn blue" href="javascript:;" onClick="return submitListData('{$vo.id}');" >保存</a>
+                    <a class="btn blue" href="javascript:;" onClick="delfun(this)" data-url="{:url('Devlist/del',array('ids'=>$vo['id']))}">删除表头</a>
+                  </div>
+                </td>
+              </tr>
+            {/foreach}
+          </tbody>
+        </table>
+        <a onClick="return addDevList();" href="javascript:;">
+            <div class="fbutton"  style="border: none;margin-top: 5px;margin-left: 0px;">
+                <div title="列表模板设置" class="add">
+                    <span><i class="fa fa-plus"></i>新增</span>
+                </div>
+            </div>
+        </a>
+
+        <a onClick="return refreshPage();" href="javascript:;">
+            <div class="fbutton" style="border: none;margin-top: 5px;margin-left: 0px;">
+                <div title="列表模板设置" class="add">
+                    <span><i class="fa fa-refresh" style="margin-left:5px;"></i></span>
+                </div>
+            </div>
+        </a>
+        <strong style="color:#ff0000;margin-top: 10px;display: block;">列表总宽度不能超过100，目前总宽度为{$allwidth}</strong>
+      </div>
+    </div>
+</div>
+
+<script>
+var _url      = "{:url('Devlist/set_list')}";
+var pid       = "{$listPid}";
+function submitListData(id){
+  
+  if(CommonJs.Loading){
+
+      layer.msg('有操作在进行，请稍等...',{icon: 0,time:2000});return false;
+  }
+
+  CommonJs.Loading    = true;
+
+  var obj             = $("#devlist_id_"+id);
+  var parame          = {};
+      parame.id       = id;
+      parame.pid      = pid;
+      parame.hash     = obj.attr("data-hash");
+      parame.title    = obj.find("input[name='title_"+id+"']").val();
+      parame.tag      = obj.find("input[name='tag_"+id+"']").val();
+      parame.width    = obj.find("input[name='width_"+id+"']").val();
+      parame.type     = obj.find("select[name='type_"+id+"']").val();
+      parame.edit     = (obj.find("input[name='edit_"+id+"']").is(':checked')) ? 1 : 0;
+      parame.search   = (obj.find("input[name='search_"+id+"']").is(':checked')) ? 2 : 0;
+      parame.sort     = obj.find("input[name='sort_"+id+"']").val();
+      parame.status   = obj.find("input[name='status_"+id+"']:checked").val();
+
+      layer.msg('请求处理中，请稍等...',{icon: 16,time:1000000});
+
+      $.ajax({
+        type: 'post',
+        url: _url,
+        data: parame,
+        dataType: 'json',
+        success: function (data) {
+          var ic  = data.code == 1 ? 6 : 2;
+
+          layer.msg(data.msg,{icon: ic,time:2000},function(){
+
+              if(data.code == 1){
+
+                  if(data.url != '') {
+                      window.location.href = data.url;
+                  }else{
+                      window.location.reload();
+                  }
+              }
+
+              CommonJs.Loading    = false;
+          });
+        }
+      });
+}
+
+function addDevList(){
+  $("#flexigrid").find("tbody").prepend(getHtmlStr());
+
+   $(".cb-enable").click(function(){
+        var parent = $(this).parents('.onoff');
+        $('.cb-disable',parent).removeClass('selected');
+        $(this).addClass('selected');
+        $('.checkbox',parent).attr('checked', true);
+    });
+    $(".cb-disable").click(function(){
+        var parent = $(this).parents('.onoff');
+        $('.cb-enable',parent).removeClass('selected');
+        $(this).addClass('selected');
+        $('.checkbox',parent).attr('checked', false);
+    });
+}
+
+function delfun(obj) {
+  if(CommonJs.Loading){
+      layer.msg('有操作在进行，请稍等...',{icon: 0,time:2000});return false;
+  }
+  CommonJs.Loading    = true;
+  // 删除按钮
+  layer.confirm('确认删除？', { btn: ['确定', '取消']}, function () {
+
+    layer.msg('数据删除中，请稍等...',{icon: 16,time:1000000});
+
+    $.ajax({
+      type: 'post',
+      url: $(obj).attr('data-url'),
+      data: {},
+      dataType: 'json',
+      success: function (data) {
+        
+        var ic  = data.code == 1 ? 6 : 2;
+
+          layer.msg(data.msg,{icon: ic,time:2000},function(){
+
+              if(data.code == 1){
+
+                  if(data.url != '') {
+                      window.location.href = data.url;
+                  }else{
+                      window.location.reload();
+                  }
+              }
+
+              CommonJs.Loading    = false;
+          });
+      }
+    })
+  }, function () {
+      CommonJs.Loading    = false;
+      layer.closeAll();
+  });
+}
+
+function refreshPage(){
+
+  if(CommonJs.Loading){
+      layer.msg('有操作在进行，请稍等...',{icon: 0,time:2000});return false;
+  }
+  CommonJs.Loading    = true;
+
+  layer.msg('页面刷新中...',{icon: 16,time:1000000});
+
+  window.location.reload();
+}
+function getHtmlStr(){
+  var htmls = '';
+      htmls += '<tr id="devlist_id_0">';
+
+      htmls += '<td width="20%">';
+      htmls += '<div style="text-align: center;">';
+      htmls += '<input type="text" size="30" class="qsbox" name="title_0" placeholder="请输入表头名称" value="" style="width: 90%">';
+      htmls += '</div></td>';
+
+      htmls += '<td width="12%">';
+      htmls += '<div style="text-align: center;">';
+      htmls += '<input type="text" size="30" class="qsbox" name="tag_0" placeholder="请输入数据标识" value="" style="width: 90%">';
+      htmls += '</div></td>';
+
+      htmls += '<td width="12%">';
+      htmls += '<div style="text-align: center;">';
+      htmls += '<input type="text" size="30" class="qsbox" name="width_0" placeholder="请输入表头宽度" value="" style="width: 90%">';
+      htmls += '</div></td>';
+
+      htmls += '<td width="12%">';
+      htmls += '<div style="text-align: center;">';
+      htmls += '<select name="type_0" id="type_id" class="form-control">';
+      htmls += '<option value="">选择类型</option>';
+      htmls += '<option value="string">字符串</option>';
+      htmls += '<option value="number">数字</option>';
+      htmls += '<option value="price">价格</option>';
+      htmls += '<option value="select">枚举</option>';
+      htmls += '<option value="bool">布尔</option>';
+      htmls += '<option value="datetime">时间区间</option>';
+      htmls += '<option value="image">图片</option>';
+      htmls += '<option value="done">操作</option>';
+      htmls += '<option value="id">ID</option>';
+      htmls += '</select>';
+      htmls += '</div></td>';
+
+      htmls += '<td width="12%">';
+      htmls += '<div style="text-align: center;">';
+      htmls += '<label><input type="checkbox" class="checkbox_item" name="edit_0" value="1"> 可编辑</label>';
+      htmls += '<label><input type="checkbox" class="checkbox_item" name="search_0" value="1"> 可搜索</label>';
+      htmls += '</div></td>';
+
+      htmls += '<td width="12%">';
+      htmls += '<div style="text-align: center;">';
+      htmls += '<input type="text" size="30" class="qsbox" name="sort_0" placeholder="请输入表头排序" value="" style="width: 90%">';
+      htmls += '</div></td>';
+
+      htmls += '<td width="12%">';
+      htmls += '<div class="onoff" style="text-align: center;">';
+      htmls += '<input id="menu_status1_0" name="status_0" value="1" type="radio" checked="checked" >';
+      htmls += '<input id="menu_status0_0" name="status_0" value="2" type="radio" >';
+      htmls += '<label for="menu_status1_0" class="cb-enable  selected">启用</label>';
+      htmls += '<label for="menu_status0_0" class="cb-disable">禁用</label>';
+      htmls += '</div></td>';
+
+      htmls += '<td width="8%">';
+      htmls += '<div style="text-align: center;">';
+      htmls += '<a class="btn blue" href="javascript:;" onClick="return submitListData(0);" ><i class="fa"></i>保存</a>';
+      htmls += '</div></td>';
+      htmls += '</tr>';
+
+      return htmls;
+}
+</script>
+{/block}

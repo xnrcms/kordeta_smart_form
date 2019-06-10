@@ -1,0 +1,35 @@
+{extend name="public/common"}
+{block name="main"}
+<div class="layui-fluid">   
+    <div class="layui-card">
+      <div style="display: inline-block; width: 15%; height: 1000px; padding: 10px; border: 1px solid #ddd; overflow: auto;"><ul id="systemMenus" class="layui-box layui-tree"></ul>
+      </div>
+      <div class="site-tips" style="display: inline-block; height: auto; width: 80%; padding: 10px; margin-left: 10px; vertical-align: top;" id="editSystemMenus"></div>
+    </div>
+</div>
+{/block}
+{block name="footjs"}
+<script src="/static/{$tplName}/layui/layui.js"></script>
+<script src="/static/{$tplName}/iconhtml.js"></script>
+<script>
+//定义自定义数据
+CommonJsParame.TabelTreeData 			= '{$listData|raw}';
+CommonJsParame.FormSubmitUrl      = '{:url("devmenu/edit","menuid=".$menuid)}';
+CommonJsParame.MenuIconHtml       = iconHtml;
+CommonJsParame.MenuLastId         = '{$lastid}';
+CommonJsParame.MenuFirstId        = '{$firstid}';
+CommonJsParame.spreadId           = '{$spreadId}';
+
+layui.config({
+    base: '/static/{$tplName}/' //静态资源所在路径
+ }).extend({
+    index: 'lib/index' //主入口模块
+ }).use(['index','devmenu'], function(){
+	var $ 			  = layui.jquery,
+      devmenu   = layui.devmenu
+	
+  devmenu.loadMenusList();
+  devmenu.getMenusForm(CommonJsParame.MenuFirstId);
+});
+</script>
+{/block}

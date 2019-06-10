@@ -1,0 +1,130 @@
+{php}
+$theadCount  = count($listNode['thead']);
+{/php}
+{notempty name="listData"}
+{volist name="listData" id="list"}
+    {php}
+    $list['uid']                = !isset($list['uid']) ? $uid : $list['uid'];
+    $list['hashid']             = !isset($list['hashid']) ? $hashid : $list['hashid'];
+    $list['level']              = !isset($list['level']) ? 1 : $list['level'];
+    $list['parent_id_path']     = !isset($list['parent_id_path']) ? 'parent_id_0' : $list['parent_id_path'];
+    {/php}
+    <tr data-id="{$list.id}" data-level="{$list['level']}" parent_id_path ="{$list['parent_id_path']}" class="parent_id_{$list['pid']}" nctype="0" {if condition="$list['level'] gt 1"} style="display:none;"{/if}>
+        {php}$theadNum=0;{/php}
+        {volist name="listNode.thead" id="vo"}
+            {php}
+            $theadNum++;
+            $list[$vo['tag']]  = isset($list[$vo['tag']]) ? $list[$vo['tag']] : '';
+            {/php}
+            {if condition="$vo['tag'] eq 'id'"}
+            <td {$vo.attr} class="handle" width="{$vo.width}%">
+                {if condition="$list['count'] gt 0"}
+                  <div style="float:left;min-width: 10px !important;"> 
+                    <img onClick="treeClicked(this,{$list.id},'{$list.parent_id_path}')" nc_type="flex" status="open" fieldid="2" src="/3.0/images/tv-collapsable-last.gif" style="margin-top: 6px;">
+                  </div>
+                {else /}
+                  <div style="float:left;min-width: 10px !important;"> 
+                    <img nc_type="flex" status="close" fieldid="2" src="/3.0/images/tv-collapsable-last.gif" style="margin-top: 6px;">  
+                  </div>
+                {/if}
+                
+                {if condition="$theadNum eq $theadCount"}
+                    {include file="public/list/option2" /}
+                {else /}
+                    {include file="public/list/option1" /}
+                {/if}
+            </td>
+            {else /}
+            <td {$vo.attr} width="{$vo.width}%">
+            {if condition="$vo.edit eq 1"}
+                {switch vo.type}
+                {case string}{/*字符串类型*/}
+                <div>
+                    <input type="text" size="30" class="qsbox" name="{$vo.tag}" placeholder="{$vo.title}" value="{$list[$vo['tag']]}" oldValue="{$list[$vo['tag']]}" style="width: 90%" {$vo.attr} onblur="CommonJs.quickEdit(this,'{:url("quickEdit")}','{$vo.tag}','{$list.id}')">
+                </div>
+                {/case}
+                {case number}{/*数字类型*/}
+                    <div>
+                        <input type="text" size="30" class="qsbox" name="{$vo.tag}" placeholder="{$vo.title}" value="{$list[$vo['tag']]}" oldVal="{$list[$vo['tag']]}" style="width: 90%" {$vo.attr} onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onblur="CommonJs.quickEdit(this,'{:url("quickEdit")}','{$vo.tag}','{$list.id}')">
+                    </div>
+                {/case}
+                {case price}{/*价格类型*/}
+                    <div>
+                        <input type="text" size="30" class="qsbox" name="{$vo.tag}" placeholder="{$vo.title}" value="{$list[$vo['tag']]}" oldVal="{$list[$vo['tag']]}" style="width: 90%" {$vo.attr} onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onblur="CommonJs.quickEdit(this,'{:url("quickEdit")}','{$vo.tag}','{$list.id}')">
+                    </div>
+                {/case}
+                {case select}{/*枚举类型*/}
+                    <div>
+                        <select name="{$vo.tag}" {$vo.attr} onChange="CommonJs.quickEdit(this,'{:url("quickEdit")}','{$vo.tag}','{$list.id}');">
+                            {if condition="$vo['default']['type'] eq 'string'"}
+                                {volist name="vo.default.parame" id="pa"}
+                                    <option value="{$key}" {if condition="$list[$vo['tag']] eq $key"}selected{/if} >{$pa}</option>
+                                {/volist}
+                                {else /}
+                                {volist name="$vo.default.parame" id="pa"}
+                                    <option value="{$key}" {if condition="$list[$vo['tag']] eq $key"}selected{/if} >{$pa}</option>
+                                {/volist}
+                            {/if}
+                        </select>
+                    </div>
+                {/case}
+                {case bool}{/*布尔类型*/}
+                    <div data-yes="{$vo['default']['parame'][1]}" data-no="{$vo['default']['parame'][2]}">
+                    {if condition='$list[$vo["tag"]] eq $vo["default"]["parame"][1]'}
+                      <span class="yes" onClick="CommonJs.quickEdit(this,'{:url("quickEdit")}','{$vo.tag}','{$list.id}');" >
+                      <i class="fa fa-check-circle"></i>{$vo['default']['parame'][1]}</span>
+                    {else /}
+                      <span class="no" onClick="CommonJs.quickEdit(this,'{:url("quickEdit")}','{$vo.tag}','{$list.id}');" >
+                      <i class="fa fa-ban"></i>{$vo['default']['parame'][2]}</span>
+                    {/if}
+                    </div>
+                {/case}
+                {defalut /}
+                {$list[$vo['tag']]}
+                {/switch}
+            {else /}
+                {if condition="$vo['type'] == 'image'"}
+                    {php}
+                    $imagePath      = '';
+                    if(!empty($list[$vo['tag']]) && is_string($list[$vo['tag']]))
+                    {
+                        $imageStr   = json_decode($list[$vo['tag']]);
+                        $imagePath  = isset($imageStr[1]) ? $imageStr[1] : '';
+                    }
+                    {/php}
+                    <img src="{$imagePath}" alt="" {$vo.attr|raw}>
+                
+                {else /}
+                    <div style="display: inline-block">{$list[$vo['tag']]}</div>
+                {/if}
+            {/if}
+            </td>
+            {/if}
+        {/volist}
+    </tr>
+{/volist}
+<script>
+$('.bDiv > table>tbody >tr').click(function(){ $(this).toggleClass('trSelected');});
+$("tr[parent_id_path^='0_']").show();
+
+ // 点击展开 收缩节点
+ function treeClicked(obj,cat_id,parent_id_path)
+ {
+ var img1 = PublicPath + 'images/tv-expandable.gif';
+ var img2 = PublicPath + 'images/tv-collapsable-last.gif';
+
+     var src = $(obj).attr('src');
+     if(src == img1)
+     {
+         $(".parent_id_"+cat_id).show();
+         $(obj).attr('src',img2);
+     }else{
+        $("tr[parent_id_path^='"+parent_id_path+"_']").hide().find('img').attr('src',img1);
+        $("tr[parent_id_path^='"+parent_id_path+"_']").find('img[status="close"]').attr('src',img2);
+        $(obj).attr('src',PublicPath + 'images/tv-expandable.gif');
+     }
+}      
+</script>
+{else /}
+<tr><td colspan="{$theadCount}"><div style="text-align: center;">Oh! 暂无数据</div></td></tr>
+{/notempty}

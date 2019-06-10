@@ -1,0 +1,42 @@
+<div class="hDiv">
+    <div class="hDivBox">
+        <table cellspacing="0" cellpadding="0" width="100%">
+            <thead>
+            <tr>
+                {volist name="listNode.thead" id="vo"}
+                    {if condition="$vo['tag'] eq 'id'"}
+                        <th align="center" width="{$vo.width}%">
+                            <div>
+                                <i class="ico-check"></i>
+                            </div>
+                        </th>
+                    {else /}
+                        <th align="center" width="{$vo.width}%">
+                        <div>{$vo.title}
+                        {if is_dev()}
+                        <a href="javascript:;">
+                        <i class="fa fa-pencil-square-o" onClick="return CommonJs.JsAddEdit('【{$vo.title}】字段设置','{:url("Devlist/setListField","id=".$vo["id"]."&pid=".$listNode["info"]["id"]."&type=0")}',800,650);"></i></a>
+                        <a href="javascript:;">
+                        <i class="fa fa-trash-o" onClick="CommonJs.JsStatus('{$vo['id']}','{:url("Devlist/del")}','删除【{$vo.title}】字段')"></i>
+                        </a>
+                        {/if}</div>
+                        </th>
+                    {/if}
+                {/volist}
+            </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+{include file="public/list/topButton" /}
+<div style="height: auto;" class="bDiv">
+    <table cellspacing="0" cellpadding="0" width="100%" id="article_cat_table" class="flex-table autoht">
+        <tbody id="listData">
+        {if condition="$isTree eq 1"}
+            {include file="public/list/listDataTree" /}
+        {else /}
+            {include file="public/list/listData" /}
+        {/if}
+        </tbody>
+    </table>
+</div>

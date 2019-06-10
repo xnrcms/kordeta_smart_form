@@ -1,0 +1,68 @@
+{extend name="public/common"}
+{block name="main"}
+<div class="page" >
+  {if condition="$formId egt 1"}
+  {include file="public/list/notice" /}
+	{php}$gnum=0;{/php}
+  <form action="{:url('','menuid='.$menuid)}" method="post" class="form-horizontal" id="submit_form_data">
+    <div class="ncap-form-default">
+      {volist name="formFieldList" id="fv"}
+      {php}$formField = $fv;$gnum++;{/php}
+      <div id="formTab_{$gnum}" class="formTab" style="display: {if condition="$gnum gt 1"}none;{/if}">
+      {include file="public/form" /}
+      </div>
+      {/volist}
+      <input type="hidden" name="formId" value="{$formId}">
+      <input type="hidden" name="formTag" value="{$formTag}">
+      <div class="bot">
+        <a id="submitBtn" class="ncap-btn-big ncap-btn-green" href="JavaScript:void(0);" onClick="$('#submit_form_data').submit();">确认提交</a>
+      </div>
+    </div>
+  </form>
+  {else /}
+  <div style="text-align: center;margin-top: 20px;"><font color="red" size="5">未找到表单模板</font></div>
+  {/if}
+</div>
+<script type="text/javascript">
+  $(function(){
+    //数据校验
+    CommonJs.FormCheck  = function(FormObj){
+
+        //表单数据
+        CommonJs.SubmitData = FormObj.serializeArray();
+
+        //验证是否有数据就提交
+        if (!CommonJs.isEmptyData(CommonJs.SubmitData)){
+            layer.msg('数据不存在',{icon: 0,time:2000});return false;
+        }
+
+        var isOk = true;
+
+        $.each( CommonJs.SubmitData, function(i, field){
+            var name    = field.name;
+            var value   = field.value;
+
+            if(name.indexOf("[") != -1){
+              name=name.replace("[","");
+              name=name.replace("]","");
+            }
+
+            //数据校验从这里开始
+            if ($("#id_"+name+" dt[class='tit']").find("em").length > 0) {
+
+              if(!CheckJs.required(value)){
+
+                layer.msg($("#id_"+name).attr("data-msg"),{icon: 2,time:2000});isOk=false;return false;
+              }
+            }
+            //数据校验从这里结束
+        });
+
+        return isOk;
+    };
+
+    //数据提交
+    CommonJs.JsSave("#submit_form_data");
+  });
+</script>
+{/block}

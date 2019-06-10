@@ -1,0 +1,38 @@
+{notempty name="topMenu"}
+<div class="tDiv">
+    <div class="tDiv2">
+        {volist name="topMenu" id="vo"}
+            {switch name="vo.posttype"}
+                {case 1}
+                <a href="{:url($vo['url'],$extends_param.'menuid='.$vo['id'].'&pos='.$vo['pos'])}">
+                    <div class="fbutton">
+                        <div title="{$vo.title}" class="add">
+                            <span><i class="fa {$vo.icon|default=''}"></i>{$vo.title}</span>
+                        </div>
+                    </div>
+                </a>
+                {/case}
+                {case 2}
+                    <a onClick="return CommonJs.JsAddEdit('{$vo.title}','{:url($vo['url'],$extends_param.'menuid='.$vo['id'].'&pos='.$vo['pos'])}','{$vo['fwidth']}','{$vo['fheight']}');">
+                        <div class="fbutton">
+                            <div title="{$vo.title}" class="add">
+                                <span><i class="fa {$vo.icon|default=''}"></i>{$vo.title}</span>
+                            </div>
+                        </div>
+                    </a>
+                {/case}
+                {case 3}
+                    <a class="delete" onClick="CommonJs.JsStatus(0,'{:url($vo['url'],$extends_param.'menuid='.$vo['id'].'&pos='.$vo['pos'])}','{$vo.title}')" href="javascript:;">{$vo.title}
+                        <div class="fbutton">
+                            <div title="{$vo.title}" class="add">
+                                <span><i class="fa {$vo.icon|default=''}"></i>{$vo.title}</span>
+                            </div>
+                        </div>
+                    </a>
+                {/case}
+            {/switch}
+        {/volist}
+    </div>
+</div>
+{/notempty}
+<div style="clear:both"></div>

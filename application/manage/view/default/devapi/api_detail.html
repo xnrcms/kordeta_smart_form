@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=0">
+    <meta name="keywords" content="接口文档管理">
+    <meta name="description" content="小能人CMS接口文档，是一个PHP轻量级API接口文档管理系统，致力于减少前后端沟通成本，提高团队协作开发效率。">
+    <title>接口详情——小能人CMS接口文档管理系统</title>
+    <link rel="icon" href="../image/favicon.ico">
+    <link href="../css/bootstrap.css" rel="stylesheet">
+    <link href="../css/metisMenu.css" rel="stylesheet">
+    <link href="../css/common.css" rel="stylesheet">
+    <link href="../css/font-awesome.css" rel="stylesheet" type="text/css">
+    <link href="../css/css.css" rel="stylesheet" type="text/css">
+    <link href="../css/jsonFormat.css" rel="stylesheet" type="text/css">
+    <!--[if lt IE 9]>
+    <script src="/static/html5shiv.js"></script>
+    <script src="/static/respond.min.js"></script>
+    <![endif]-->
+    <!-- jQuery -->
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/bootstrap.js"></script>
+    <script src="../js/metisMenu.js"></script>
+    <script src="../js/v5.js"></script>
+    <script src="../js/datatype.js"></script>
+    <script src="../js/dialog.js"></script>
+    <script src="../js/common.js"></script>
+</head>
+<body>
+
+<div id="wrapper">
+    <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="javascript:void(0);">项目名称:{$project.title}</a>
+    </div>
+    
+    <div class="navbar-default sidebar" role="navigation">
+    <div class="sidebar-nav navbar-collapse">
+        <ul class="nav" id="side-menu"">
+            <li>
+                <a href="index.html" class="active">项目主页</a>
+            </li>
+            {foreach $moduleList as $module}
+            <li class="module-item js_moduleItem">
+                <a href="javascript:void(0);">{$module.title}</a>
+                <ul class="nav nav-second-level collapse" id="api-menu-{$module.id}">
+                    {if !empty($module.api_list)}
+                        {volist name="module.api_list" id="apis"}
+                        <li class="api-item js_apiItem" data-id="9">
+                        <a href="./api_detail_{$project.id}_{$module.id}_{$apis.id}.html">{$apis.title}</a>
+                    </li>
+                        {/volist}
+                    {/if}
+                </ul>
+                <!-- /.nav-second-level -->
+            </li>
+            {/foreach}
+        </ul>
+    </div>
+    <!-- /.sidebar-collapse -->
+</div>
+
+<script src="../js/sortable.js"></script>
+</nav>
+    <div id="page-wrapper" style="min-height: 911px;">
+
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="page-header">
+                    <h1>接口主页 </h1>
+                </div>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        接口详情
+                    </div>
+                    <div class="panel-body">
+                        <p class="text-muted"><label>接口名称：</label>{$apiInfo.title}</p>
+                        <p class="text-muted"><label>接口名称：</label>{$apiInfo.apiurl}&nbsp;<button type="button" data-clipboard-text="{$apiInfo.apiurl}" class="btn btn-xs btn-success js_copyUrl">复制</button></p>
+                        <p class="text-muted"><label>所属模块：</label>{$apiInfo.module_name}</p>
+                        <p class="text-muted"><label>请求类型：</label>POST</p>
+                        <p class="text-muted"><label>接口描述：</label>{$apiInfo.description}</p>
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        接口地址
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover">
+
+                                <tbody>
+                                {volist name="envs" id="vo"}
+                                {php}
+                                $apiurl = trim($vo['domain'],'/') . trim($apiInfo['apiurl']);
+                                {/php}
+                                <tr>
+                                    <td style="width: 20%;">{$vo.title}({$vo.name})</td>
+                                    <td style="width: 70%;"><code>{$apiurl}</code></td>
+                                    <td style="width: 10%;">
+                                        <button type="button" data-clipboard-text="{$apiurl}" class="btn btn-xs btn-success js_copyUrl">复制链接</button>
+                                    </td>
+                                </tr>
+                                {/volist}
+                                </tbody>
+                            </table>
+
+                        </div>
+                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-6 -->
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        公共参数
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover">
+                                <thead>
+                                <tr class="success">
+                                    <th>参数标识</th>
+                                    <th>参数名称</th>
+                                    <th>字段类型</th>
+                                    <th>是否必填</th>
+                                    <th>默认值</th>
+                                    <th>参数说明</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {volist name="public_parame" id="pub_field"}
+                                <tr class="">
+                                    <td>{$pub_field.tag}</td>
+                                    <td>{$pub_field.title}</td>
+                                    <td>{$pub_field.ptype}</td>
+                                    <td>必填</td>
+                                    <td>{$pub_field.default_value}</td>
+                                    <td>{$pub_field.description}</td>
+                                </tr>
+                                {/volist}
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-6 -->
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        请求参数
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover">
+                                <thead>
+                                <tr class="success">
+                                    <th>参数标识</th>
+                                    <th>参数名称</th>
+                                    <th>字段类型</th>
+                                    <th>是否必填</th>
+                                    <th>默认值</th>
+                                    <th>参数说明</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {volist name="request_parame" id="request"}
+                                    <tr class="">
+                                    <td>{$request.tag}</td>
+                                    <td>{$request.title}</td>
+                                    <td>{$request['ptype']}</td>
+                                    <td>{if condition="$request['is_required'] eq 1"}必填{else /}不必填{/if}</td>
+                                    <td>{$request.default_value}</td>
+                                    <td>{$request.description}</td>
+                                    </tr>
+                                {/volist}
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-6 -->
+        </div>
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        返回参数
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover">
+                                <thead>
+                                <tr class="success">
+                                    <th>参数标识</th>
+                                    <th>参数名称</th>
+                                    <th>参数类型</th>
+                                    <th>参数处理</th>
+                                    <th>参数说明</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    {volist name="back_parame" id="back"}
+                                    <tr class="{if condition="$back['level'] eq 1"}warning{/if}">
+                                    <td style="text-align:left;padding-left:{$back.margin}px;width:25%;">   {$back.tag}
+                                    </td>
+                                    <td style="width: 15%">{$back.title}</td>
+                                    <td style="width: 10%">{$back.ptype}</td>
+                                    <td style="width: 10%">{$back.mock|default="/"}</td>
+                                    <td style="width: 40%">{$back.description}</td>
+                                    </tr>
+                                    {/volist}
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-6 -->
+        </div>
+        {php}
+        $def = '{"Code": "暂无"}';
+        {/php}
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        返回成功示例
+                    </div>
+                    <div class="panel-body">
+                        <div class="hidden" id="RawJson">{$apiInfo.demo_success|default=$def}</div>
+                        <div id="Canvas" class="Canvas"></div>
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        返回失败示例
+                    </div>
+                    <div class="panel-body">
+                        <div class="hidden" id="RawJsonFail">{"Code": "100000","Msg": "系统错误","Time": "2018-05-07 19:12:17","ApiUrl": "{$apiInfo.apiurl}","Data": []}</div>
+                        <div id="CanvasFail" class="Canvas"></div>
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        错误码说明
+                    </div>
+                    <div class="panel-body">
+                        <div class="hidden" id="RawJsonCode">{$apiInfo.api_code|default=$def}</div>
+                        <div id="CanvasCode" class="Canvas"></div>
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+
+    </div>
+    <!-- /#page-wrapper -->
+    <hr>
+    <p class="text-center">Copyright © 2017 APIDOC版权所有</p>
+    <!-- 删除接口模态框 -->
+    <div class="modal fade" id="js_deleteApiModal" tabindex="2" role="dialog">
+        <div class="modal-dialog" role="document">
+            <form id="js_deleteApiForm" role="form" action="/api/delete.json" method="post">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <h4 class="modal-title">确定删除此接口吗？</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-dismissable alert-warning">
+                            <i class="fa fa-fw fa-info-circle"></i>
+                            接口删除后，该项目下所有字段将被立刻删除，不可恢复，请谨慎操作！
+                        </div>
+                        <div class="form-group">
+                            <input name="id" class="form-control" type="hidden">
+                            <input name="password" class="form-control" placeholder="重要操作，请输入登录密码" datatype="*" nullmsg="请输入登录密码!" errormsg="请输入正确的登录密码!" type="text">
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-danger js_submit">删除</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </form>
+            <form id="js_apicodeApiForm" role="form" action="/api/apicode.json" method="post">
+                <input name="apicodeid" class="form-control" type="hidden">
+            </form>
+        </div><!-- /.modal-dialog -->
+    </div>
+</div>
+<!-- /#wrapper -->
+<script src="../js/jsonFormat.js"></script>
+<script type="text/javascript" src="../js/clipboard.js"></script>
+<script>
+$(function () {
+	// 复制链接
+	var clipboard = new Clipboard('.js_copyUrl');
+	clipboard.on('success', function(e) {
+		alert('地址复制成功', 1000);
+		e.clearSelection();
+	});
+	clipboard.on('error', function() {
+		alert('地址复制失败，请手动复制', 3000);
+	});
+
+	// 格式化json
+	Process('RawJson','Canvas');
+	Process('RawJsonFail','CanvasFail');
+	Process('RawJsonCode','CanvasCode');
+});
+</script>
+</body>
+</html>

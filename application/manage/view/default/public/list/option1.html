@@ -1,0 +1,31 @@
+{notempty name="rightMenu"}
+{if condition="$isTree eq 1"}
+<div style="float:left;">
+    <span style="margin-left:{php} echo (($list['level']-1) * 2);{/php}em" class="btn">
+{else /}
+<div>
+<span style="margin-left:-0.5em" class="btn" >
+{/if}
+    <em><i class="fa fa-cog"></i>操作<i class="arrow"></i></em>
+    <ul>
+    {volist name="rightMenu" id="right"}
+        {switch right.posttype}
+            {case 1}
+                <li><a href="{:url($right['url'],$extends_param.'menuid='.$right['id'].'&pos='.$right['pos'].'&id='.$list['id'].'&pid='.$list['id'])}">{$right['title']}</a></li>
+            {/case}
+            {case 2}
+                <li>
+                    <a onClick="return CommonJs.JsAddEdit('{$right.title}','{:url($right['url'],$extends_param.'menuid='.$right['id'].'&pos='.$right['pos'].'&id='.$list['id'].'&pid='.$list['id'])}','{$right['fwidth']}','{$right['fheight']}');">{$right['title']}</a>
+                </li>
+            {/case}
+            {case 3}
+                <li><a class="delete" onClick="CommonJs.JsStatus('{$list['id']}','{:url($right['url'],$extends_param.'pid='.$list['id'])}','{$right.title}')" href="javascript:;">{$right['title']}</a></li>
+            {/case}
+        {/switch}
+    {/volist}
+    </ul>
+  </span>
+</div>
+{else /}
+<div>无操作项</div>
+{/notempty}

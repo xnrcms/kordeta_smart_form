@@ -1,0 +1,144 @@
+<script type="text/javascript">
+    function GetUploadify(type,num,elementid,path,callback)
+    {
+        var upurl ='/index.php?m=Admin&c=File&a='+type+'&num='+num+'&input='+elementid+'&path='+path+'&func='+callback;
+        layer.open({
+            type: 2,
+            title: '上传图片',
+            shadeClose: true,
+            shade: false,
+            maxmin: true, //开启最大化最小化按钮
+            area: ['50%', '60%'],
+            content: upurl
+        });
+    }
+    function call_img_back(input,fileurl_tmp,fileurl_ids){
+
+		if(typeof fileurl_ids =='object' && typeof fileurl_tmp == 'object'){
+
+		    //循环显示图片
+			var imgs = '';
+			var imgids = '' ;
+
+			for (var i=0 ; i< fileurl_tmp.length ; i++){
+                imgs += "<div class='c-img-box'>"
+                imgs += "<span class='close' data-id="+fileurl_ids[i]+">X</span>"
+				imgs += "<img height='150px' src="+fileurl_tmp[i]+">" ;
+                imgs += "</div>"
+			}
+            for (var i=0 ; i< fileurl_ids.length ; i++){
+                 imgids += fileurl_ids[i]+',';
+            }
+            imgids = imgids.substr(0,imgids.length-1) ;
+
+            $("#image_"+input).parent().append(imgs) ;
+
+            $(".close").click(function () {
+                var imgid = $(this).attr('data-id') ;
+				$(this).parent().remove() ;
+
+
+				var id = '' ;
+				var imgbox = $(".c-img-box") ;
+
+                for (var i=0 ; i<imgbox.length ; i++ ){
+                    id += imgbox.eq(i).find('span').attr('data-id')+',' ;
+
+				}
+
+				id = id.substr(0,id.length-1) ;
+
+                $("input[name='"+input+"']").val(id) ;
+
+            });
+            var oldimgids = $("input[name='"+input+"']").val() ;
+            if(oldimgids != ''){
+                imgids=oldimgids+','+imgids ;
+			}
+            $("input[name='"+input+"']").val(imgids) ;
+		}else{
+            $("#image_"+input).attr('src',fileurl_tmp) ;
+            $("input[name='"+input+"']").val(fileurl_ids) ;
+		}
+
+    }
+
+    function call_file_back(input,fileurl_ids,fileurl_type,fileurl_name){
+        if(typeof fileurl_ids =='object' && typeof fileurl_tmp == 'object'){
+
+            //循环显示图片
+            var imgs = '';
+            var imgids = '' ;
+
+            for (var i=0 ; i< fileurl_tmp.length ; i++){
+                imgs += "<div class='c-img-box'>"
+                imgs += "<span class='close' data-id="+fileurl_ids[i]+">X</span>"
+                imgs += "<img height='150px' src="+fileurl_tmp[i]+">" ;
+                imgs += "</div>"
+            }
+            for (var i=0 ; i< fileurl_ids.length ; i++){
+                imgids += fileurl_ids[i]+',';
+            }
+            imgids = imgids.substr(0,imgids.length-1) ;
+
+            $("#image_"+input).parent().append(imgs) ;
+
+            $(".close").click(function () {
+                var imgid = $(this).attr('data-id') ;
+                $(this).parent().remove() ;
+
+
+                var id = '' ;
+                var imgbox = $(".c-img-box") ;
+
+                for (var i=0 ; i<imgbox.length ; i++ ){
+                    id += imgbox.eq(i).find('span').attr('data-id')+',' ;
+
+                }
+
+                id = id.substr(0,id.length-1) ;
+
+                $("input[name='"+input+"']").val(id) ;
+
+            });
+            var oldimgids = $("input[name='"+input+"']").val() ;
+            if(oldimgids != ''){
+                imgids=oldimgids+','+imgids ;
+            }
+            $("input[name='"+input+"']").val(imgids) ;
+        }else{
+            $("#image_"+input).attr('src','/3.0/package/webuploader/images/'+fileurl_type+'.png') ;
+            $("input[name='"+input+"']").val(fileurl_ids) ;
+        }
+	}
+
+
+    $("#datetime").jeDate({
+        isinitVal:true,
+        festival:false,
+        ishmsVal:false,
+        minDate: '',
+        maxDate: '',
+        format:"YYYY-MM-DD hh:mm:ss",
+        zIndex:3000,
+    });
+	$("#date").jeDate({
+			isinitVal:true,
+			festival:false,
+			ishmsVal:false,
+			minDate: '',
+			maxDate: '',
+			format:"YYYY-MM-DD",
+			zIndex:3000,
+		});
+	$("#time").jeDate({
+			isinitVal:true,
+			festival:false,
+			ishmsVal:false,
+			minDate: '',
+			maxDate: '',
+			format:"hh:mm",
+			zIndex:3000,
+		});
+
+</script>

@@ -1,0 +1,11 @@
+<dl class="row" id="id_{$form.tag}" data-msg="请输入{$form.title}">
+	<dt class="tit">
+        {include file="public/list/devtpl" /}
+		{if condition="$form['require'] eq 1"}<em>*</em>{/if}
+		{$form.title}
+	</dt>
+	<dd class="opt">
+		<input type="text" value="{$info[$form['tag']]}" name="{$form['tag']}" placeholder="请输入{$form.title}" class="form-control" style="width:150px;" {$form.attr} onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" />
+		<p class="notic">{$form.notice|raw}</p>
+	</dd>
+</dl>

@@ -1,0 +1,44 @@
+<div class="layui-side layui-side-menu">
+    <div class="layui-side-scroll">
+      <div class="layui-logo" lay-href="home/console.html">
+        <span>layuiAdmin</span>
+      </div>
+      
+      {notempty name="topMenu"}
+      <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
+        {foreach name="topMenu" item="mv1" key="mk1"}
+        <li data-name="app" class="layui-nav-item">
+          <a href="javascript:;" lay-tips="{$mv1.title}" lay-direction="{$mv1.id}">
+            <i class="layui-icon layui-icon-app"></i>
+            <cite>{$mv1.title}</cite>
+          </a>
+
+          {php} $menu2  = !empty($mv1) ? $thisObj->formatMenu($menu,$mv1['id']) :[];{/php}
+
+          {notempty name="menu2"}
+          <dl class="layui-nav-child">
+            {foreach name="menu2" item="mv2" key="mk2"}
+            <dd data-name="content">
+              <a href="javascript:;">{$mv2.title}</a>
+
+              {php}$menu3 = !empty($mv2) ? $thisObj->formatMenu($menu,$mv2['id']) :[];{/php}
+
+              {notempty name="menu3"}
+              <dl class="layui-nav-child">
+                {foreach name="menu3" item="mv3"}
+                {php}$urls = '/manage/' . trim($mv3['url'],'/') .'/menuid/'.$mv3['id'];{/php}
+                <dd data-name="menu_{$mv3.id}"><a lay-href="{$urls}">{$mv3.title}</a></dd>
+                {/foreach}
+              </dl>
+              {/notempty}
+            </dd>
+            {/foreach}
+          </dl>
+          {/notempty}
+          {/foreach}
+        </li>
+        {/foreach}
+      </ul>
+      {/notempty}
+    </div>
+</div>

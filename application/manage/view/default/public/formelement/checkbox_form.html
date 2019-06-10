@@ -1,0 +1,28 @@
+<dl class="row" id="id_{$form.tag}" data-msg="请选择{$form.title}">
+	<dt class="tit">
+        {include file="public/list/devtpl" /}
+		{if condition="$form['require'] eq 1"}<em>*</em>{/if}
+		{$form.title}
+	</dt>
+	<dd class="opt">
+		{php}
+			$info[$form['tag']] = is_string($info[$form['tag']]) ? explode(',',$info[$form['tag']]) : $info[$form['tag']];
+		{/php}
+
+		{if condition="isset($form['default']['type']) && $form['default']['type'] eq 'string'"}
+			{volist name="$form['default']['parame']" id="vo"}
+				<label>
+				<input type="checkbox" name="{$form.tag}[{$key}]" value="{$key}" {$form.attr} {if condition="in_array($key,$info[$form['tag']])"} checked="checked"{/if}> {$vo}
+				</label>
+			{/volist}
+		{/if}
+		{if condition="isset($form['default']['type']) && $form['default']['type'] eq 'parame'"}
+			{volist name="defaultData[$form['default']['parame']]" id="vo"}
+				<label>
+				<input type="checkbox" name="{$form.tag}[{$key}]" value="{$key}" {$form.attr} {if condition="in_array($key,$info[$form['tag']])"} checked="checked"{/if}> {$vo}
+				</label>
+			{/volist}
+		{/if}
+		<p class="notic">{$form.notice|raw}</p>
+	</dd>
+</dl>

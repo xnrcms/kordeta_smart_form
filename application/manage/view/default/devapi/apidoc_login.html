@@ -1,0 +1,91 @@
+{extend name="public/common"}
+{block name="main"}
+<link href="/3.0/package/set-parame/bootstrap1.css" rel="stylesheet">
+<link href="/3.0/package/set-parame/common.css" rel="stylesheet">
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="login-panel panel panel-default" style="margin-top: 50%;">
+                {if condition="get_client_ip() neq '127.0.0.1'"}
+                <div class="panel-heading" style="color: red;">
+                    <h3 class="panel-title text-center">接口设计功能只能在本地开发</h3>
+                    <br>
+                    <h3 class="panel-title text-center">请在本地部署环境</h3>
+                </div>
+                {else /}
+                <div class="panel-heading">
+                    <h3 class="panel-title text-center">APIDOC授权登录</h3>
+                </div>
+                <div class="panel-body">
+                    <form role="form" id="submit_form_data" action="{:url('','menuid='.$menuid)}" method="post">
+                        <fieldset>
+                            <div class="form-group">
+                                <input id="id_email" class="form-control" placeholder="登录邮箱" name="email" nullmsg="请输入登录邮箱！" errormsg="请输入合法的邮箱地址！" type="email">
+                            </div>
+                            <div class="form-group">
+                                <input id="id_password" class="form-control" placeholder="登录密码" name="password" value="" nullmsg="请填写登录密码！" errormsg="请填写6-20个字符" type="password" style="height: 34px;">
+                            </div>
+                            <!-- Change this to a button or input when using this as a form -->
+                            <a href="javascript:void(0);" class="btn btn-lg btn-success btn-block" onClick="$('#submit_form_data').submit();">授权登录</a>
+                        </fieldset>
+                    </form>
+                </div>
+                {/if}
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$(function(){
+    //数据校验
+    CommonJs.FormCheck  = function(FormObj){
+
+        //表单数据
+        CommonJs.SubmitData = FormObj.serializeArray();
+
+        //验证是否有数据就提交
+        if (!CommonJs.isEmptyData(CommonJs.SubmitData)){
+            layer.msg('数据不存在',{icon: 0,time:2000});return false;
+        }
+
+        var isOk = true;
+
+        $.each( CommonJs.SubmitData, function(i, field){
+            var name    = field.name;
+            var value   = field.value;
+
+            if(name.indexOf("[") != -1){
+                name=name.replace("[","");
+                name=name.replace("]","");
+            }
+
+            //数据校验从这里开始
+            if (name == 'email') {
+                if(!CheckJs.required(value)){
+
+                    layer.msg($("#id_"+name).attr("nullmsg"),{icon: 2,time:2000});isOk=false;return false;
+                }
+
+                if(!CheckJs.email(value)){
+
+                    layer.msg($("#id_"+name).attr("errormsg"),{icon: 2,time:2000});isOk=false;return false;
+                }
+            }else if(name == 'password'){
+
+                if(!CheckJs.required(value)){
+
+                    layer.msg($("#id_"+name).attr("nullmsg"),{icon: 2,time:2000});isOk=false;return false;
+                }
+            }
+
+            //数据校验从这里结束
+        });
+
+        return isOk;
+    };
+
+    //数据提交
+    CommonJs.JsSave("#submit_form_data");
+  });
+</script>
+{/block}

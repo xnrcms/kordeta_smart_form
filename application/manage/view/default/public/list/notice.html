@@ -1,0 +1,35 @@
+{notempty name="pageData['title1']"}
+<div class="fixed-bar">
+    <div class="item-title">
+        {if condition="$pageData['isback'] eq 1"}
+        <a class="back" href="javascript:history.back();" title="返回列表"><i class="fa fa-arrow-circle-o-left"></i></a>
+        {/if}
+        <div class="subject">
+              <h3>{$pageData['title1']|raw}</h3>
+              <h5>{$pageData['title2']|raw}</h5>
+        </div>
+        {notempty name="formFieldList"}
+          <ul class="tab-base nc-row">
+              {if condition="count($formFieldList) gt 1"}
+              {volist name="formFieldList" id="fv"}
+                <li><a href="javascript:void(0);" onClick="CommonJs.FormSwitch(this)" data-index='{$i}' class="tab {if condition="$i eq 1"}current{/if}"><span>{$key}</span></a></li>
+              {/volist}
+              {/if}
+          </ul>
+        {/notempty}
+    </div>
+</div>
+{/notempty}
+{notempty name="pageData['notice']"}
+<div class="explanation" id="explanation">
+    <div class="title" id="checkZoom"><i class="fa fa-lightbulb-o"></i>
+        <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+        <span id="explanationZoom" title="收起提示"></span>
+    </div>
+    <ul>
+  {volist name="pageData['notice']" id="msg"}
+        <li>{$msg|raw}</li>
+  {/volist}
+    </ul>
+</div>
+{/notempty}

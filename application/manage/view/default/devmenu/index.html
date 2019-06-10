@@ -1,0 +1,25 @@
+{extend name="public/common"}
+{block name="main"}
+<div class="page">
+{notempty name="listNode"}
+	{include file="public/list/notice" /}
+	
+	<div class="flexigrid">
+		{include file="public/list/search" /}
+		<div id="ajax_return">
+			{include file="public/list/table" /}
+		</div>
+	</div>
+
+	<div class="row">
+	    <div class="col-sm-6 text-right listPage" id="listPage">{$_page|raw}</div>
+	</div>
+
+	<script type="text/javascript">
+		CommonJs.DoneID.push(1) ;
+	</script>
+{else /}
+	<div style="text-align: center;margin-top: 20px;"><font color="red" size="5">未找到列表模板</font></div>
+{/notempty}
+</div>
+{/block}

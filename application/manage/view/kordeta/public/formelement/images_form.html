@@ -1,0 +1,63 @@
+{if condition="$threePartyplug['uploads'] eq 1"}
+<script type="text/javascript" src="/3.0/js/uploadFile.js"></script>
+{/if}
+{php}
+$uploadParame 				= [];
+$uploadParame['num'] 		= 30;
+$uploadParame['input'] 		= $form['tag'];
+$uploadParame['tags'] 		= $form['tag'].'_'.$form['id'];
+$uploadParame['func'] 		= 'call_img_back';
+$uploadParame['config'] 	= $form['default'];
+
+$uploadParame 				= urlsafe_b64encode(string_encryption_decrypt(serialize($uploadParame)));
+$uploadUrl 					= url('/manage/Uploadfile/uploadImage','uploadParame=' . $uploadParame);
+$imagePath  				= '/3.0/package/webuploader/images/image.png';
+$imgsids 					= explode(',',$info[$form['tag']]) ;
+
+{/php}
+<dl class="row" id="id_{$form.tag}" data-msg="请上传{$form.title}">
+	<dt class="tit">
+        {include file="public/list/devtpl" /}
+		{if condition="$form['require'] eq 1"}<em>*</em>{/if}
+		{$form.title}
+	</dt>
+	<dd class="opt">
+		<div class="upload-images">
+			<img id="image_{$form.tag}" width="150px" src="{$imagePath}" alt="多图上传" onclick="GetUploadify('{$uploadUrl}','多图上传');">
+			{volist name='$imgsids' id='vo'}
+				<div class="c-img-box">
+					<span class='close' data-id="{$vo}">X</span>
+					<img id="image_{$form.tag}" width="150px" src="{:get_cover($vo,'url')}">
+				</div>
+			{/volist}
+		</div>
+		<input type="hidden" name="{$form['tag']}" value="{$info[$form['tag']]}">
+		<p class="notic">{$form.notice|raw}</p>
+	</dd>
+</dl>
+
+<script>
+    $(".close").click(function () {
+
+        var input = "{$form['tag']}" ;
+
+        var id = '' ;
+        var imgbox = $(this).parents('dd').find('.c-img-box') ;console.log(imgbox) ;
+
+        var imgid = $(this).attr('data-id') ;
+
+        for (var i=0 ; i<imgbox.length ; i++ ){
+
+            if (imgbox.eq(i).find('span').attr('data-id') != imgid)
+            	id += imgbox.eq(i).find('span').attr('data-id')+',' ;
+
+        }
+
+        id = id.substr(0,id.length-1) ;
+
+        $("input[name='"+input+"']").val(id) ;
+
+        $(this).parent().remove() ;
+
+    });
+</script>

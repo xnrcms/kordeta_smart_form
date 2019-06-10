@@ -1,0 +1,9 @@
+{notempty name="topMenu"}
+<div style="padding-bottom: 10px;">
+    {volist name="topMenu" id="vo"}
+    <button class="layui-btn" lay-event="buttonType{$vo.posttype}" lay-title="{$vo.title}" lay-width="{$vo.fwidth}" lay-height="{$vo.fheight}" lay-url="{:url($vo['url'],$extends_param.'menuid='.$vo['id'].'&pos='.$vo['pos'])}">
+    {notempty name="vo.icon"}<i class="layui-icon {$vo.icon|default=''}"></i>{/notempty}{$vo.title}
+    </button>
+    {/volist}
+</div>
+{/notempty}

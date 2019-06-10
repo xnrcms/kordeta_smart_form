@@ -1,0 +1,15 @@
+{volist name="tree" id="vo"}
+    <div class="c-item c-level-{$level}" data-level="{$level}">
+        <h3 class="zhan">
+            <!-- <div class="c-die"></div> -->
+            <input type="checkbox" id="lable_{$vo.id}" name="rules[]" class="all-check" value="{$vo['id']}" {if condition="in_array($vo['id'],$userAuth)"}checked{/if} >
+            <span><label for="lable_{$vo.id}">{$vo.title}</label></span>
+            <div class="c-line"></div>
+        </h3>
+        <ul class="c-menu-list">
+        {notempty name="vo['_child']"}
+          {:action('base/tree', array($vo['_child'],$level,'auth'))}
+        {/notempty}
+        </ul>
+    </div>
+{/volist}

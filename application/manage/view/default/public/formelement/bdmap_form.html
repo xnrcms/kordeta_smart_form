@@ -1,0 +1,40 @@
+{if condition="$threePartyplug['bdMap'] eq 1"}
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=vrth5wgL2bDUHI2M9kBsY8D6"></script>
+<script type="text/javascript" src="/3.0/js/bdMap.js"></script>
+{php}
+    $getIp              = get_client_ip(0);
+    $getIp              = $getIp == '127.0.0.1' ? '115.205.104.9' : get_client_ip(0);
+    $content            = file_get_contents("http://api.map.baidu.com/location/ip?ak=1b0ace7dde0245f796844a06fb112734&ip=".$getIp."&coor=bd09ll");
+    $json               = json_decode($content);
+    $pname              = $json->content->address_detail->province;
+    $cname              = $json->content->address_detail->city;
+{/php}
+{/if}
+{php}
+$bd_addname     = $form['tag'].'_address';
+$bd_address     = (isset($info[$bd_addname]) && !empty($info[$bd_addname])) ? $info[$bd_addname] : $pname.$cname;
+
+$bd_longname    = $form['tag'].'_long';
+$bd_longvalue   = (isset($info[$bd_longname]) && !empty($info[$bd_longname])) ? $info[$bd_longname] : '';
+
+$bd_latname     = $form['tag'].'_lat';
+$bd_latvalue    = (isset($info[$bd_latname]) && !empty($info[$bd_latname])) ? $info[$bd_latname] : '';
+{/php}
+<dl class="row" id="id_{$form.tag}" data-msg="请选择{$form.title}">
+	<dt class="tit">
+        {include file="public/list/devtpl" /}
+		{if condition="$form['require'] eq 1"}<em>*</em>{/if}
+		{$form.title}
+	</dt>
+	<dd class="opt">
+		<input type="text" class="input-text" name="{$bd_addname}" id="{$bd_addname}" value="{$bd_address}">
+		<button id="locate-btn{$bd_addname}" class="btn" >定位</button>
+		longitude：<input value="{$bd_longvalue}" name="{$bd_longname}" id="{$bd_longname}" type="text" readonly>
+		latitude：<input value="{$bd_latvalue}" name="{$bd_latname}" id="{$bd_latname}" type="text" readonly>
+		<div id="map_{$bd_addname}" style="width: 85%;height: 500px;"></div>
+		<p class="notic">{$form.notice|raw}</p>
+	</dd>
+</dl>
+<script type="text/javascript">
+loadBdMap('{$bd_longname}','{$bd_latname}','{$bd_addname}');
+</script>

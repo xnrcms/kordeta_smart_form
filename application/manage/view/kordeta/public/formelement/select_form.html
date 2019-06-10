@@ -1,0 +1,23 @@
+<dl class="row" id="id_{$form.tag}" data-msg="请选择{$form.title}">
+	<dt class="tit">
+        {include file="public/list/devtpl" /}
+		{if condition="$form['require'] eq 1"}<em>*</em>{/if}
+		{$form.title}
+	</dt>
+	<dd class="opt">
+		<select name="{$form.tag}" id="type_id" style="width: 39.5%;" class="form-control" {$form.attr}>
+			<option value="">选择{$form.title}</option>
+			{if condition="isset($form['default']['type']) && $form['default']['type'] eq 'string'"}
+				{volist name="form.default.parame" id="vo"}
+					<option value="{$key}" {if condition="$info[$form['tag']] eq $key"}selected{/if} >{$vo|raw}</option>
+				{/volist}
+			{/if}
+			{if condition="isset($form['default']['type']) && $form['default']['type'] eq 'parame'"}
+				{volist name="defaultData[$form['default']['parame']]" id="vo"}
+					<option value="{$key}" {if condition="$info[$form['tag']] eq $key"}selected{/if} >{$vo|raw}</option>
+				{/volist}
+			{/if}
+		</select>
+		<p class="notic">{$form.notice|raw}</p>
+	</dd>
+</dl>

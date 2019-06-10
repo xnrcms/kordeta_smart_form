@@ -1,0 +1,25 @@
+{notempty name="rightMenu"}
+<div>
+{volist name="rightMenu" id="right"}
+  {switch right.posttype}
+      {case 1}
+          <a class="btn blue" href="{:url($right['url'],$extends_param.'menuid='.$right['id'].'&pos='.$right['pos'].'&id='.$list['id'].'&pid='.$list['id'].'&hashid='.$list['hashid'])}" >
+            <i class="fa {$right.icon|default=''}"></i>{$right['title']}
+          </a>
+      {/case}
+      {case 2}
+          <a class="btn blue" onClick="return CommonJs.JsAddEdit('{$right.title}','{:url($right['url'],$extends_param.'menuid='.$right['id'].'&pos='.$right['pos'].'&id='.$list['id'].'&pid='.$list['id'].'&hashid='.$list['hashid'])}','{$right['fwidth']}','{$right['fheight']}');">
+            <i class="fa {$right.icon|default=''}"></i>{$right['title']}
+          </a>
+      {/case}
+      {case 3}
+          <a class="btn blue" onClick="CommonJs.JsStatus('{$list['id']}','{:url($right['url'],$extends_param.'pid='.$list['id'].'&hashid='.$list['hashid'])}','{$right.title}')" href="javascript:;">
+            <i class="fa {$right.icon|default=''}"></i>{$right['title']}
+          </a>
+      {/case}
+  {/switch}
+{/volist}
+</div>
+{else /}
+<div>无操作项</div>
+{/notempty}

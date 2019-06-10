@@ -1,0 +1,271 @@
+{php}
+$fieldData		= $FD['fieldData'];
+$type			= (!empty($fieldData) && !empty($fieldData['type'])) ? $fieldData['type'] : 1;
+$field			= (!empty($fieldData) && !empty($fieldData['field'])) ? $fieldData['field'] : array();
+$mapsurl		= "http://api.map.baidu.com/location/ip?ak=1b0ace7dde0245f796844a06fb112734&ip=".$getIp."&coor=bd09ll";
+$addressField		= (!empty($field) && !isset($field[0])) ? $field[0] : 'address';
+$provinceField		= (!empty($field) && !isset($field[1])) ? $field[1] : 'province';
+$areaField			= (!empty($field) && !isset($field[2])) ? $field[2] : 'area';
+$countyField		= (!empty($field) && !isset($field[3])) ? $field[3] : 'county';
+$longitudeField		= (!empty($field) && !isset($field[4])) ? $field[4] : 'longitude';
+$latitudeField		= (!empty($field) && !isset($field[5])) ? $field[5] : 'latitude';
+switch($type){
+	case 1:
+		if(empty($info[$addressField])){
+			$getIp				= get_client_ip(0);
+			$getIp				= $getIp == '127.0.0.1' ? '115.205.104.9' : get_client_ip(0);
+			$content 			= file_get_contents("http://api.map.baidu.com/location/ip?ak=1b0ace7dde0245f796844a06fb112734&ip=".$getIp."&coor=bd09ll");
+			$json 				= json_decode($content);
+			$pname				= $json->content->address_detail->province;
+			$cname				= $json->content->address_detail->city;
+			$info['address']	= !empty($info['address']) ? $info['address'] : $pname.$cname;
+		}
+		break;
+	case 2:
+		$is_maps++;
+		if(empty($info[$provinceField]) || empty($info[$areaField]) || empty($info[$countyField])){
+			$getIp				= get_client_ip(0);
+			$getIp				= $getIp == '127.0.0.1' ? '115.205.104.9' : get_client_ip(0);
+			$content 			= file_get_contents("http://api.map.baidu.com/location/ip?ak=1b0ace7dde0245f796844a06fb112734&ip=".$getIp."&coor=bd09ll");
+			$json 				= json_decode($content);
+			$pname				= $json->content->address_detail->province;
+			$cname				= $json->content->address_detail->city;
+			$info['address']	= !empty($info['address']) ? $info['address'] : $pname.$cname;
+			
+			$areainfo				= M("area")->where(array('area'=>$pname))->field('id')->find();
+			$info[$provinceField]	= empty($info[$provinceField]) ? $areainfo['id'] : $info[$provinceField];
+			$areainfo				= M("area")->where(array('area'=>$cname))->field('id')->find();
+			$info[$areaField]		= empty($info[$areaField]) ? $areainfo['id'] : $info[$areaField];
+			
+			$map["pid"]	= 0;
+			$plist		= M("area")->where($map)->select();
+			$map["pid"]	= empty($info[$provinceField]) ? $plist[0]['id'] : $info[$provinceField];
+			$alist		= M("area")->where($map)->select();
+			$map["pid"]	= empty($info[$info[$areaField]]) ? $alist[0]['id'] : $info[$info[$areaField]];
+			$clist		= M("area")->where($map)->select();
+		}
+		break;
+	case 3:
+		$is_maps++;
+		if(empty($info[$addressField]) || empty($info[$provinceField]) || empty($info[$areaField]) || empty($info[$countyField]) || empty($info[$longitudeField]) || empty($info[$latitudeField])){
+			$getIp				= get_client_ip(0);
+			$getIp				= $getIp == '127.0.0.1' ? '115.205.104.9' : get_client_ip(0);
+			$content 			= file_get_contents("http://api.map.baidu.com/location/ip?ak=1b0ace7dde0245f796844a06fb112734&ip=".$getIp."&coor=bd09ll");
+			$json 				= json_decode($content);
+			$pname				= $json->content->address_detail->province;
+			$cname				= $json->content->address_detail->city;
+			$info['address']	= !empty($info['address']) ? $info['address'] : $pname.$cname;
+			
+			$areainfo				= M("area")->where(array('area'=>$pname))->field('id')->find();
+			$info[$provinceField]	= empty($info[$provinceField]) ? $areainfo['id'] : $info[$provinceField];
+			$areainfo				= M("area")->where(array('area'=>$cname))->field('id')->find();
+			$info[$areaField]		= empty($info[$areaField]) ? $areainfo['id'] : $info[$areaField];
+			
+			$map["pid"]	= 0;
+			$plist		= M("area")->where($map)->select();
+			$map["pid"]	= empty($info[$provinceField]) ? $plist[0]['id'] : $info[$provinceField];
+			$alist		= M("area")->where($map)->select();
+			$map["pid"]	= empty($info[$info[$areaField]]) ? $alist[0]['id'] : $info[$info[$areaField]];
+			$clist		= M("area")->where($map)->select();
+		}
+		break;
+	default:break;
+}
+{/php}
+{switch type}
+	{case 1}{/*地址输入框*/}
+	<div class="row cl">
+		<label class="form-label col-xs-{$col_xs1} col-sm-{$col_sm1}">{eq name="FD['isMust']" value="1"}<span class="c-red">*</span>{/eq}{$FD['fieldName']}</label>
+		<div class="formControls col-xs-{$col_xs2} col-sm-{$col_sm2}">
+			<input type="text" id="id_{$addressField}" class="input-text class_{$addressField}" name="{$addressField}" value="{$info[$addressField]}"}>
+		</div>
+	</div>
+	{/case}
+	{case 2}{/*地址选择*/}
+	<div class="row cl">
+		<label class="form-label col-xs-{$col_xs1} col-sm-{$col_sm1}">{eq name="FD['isMust']" value="1"}<span class="c-red">*</span>{/eq}{$FD['fieldName']}</label>
+		<div class="formControls col-xs-{$col_xs2} col-sm-{$col_sm2}">
+			<select name="province" id="idprovince" class="new-select" style="width:32.9%;height:40px;">
+			{notempty name="plist"}
+			{volist name="plist" id="vo"} 
+				<option value="{$vo.id}" {eq name="vo['id']" value="$info[$provinceField]">selected{/eq}>{$vo.area}</option>  
+			{/volist}
+			{/notempty}
+			</select>
+			<select name="area" id="idcity" class="new-select" style="width:32.9%;height:40px;">
+				{notempty name="alist"}
+				{volist name="alist" id="vo"}
+					<option value="{$vo.id}" {eq name="vo['id']" value="$info[$areaField]">selected{/eq}>{$vo.area}</option>  
+				{/volist}
+				{/notempty}
+			</select>
+			<select name="county" class="new-select" id="idcounty" style="width:32.9%;height:40px;">
+				{notempty name="clist"}
+				{volist name="clist" id="vo"}
+					<option value="{$vo.id}" {eq name="vo['id']" value="$info[$countyField]">selected{/eq}>{$vo.area}</option>  
+				{/volist}
+				{/notempty}
+			</select>
+			<input value="{$info[$provinceField]}-{$info[$areaField]}-{$info[$countyField]}" type="hidden" class="text input-large" id='paths'>
+		</div>
+	</div>
+	{/case}
+	{case 3}{/*地图定位*/}
+		<div class="row cl">
+			<label class="form-label col-xs-{$col_xs1} col-sm-{$col_sm1}">{eq name="FD['isMust']" value="1"}<span class="c-red">*</span>{/eq}地区选择</label>
+			<div class="formControls col-xs-{$col_xs2} col-sm-{$col_sm2}">
+				<select name="province" id="idprovince" class="new-select" style="width:32.9%;height:40px;">
+				{notempty name="plist"}
+				{volist name="plist" id="vo"} 
+					<option value="{$vo.id}" {eq name="vo['id']" value="$info['province']"}selected{/eq}>{$vo.area}</option>  
+				{/volist}
+				{/notempty}
+				</select>
+				<select name="area" id="idcity" class="new-select" style="width:32.9%;height:40px;">
+					{notempty name="alist"}
+					{volist name="alist" id="vo"}
+						<option value="{$vo.id}" {eq name="vo['id']" value="$info.area"}selected{/eq}>{$vo.area}</option>  
+					{/volist}
+					{/notempty}
+				</select>
+				<select name="county" class="new-select" id="idcounty" style="width:32.9%;height:40px;">
+					{notempty name="clist"}
+					{volist name="clist" id="vo"} 
+						<option value="{$vo.id}" {eq name="vo['id']" value="$info.county"}selected{/eq}>{$vo.area}</option>  
+					{/volist}
+					{/notempty}
+				</select>
+			</div>
+		</div>
+		<div class="row cl">
+		    <label class="form-label col-xs-{$col_xs1} col-sm-{$col_sm1}">{eq name="FD['isMust']" value="1"}<span class="c-red">*</span>{/eq}详细地址</label>
+		    <div class="formControls col-xs-{$col_xs2} col-sm-10">
+		        <input type="text" class="input-text" name="address" value="{$info.address|default=''}" id="idadress">
+		        <button id="locate-btn" class="btn" >定位</button>
+		    </div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-{$col_xs1} col-sm-{$col_sm1}"></label>
+		    <div class="formControls col-xs-{$col_xs2} col-sm-{$col_sm2}">
+		        <div id="map" style="width: 100%;height: 300px;"></div>
+		    </div>
+		</div>
+		<input value="{$info.province}-{$info.area}-{$info.county}" type="hidden" class="text input-large" id='paths'>
+		<input value="{$info['longitude']}" name="longitude" id="longitude" type="hidden">
+		<input value="{$info['latitude']}" name="latitude" id="latitude" type="hidden">
+	{/case}
+{/switch}
+
+{eq name="is_maps" value="1"}
+<script src="http://api.map.baidu.com/api?v=1.5&ak=1b0ace7dde0245f796844a06fb112734"></script>
+<script type="text/javascript">
+var type = '{$type}';
+$(function(){
+	//初始化
+	var paths 		= $("#paths").val();
+	var pathsArr 	= paths.split('-');
+	var pathsCode 	= 'idcity-idcounty'.split('-');
+	for(var i=0;i<pathsArr.length;i++){
+		if(pathsArr[i] >0) GetArea(pathsArr[i],pathsCode[i],pathsArr[i+1]);
+	}
+	$('#idprovince').change(function(){
+		if(this.value==''){ return;}
+		GetArea(this.value,'idcity');
+		if (type == 3){
+			locationAddrss($(this).find('option:selected').text());
+		}
+	});
+	$('#idcity').change(function(){
+		if(this.value==''){ return; }
+		GetArea(this.value,'idcounty');
+		if(type == 3){
+			locationAddrss($(this).find('option:selected').text());
+		}
+	});
+	$('#idcounty').change(function(){
+		if(this.value==''){ return;}
+		GetArea(this.value);
+		if(type == 3){
+			locationAddrss($(this).find('option:selected').text());
+		}
+	});
+	function GetArea(pid,selectid,sid){	
+		$('#area').val(pid);
+		if(selectid){
+			$.post('{:url("Area/change")}',{pid:pid},function(data,textStatus){
+				if(data){
+					$('#'+selectid).empty();//清空原有的数据
+					$.each(data, function(i,n){
+						var selected = sid == n.id ? 'selected' : '';
+						$("<option "+selected+" value='"+n.id+"'>"+n.area+"</option>").appendTo("#"+selectid);
+					});
+				}else{
+					alert('没有子级了!');
+				}
+			},'json');
+		}
+	}
+	if(type == 3){
+		//百度地图--------------satrt
+		var located=true,myValue,local;
+		//定位坐标
+		var longitude	= $("#longitude").val();
+		var latitude	= $("#latitude").val();
+		var destPoint 	= new BMap.Point(longitude,latitude);
+		/**开始处理百度地图**/
+		var map 		= new BMap.Map("map");
+			map.centerAndZoom(new BMap.Point(destPoint.lng, destPoint.lat), 12);//初始化地图
+			map.enableScrollWheelZoom();
+			map.addControl(new BMap.NavigationControl());
+		var marker 		= new BMap.Marker(destPoint);
+			map.addOverlay(marker);//添加标注
+			map.addEventListener("click", function(e){
+				if(confirm("确认选择这个位置？")){
+					destPoint 	= e.point;
+					$("#latitude").val(destPoint.lat);
+					$("#longitude").val(destPoint.lng);
+					map.clearOverlays();
+					var marker1 = new BMap.Marker(destPoint);  // 创建标注
+						map.addOverlay(marker1); 
+				}
+		});
+	}
+	function setPlace(){
+	    map.clearOverlays();    //清除地图上所有覆盖物
+	    local 	= new BMap.LocalSearch(map, {renderOptions:{ map: map}});
+	    located = true;
+	    local.setMarkersSetCallback(callback);
+	    local.search(myValue);
+	}
+	function addEventListener(marker){
+		marker.addEventListener("click", function(data){destPoint = data.target.getPosition(0);});
+	}
+	function locationAddrss(address)
+	{
+		local 	= new BMap.LocalSearch(map, {renderOptions:{ map: map}});
+		located = true;
+		local.setMarkersSetCallback(callback);
+		local.search(address);
+		return false;
+	}
+	function callback(posi){
+		$("#locate-btn").removeAttr("disabled");
+		for(var i=0;i<posi.length;i++){
+			if(i==0){destPoint = posi[0].point;}
+			posi[i].marker.addEventListener("click", function(data){
+				destPoint = data.target.getPosition(0);
+			});  
+		}
+	}
+	$("#locate-btn").click(function(){
+		if($("#idadress").val() == ""){ alert("请输入详细地址！"); return false;}
+		$("#locate-btn").attr("disabled","disabled");
+		locationAddrss($("#idadress").val());
+		return false;
+	});
+	locationAddrss($("#idadress").val());
+	//百度地图---------------------------end
+});
+/* 初始化上传插件 */
+</script>
+{/eq}

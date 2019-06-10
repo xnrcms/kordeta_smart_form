@@ -1,0 +1,7 @@
+{if is_dev() && isset($form["id"]) && !empty($form["id"]) }
+<a href="javascript:;">
+<i class="fa fa-pencil-square-o" onClick="return CommonJs.JsAddEdit('【{$form.title}】字段设置','{:url("Devform/setFormField","id=".$form["id"]."&pid=".$form["pid"]."&type=0")}',800,650);"></i></a>
+<a href="javascript:;">
+<i class="fa fa-trash-o" onClick="CommonJs.JsStatus('{$form['id']}','{:url("Devform/delFormField")}','【{$form.title}】字段')"></i>
+</a>
+{/if}

@@ -1,0 +1,307 @@
+<script type="text/javascript" src="/3.0/package/jquery/jquery.js"></script>
+<script type="text/javascript" src="/3.0/package/jquery-ui/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/3.0/package/layer/layer-min.js"></script>
+<script type="text/javascript" src="/3.0/package/jquery/jquery.validation.min.js"></script>
+<script type="text/javascript" src="/3.0/package/scrollbar/perfect-scrollbar.min.js"></script>
+<script type="text/javascript" src="/3.0/package/jquery/jquery.mousewheel.js"></script>
+<script type="text/javascript" src="/3.0/package/h-ui/H-ui.js"></script>
+<script type="text/javascript" src="/3.0/package/h-ui/H-ui.admin.js"></script>
+<script type="text/javascript" src="/3.0/js/admin.js"></script>
+<script type="text/javascript" src="/3.0/js/common.js"></script>
+<script type="text/javascript" src="/3.0/js/xnrcms_admin.js"></script>
+<script type="text/javascript" src="/3.0/js/xnrcms_check.js"></script>
+<script type="text/javascript" src="/3.0/package/datetime/jedate/jquery.jedate.js"></script>
+<script type="text/javascript">
+var CommonJs = {
+        Loading:false,//数据加载标识
+        DoneID:[],
+        Islayer:false,
+        SearchData:{},
+
+        JsAdd:function(type,title,url){
+
+            layer.full(layer.open({ type: 2,title: title,content: url}));
+        },
+
+        JsAddEdit:function(title,url,width,height){
+
+            CommonJs.Islayer = true;
+
+            width   = !width ? 800 : width;
+            height  = !height ? 550 : height;
+
+            layer_show(title,url,width,height);
+        },
+
+        JsStatus:function(delid,url,actionName){
+
+            if(CommonJs.Loading){
+                layer.msg('有操作在进行，请稍等...',{ icon: 0,time:2000});return false;
+            }
+
+            layer.confirm('确认要'+actionName+'吗？',function(index){
+                var ids         = [];
+
+                    if(delid > 0){
+
+                        //单个数据处理
+                        ids.push(delid);
+                    }else {
+
+                        //批量数据处理
+                        ids = CommonJs.DoneID ;
+                    }
+
+                    if(ids.length <= 0){
+
+                        layer.msg('请选择要'+actionName+'的数据!',{ icon: 3,time:2000});return false;
+                    }
+
+                    layer.msg('请求处理中，请稍等...',{ icon: 16,time:1000000});
+
+                    CommonJs.Loading    = true;
+                    
+                    $.post(url, { 'ids':ids}, function(data){
+
+                        CommonJs.Loading    = false;
+
+                        var ic              = data.code == 1 ? 6 : 2;
+                        layer.msg(data.msg,{ icon: ic,time:2500},function(){
+
+                            if(data.url != '') window.location.reload();
+                            
+                        });
+
+                    }, "json");
+
+                    return false;
+            },function(){
+                CommonJs.Loading    = false;
+            });
+        },
+
+        //数据快捷修改
+        quickEdit:function(obj,url,fieldName,dataId,isRefresh){
+
+            var src = '',value='',oldValue='';
+            var isRefresh = arguments[4] ? arguments[4] : 0;
+
+            //状态值切换操作
+            if($(obj).hasClass('no')){
+                    value   = 1;
+            }else if($(obj).hasClass('yes')){
+                    value   = 2;
+            }else{
+                value       = $(obj).val();
+                oldValue    = $(obj).attr('oldValue');
+
+                if (oldValue == value || !CheckJs.required(value)) {
+                    
+                    return false;
+                }
+            }
+
+            if(!CheckJs.required(dataId) || CheckJs.isIntEqZero(dataId) ){
+
+                layer.msg('数据不存在',{ icon: 0,time:2000});return false;
+            }
+
+            var SubmitData = { };
+
+            SubmitData.fieldName    = fieldName;
+            SubmitData.dataId       = dataId;
+            SubmitData.value        = value;
+
+            if(CommonJs.Loading){
+
+                layer.msg('有操作在进行，请稍等...',{icon: 0,time:2000});return false;
+            }
+
+            CommonJs.Loading    = true;
+
+            $.post(url, SubmitData, function(data){
+
+                CommonJs.Loading    = false;
+
+                if (data.code == 1) {
+                    if (value == 1 && $(obj).hasClass('no')) {
+                        $(obj).removeClass('no').addClass('yes');
+                        $(obj).html("<i class='fa fa-check-circle'></i>"+$(obj).parent().attr("data-yes"));
+                    }else if (value == 2 && $(obj).hasClass('yes')){
+                        $(obj).removeClass('yes').addClass('no');
+                        $(obj).html("<i class='fa fa-ban'></i>"+$(obj).parent().attr("data-no"));
+                    }else{
+                        $(obj).attr('oldValue',value);
+                    }
+
+                    layer.msg(data.msg, { icon: 1},function(){
+                        if (isRefresh == 1 ) {window.location.reload();}
+                    });
+                }else{
+                    layer.msg(data.msg, {icon: 2});
+                }
+
+            }, "json");
+        },
+
+        //数据保存
+        SubmitData:{},
+        FormCheck:function(){return true;},
+        JsSave:function(obj,fn){ 
+            var FormObj = $(obj);
+                FormObj.validate({
+                    submitHandler:function(){
+
+                        //验证数据是否合法
+                        if(!CommonJs.FormCheck(FormObj)){return false;};
+
+                        //数据提交
+                        if(CommonJs.Loading){
+
+                            layer.msg('有操作在进行，请稍等...',{icon: 0,time:1000});return false;
+                        }
+
+                        CommonJs.Loading    = true;
+
+                        layer.msg('数据处理中...',{icon: 16,time:1000000});
+
+                        $.post(FormObj.attr("action"), CommonJs.SubmitData, function(data){
+
+                            if(fn){
+                                fn(data);
+                            }else{
+                                var ic  = data.code == 1 ? 6 : 2;
+                                layer.msg(data.msg,{icon: ic,time:2000},function(){
+
+                                    if(data.code == 1){
+
+                                        if (typeof parent.window.CommonJs != 'undefined') {
+
+                                            var islayer = parent.window.CommonJs.Islayer;
+
+                                            if (islayer == true) {
+
+                                                if(data.url != '') window.parent.location.reload();
+                                                parent.layer.close(parent.layer.getFrameIndex(window.name));
+
+                                                return true;
+                                            }
+                                            
+                                        }
+
+                                        if(data.url != '') {
+                                            window.location.href = data.url;
+                                        }else{
+                                            window.location.reload();
+                                        }
+                                    }
+
+                                    CommonJs.Loading    = false;
+                                });
+                            }
+                        }, "json");
+                        return false;
+                    }
+                });
+        },
+
+        isEmptyData:function(data){
+            return (typeof data === 'object' && data.length > 0) ? true : false;
+        },
+
+        /*定义表格宽度*/
+        SetTableWidth:function(){
+            $(".tabwidth th").each(function(){ $(".tabwidth tr").find("."+$(this).attr('data-field')).attr("width",$(this).attr('width'));});
+        },
+
+        SetColspan:function(){
+            if($(".colspanClass").length >= 1){ $("tbody>tr>td").attr("colspan",$("thead>tr>th").length);}
+        },
+
+        FormSwitch:function(obj){
+            $(".tab").removeClass("current");
+            $(".formTab").hide();
+            $(obj).addClass("current");
+            $("#formTab_"+$(obj).attr("data-index")).show();
+        },
+
+        LoadPage:function(){
+
+            $(".pagination a").click(function(){
+                var obj         = $(this);
+
+                if (obj.parent().hasClass('active')) {return false;}
+
+                if(CommonJs.Loading){
+                    
+                    layer.msg('有操作在进行，请稍等...',{icon: 0,time:1000});return false;
+                }
+
+                layer.msg('数据加载中，请稍等...',{icon: 16,time:1000000});
+
+                CommonJs.SearchData['page']     = $(this).data('p');
+                var searchData  = CommonJs.SearchData ;
+                $.ajax({
+                    type : "post",
+                    url  : ThisUrl,
+                    data : CommonJs.SearchData,
+                    dataType:'json',
+                    success: function(data){
+
+                        layer.msg('加载成功',{icon: 6,time:1000},function(){
+                            obj.parent().parent().find("li").removeClass("active");
+                            obj.parent().addClass("active");
+                            $("#listData").html('').append(data.listData);
+                            CommonJs.Loading    = false;
+                        });
+                    }
+                });
+            });
+        },
+
+        LoadSearch:function(){
+
+            if(CommonJs.Loading){
+
+                layer.msg('有操作在进行，请稍等...',{icon: 0,time:1000});return false;
+            }
+
+            layer.msg('数据加载中，请稍等...',{icon: 16,time:1000000});
+
+            var SearchFormData = $("#searchForm").serializeArray();
+
+            $.each( SearchFormData, function(i, field){
+              var name    = field.name;
+              var value   = field.value;
+
+              CommonJs.SearchData[name]  = value;
+
+            });
+
+            CommonJs.SearchData['page']     = 1;
+
+            $.ajax({
+                url:ThisUrl,
+                data:CommonJs.SearchData,
+                type:'post',
+                dataType:'json',
+                success:function (data) {
+
+                    layer.msg('加载成功',{icon: 6,time:1000},function(){
+                        $("#listData").html('').append(data.listData);
+                        $("#listPage").html('').append(data.listPage);
+                        CommonJs.LoadPage();
+                        CommonJs.Loading    = false;
+                    });
+                },
+                error:function () {
+                    layer.msg('检查网络连接',{icon: 2,time:1000},function(){
+                        CommonJs.Loading    = false;
+                    });
+                }
+            });
+
+            return false;
+        }
+};
+</script>

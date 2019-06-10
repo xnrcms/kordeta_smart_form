@@ -1,0 +1,21 @@
+{if condition="$threePartyplug['editor'] eq 1"}
+<script type="text/javascript" charset="utf-8" src="/3.0/package/Ueditor/ueditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="/3.0/package/Ueditor/ueditor.all.min.js"> </script>
+<script type="text/javascript" charset="utf-8" src="/3.0/package/Ueditor/lang/zh-cn/zh-cn.js"></script>
+<script type="text/javascript" src="/3.0/js/bdEditor.js"></script>
+{/if}
+<dl class="row" id="id_{$form.tag}" data-msg="请输入{$form.title}">
+	<dt class="tit">
+        {include file="public/list/devtpl" /}
+		{if condition="$form['require'] eq 1"}<em>*</em>{/if}
+		{$form.title}
+	</dt>
+	<dd class="opt">
+		<textarea class="span12 ckeditor" id="content_{$form.tag}" name="{$form.tag}" title="" {$form.attr|raw}>{$info[$form['tag']]}</textarea>
+		<p class="notic">{$form.notice|raw}</p>
+	</dd>
+</dl>
+<script type="text/javascript">
+var editor;
+loadBdEditor('{$form.tag}');
+</script>

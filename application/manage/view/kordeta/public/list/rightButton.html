@@ -1,0 +1,10 @@
+{notempty name="rightMenu"}
+<script type="text/html" id="table-done">
+  {volist name="rightMenu" id="vo"}
+  <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="buttonType{$vo.posttype}" lay-title="{$vo.title}" lay-width="{$vo.fwidth}" lay-height="{$vo.fheight}" lay-dataid="{{d.id}}" lay-pid="{{d.id}}" lay-hashid="{{d.hashid}}" lay-url="{:url($vo['url'],$extends_param.'menuid='.$vo['id'].'&pos='.$vo['pos'])}">
+    {notempty name="vo.icon"}<i class="layui-icon {$vo.icon|default=''}"></i>{/notempty}{$vo['title']}</a>
+  {/volist}
+</script>
+{else /}
+<div>无操作项</div>
+{/notempty}

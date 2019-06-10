@@ -1,0 +1,221 @@
+{extend name="public/common"}
+{block name="main"}
+<div class="page">
+  {include file="public/list/notice" /}
+  <div class="flexigrid" style="width:20%;float: left;" id="formFormList">
+    <div class="hDiv">
+      <div class="hDivBox" style="width:105.5%;overflow-x:hidden;overflow-y: auto;">
+        <table cellspacing="0" cellpadding="0" width="100%">
+          <thead>
+            <tr>
+              <th align="left" abbr="article_title" axis="col3" class="" width="78%">
+                <div style="text-align: left;" class="">表单名称&nbsp;&nbsp;
+                  <i class="fa fa-plus" style="font-size:16px; cursor: pointer;" onClick="return layer_show('表单模板添加','{:url('Devform/add')}',600,550);"></i>
+                </div>
+              </th>
+              <th align="left" abbr="ac_id" axis="col4" class="" width="22%">
+                <div style="margin-left: 5px;" class="">状态</div>
+              </th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+
+    <div class="bDiv" style="width: 100%;height: 650px;overflow: hidden;">
+      {include file="devform/form_list" /}
+    </div>
+  </div>
+
+  <div class="flexigrid" style="width:20%; float: left;margin-left:20px;" id="formFieldList">
+    <div class="hDiv">
+      <div class="hDivBox" style="width:105.5%;overflow-x:hidden;overflow-y: auto;">
+        <table cellspacing="0" cellpadding="0" width="100%">
+          <thead>
+            <tr>
+              <th align="left" abbr="article_title" axis="col3" class="" width="78%">
+                <div style="text-align: left;" class="" data-id="0" data-pid="{$_fieldInfo.pid}">字段名称&nbsp;&nbsp;
+                  <i class="fa fa-plus" style="font-size:16px; cursor: pointer;" onClick="return addFormField(this);"></i>
+                </div>
+              </th>
+              <th align="left" abbr="ac_id" axis="col4" class="" width="22%">
+                <div style="margin-left: 5px;" class="">状态</div>
+              </th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+
+    <div class="bDiv" style="width: 100%;height: 650px;overflow: hidden;">
+      {include file="devform/filed_list" /}
+    </div>
+</div>
+
+<!-- 字段详情-->
+<div class="flexigrid" style="width: 56%; float: left;margin-left: 20px;" id="formFieldInfo">
+  <div class="hDiv">
+    <div class="hDivBox">
+      <table cellspacing="0" cellpadding="0" width="100%">
+        <thead>
+          <tr>
+            <th align="left" abbr="article_title" axis="col3" class="" width="100%">
+              <div style="text-align: left;" class="">字段详情</div>
+            </th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+  </div>
+
+  <div style="padding: 0px;width: 100%;height: 650px;overflow: hidden;">
+    <div class="page" style="padding:0px;width:105.5%;height:100%;overflow-x:hidden;overflow-y: auto;"></div>
+  </div>
+</div>
+
+<script>
+var formId    = parseInt('{$_fieldInfo.pid}');
+var fieldId   = parseInt('{$_fieldInfo.id}');
+var fieldPid  = parseInt('{$_fieldInfo.pid}');
+
+$('#formFormList').find('table>tbody >tr').eq(0).toggleClass('trSelected');
+$('#formFieldList').find('table>tbody >tr').eq(0).toggleClass('trSelected');
+
+changeColoeLine();
+changeFieldInfo(fieldId,fieldPid,true);
+
+//表格行点击选中切换
+function changeColoeLine(){
+
+  $('#formFormList').find('table>tbody >tr').on('click',function(){
+    $('#formFormList').find('table>tbody >tr').removeClass('trSelected');
+    $(this).toggleClass('trSelected');
+    changeFieldList($(this).attr('data-id'),false);
+  });
+
+  $('#formFieldList').find('table>tbody >tr').on('click',function(){
+    $('#formFieldList').find('table>tbody >tr').removeClass('trSelected');
+    $(this).toggleClass('trSelected');
+
+    changeFieldInfo($(this).attr('data-id'),$(this).attr('data-pid'),false);
+  });
+  
+}
+function delfun(obj,msg,type) {
+  // 删除按钮
+  layer.confirm(msg, { btn: ['确定', '取消']}, function () {
+    $.ajax({
+      type: 'post',
+      url: $(obj).attr('data-url'),
+      data: {},
+      dataType: 'json',
+      success: function (data) {
+        layer.closeAll();
+        if (data.code == 1) {
+            layer.alert(data.msg, {icon: 1});
+            if (type == 0) {
+              $(obj).parent().parent().parent().parent().parent().parent().remove();
+            }
+        } else {
+            layer.alert(data.msg, {icon: 2});
+        }
+      }
+    })
+  }, function () {
+      layer.closeAll();
+  });
+}
+function setLists(data,typeid){
+
+  if (data.ac == 1) {
+      //编辑
+      var obj       = $("#devform_id_"+data.id);
+      obj.find('td').eq(0).find('span>em').html('<i class="fa fa-cog"></i>'+data.title+'<i class="arrow"></i>');
+      //编辑
+      var index     = 1;
+      if (data.status == 1) {
+          obj.find('td').eq(index).find('span').removeClass('no').addClass('yes');
+          obj.find('td').eq(index).find('span').html("<i class='fa fa-check-circle'></i>启用");
+      }else if (data.status == 2){
+          obj.find('td').eq(index).find('span').removeClass('yes').addClass('no');
+          obj.find('td').eq(index).find('span').html("<i class='fa fa-ban'></i>禁用");
+      }
+  }else{
+    //新增
+    $("#"+typeid).find("tbody").prepend(data.htmls);
+    changeColoeLine();
+  }
+}
+
+function changeFieldList(id,firstLoading){
+  if(id == formId && firstLoading == false){
+    return false;
+  }
+
+  formId = id;
+
+  $("#formFieldList").find("thead>tr>th>div").attr("data-pid",id);
+}
+
+function changeFieldList(id,firstLoading){
+  if(id == formId && firstLoading == false){
+    return false;
+  }
+
+  formId = id;
+
+  $("#formFieldList").find("thead>tr>th>div").attr("data-pid",id);
+
+  $("#formFieldList").find("div[class='bDiv']").html('<table><tr><td><img src="/3.0/images/load.gif" style="width: 40px;height: 40px;margin-left: 40%;"></td></tr></table>');
+
+  changeColoeLine();
+
+  $.ajax({
+      type: 'post',
+      url: "{:url('changeFieldList')}",
+      data: {'id':id},
+      dataType: 'json',
+      success: function (data) {
+        var content = data.content;
+        var id      = data.id;
+        var pid     = data.pid;
+        $("#formFieldList").find("div[class='bDiv']").html(content);
+
+        changeFieldInfo(id,pid,false);
+
+
+        $('#formFieldList').find('table>tbody >tr').eq(0).toggleClass('trSelected');
+
+        changeColoeLine();
+      }
+    });
+}
+
+function changeFieldInfo(id,pid,firstLoading){
+
+  if (id == fieldId && id >0 && firstLoading == false){
+    return false;
+  }
+
+  fieldId   = id;
+  fieldPid  = pid;
+
+  $("#formFieldInfo").find("div[class='page']").html('<img src="/3.0/images/load.gif" alt="" style="width: 40px;height: 40px;margin-top: 20px;margin-left: 50%;">');
+  $.ajax({
+      type: 'post',
+      url: "{:url('changeFieldInfo')}",
+      data: {'id':id,'pid':pid},
+      dataType: 'text',
+      success: function (data) {
+        $("#formFieldInfo").find("div[class='page']").html(data);
+      }
+    });
+}
+
+function addFormField(obj){
+  var id  = parseInt($(obj).parent().attr('data-id'));
+  var pid = parseInt($(obj).parent().attr('data-pid'));
+  changeFieldInfo(id,pid,false);
+}
+</script>
+{/block}

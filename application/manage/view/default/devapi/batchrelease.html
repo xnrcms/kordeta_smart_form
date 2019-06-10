@@ -1,0 +1,61 @@
+{extend name="public/common"}
+{block name="headcss_after"}
+<link type="text/css" rel="stylesheet" href="/3.0/css/progress.css">
+{/block}
+{block name="main"}
+<div class="page" >
+  <div id="progressbar">
+            <div id='progress'></div>
+            <p></p>
+        </div>
+</div>
+<script type="text/javascript">
+$(function(){
+  var limits  = '{$limits}';
+  var nums    = 1;
+  var _url    = "{:url('batchRelease')}";
+
+  window.onload = function() {
+
+      progressfn(limits*nums);
+
+      startExportApi(_url,nums);
+  }
+
+  function startExportApi(_url,nums)
+  {
+    $.post(_url, { 'nums':nums}, function(data){
+
+        if (data.code == 1) {
+          var nums  = parseInt(data.data.nums);
+          var now   = limits*nums;
+          if(now >= 100) {
+
+              progressfn(100);
+
+              parent.layer.close(parent.layer.getFrameIndex(window.name));
+              window.parent.location.reload();
+
+              return;
+          } else {
+
+              progressfn(now);
+              startExportApi(_url,nums)
+          }
+        }else{
+          alert(data.msg);
+        }
+    }, "json");
+  }
+
+  function progressfn(cent) {
+      var progressbar = document.getElementById("progressbar");
+      cent        = cent.toFixed(3);
+      progressbar = progressbar.getElementsByTagName("p");
+      progressbar[0].innerHTML = cent + "%";
+      var progress = document.getElementById("progress");
+      progress.style.width = cent + "%";
+  }
+});
+</script>
+{/block}

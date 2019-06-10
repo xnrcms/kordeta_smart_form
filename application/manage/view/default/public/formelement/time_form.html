@@ -1,0 +1,11 @@
+<dl class="row" id="id_{$form.tag}" data-msg="请选择{$form.title}">
+	<dt class="tit">
+        {include file="public/list/devtpl" /}
+		{if condition="$form['require'] eq 1"}<em>*</em>{/if}
+		{$form.title}
+	</dt>
+	<dd class="opt">
+		<input class="datainp wicon" id="time" name="{$form.tag}" type="text" placeholder="请输入{$form.title}" value=""  readonly {$form.attr|raw}>
+		<p class="notic">{$form.notice|raw}</p>
+	</dd>
+</dl>

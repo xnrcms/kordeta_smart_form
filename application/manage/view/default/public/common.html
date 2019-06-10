@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+{block name="headcss_before"}{/block}
+<!--CSS File Start-->
+<link type="text/css" rel="stylesheet" href="/3.0/css/main.css">
+<link type="text/css" rel="stylesheet" href="/3.0/css/page.css">
+<link type="text/css" rel="stylesheet" href="/3.0/font/css/font-awesome.min.css"/>
+<!--[if IE 7]>
+  <link rel="stylesheet" href="/3.0/font/css/font-awesome-ie7.min.css">
+<![endif]-->
+<link type="text/css" rel="stylesheet" href="/3.0/package/jquery-ui/jquery-ui.min.css"/>
+<link type="text/css" rel="stylesheet" href="/3.0/package/scrollbar/perfect-scrollbar.min.css"/>
+<link type="text/css" rel="stylesheet" href="/3.0/css/form.css"/>
+<link type="text/css" rel="stylesheet" href="/3.0/package/datetime/jedate/skin/jedate.css">
+<style type="text/css">
+    html, body { overflow: visible;}
+</style>
+<script type="text/javascript">
+var PublicPath= "/3.0/",ThisUrl=location.href,uid= "{$uid}",hashid= "{$hashid}";
+</script>
+<!--CSS File End-->
+{block name="headcss_after"}{/block}
+{block name="headjs_before"}{/block}
+<!--JS File Start-->
+{include file="public/commonjs" /}
+<!--JS File End-->
+{block name="headjs_after"}{/block}
+</head>
+<body style="background-color: #FFF; overflow: auto;">
+{block name="main"}{/block}
+{block name="footjs"}
+<script type="text/javascript">
+//点击刷新数据
+$('.fa-refresh').click(function(){
+    location.href = ThisUrl;
+});
+
+if ($("body").find('.fixed-bar').length <= 0) {
+    $(".page").css('padding-top','5px');
+}
+
+if ( typeof parent.window.CommonJs != 'undefined' && typeof parent.window.CommonJs.Islayer === true) {
+
+    $(".ncap-form-default dt[class='tit']").css('width','30%');
+    $(".ncap-form-default dd[class='opt']").css('width','50%');
+}
+
+if ($("body").find('.listPage').length > 0) {
+    
+    CommonJs.LoadPage();
+}
+
+if ($("body").find('.bDiv > table>tbody >tr').length > 0) {
+
+    $('.bDiv > table>tbody >tr').click(function(){
+        $(this).toggleClass('trSelected');
+
+        var isCheck  =  $(this).hasClass('trSelected') ;
+        var id = $(this).attr('data-id') ;
+
+        if(isCheck){
+            CommonJs.DoneID.push(id) ;
+        }else{
+            if(CommonJs.DoneID.length>0){
+                CommonJs.DoneID.splice($.inArray(id,CommonJs.DoneID),1);
+            }
+        }
+    });
+}
+
+//回车搜索
+if ($("body").find('form[id="searchForm"]').length > 0) {
+    $("#searchForm").keyup(function(e) {
+        if (e.keyCode === 13) { CommonJs.LoadSearch();return false;}
+    });
+}
+
+</script>
+{/block}
+{block name="footjsExt"}{/block}
+
+{if condition="is_dev() and $listId gt 0"}
+<a onClick="return CommonJs.JsAddEdit('列表模板设置','{:url('Devlist/set_list','id='.$listId)}','1200');" style="position:fixed;left: 0px;top:50%;height:100px;width:20px;cursor: pointer;">
+    <div class="fbutton">
+        <div title="列表模板设置" class="add" style="height:150px;width:15px;">
+            <span><i class="fa fa-pencil-square-o"></i>列表模板设置</span>
+        </div>
+    </div>
+</a>
+{/if}
+
+{if condition="is_dev() and $formId gt 0"}
+<div class="tDiv" style="height: 0px;border: none;">
+    <div class="tDiv2">
+<a onClick="return CommonJs.JsAddEdit('表单模板设置','{:url('Devform/set_form','id='.$formId)}','1200');" style="position:fixed;left: 0px;top:50%;height:100px;width:20px;cursor: pointer;">
+    <div class="fbutton">
+        <div title="表单模板设置" class="add" style="height:150px;width:15px;">
+            <span><i class="fa fa-pencil-square-o"></i>表单模板设置</span>
+        </div>
+    </div>
+</a>
+</div>
+</div>
+{/if}
+<div style="height: 50px;"></div>
+</body>
+</html>

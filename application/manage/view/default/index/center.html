@@ -1,0 +1,201 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="/3.0/css/index.css" rel="stylesheet" type="text/css">
+    <link href="/3.0/css/perfect-scrollbar.min.css" rel="stylesheet" type="text/css">
+    <link href="/3.0/css/purebox.css" rel="stylesheet" type="text/css">
+    <link href="/3.0/package/jquery-ui/jquery-ui.min.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="/3.0/package/jquery/jquery.js"></script>
+    <script type="text/javascript" src="/3.0/package/layer/layer-min.js"></script>
+    <script type="text/javascript" src="/3.0/package/jquery-ui/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/3.0/package/jquery/jquery.cookie.js"></script>
+    <style>
+        .contentWarp_item .section_select .item_comment{
+            padding: 83px 0 31px 38px;
+        }
+        .contentWarp_item .section_select .item {
+            padding: 83px 0 38px 38px;
+        }
+        .contentWarp_item .section_order_select li{
+            width: 23%;
+        }
+    </style>
+</head>
+<body class="iframe_body1">
+<div class="warpper">
+    <div class="title">管理中心</div>
+    <div class="content start_content">
+        <div class="contentWarp">
+            <div class="contentWarp_item clearfix">
+                <div class="section_select">
+                    <div class="item item_price">
+                        <i class="icon"><img src="/3.0/images/1.png" width="71" height="74"></i>
+                        <div class="desc">
+                            <div class="tit">0</div>
+                            <span>今日订单总数</span>
+                        </div>
+                    </div>
+                    <div class="item item_order">
+                        <i class="icon"><img src="/3.0/images/2.png"></i>
+                        <div class="desc">
+                            <div class="tit">0</div>
+                            <span>今日会员总数</span>
+                        </div>
+                        <i class="icon"></i>
+                    </div>
+                    <div class="item item_comment">
+                        <i class="icon"><img src="/3.0/images/3.png" width="90" height="86"></i>
+                        <div class="desc">
+                            <div class="tit">0</div>
+                            <span>今日待审评论数</span>
+                        </div>
+                    </div>
+                    <div class="item item_flow">
+                        <i class="icon"><img src="/3.0/images/4.png" width="86"></i>
+                        <div class="desc">
+                            <div class="tit">0</div>
+                            <span>今日访问量</span>
+                        </div>
+                        <i class="icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="contentWarp_item clearfix">
+                <div class="section_order_select">
+                    <ul>
+                        <li>
+                            <a href="{:url('manage/Order/index',array('order_status'=>0))}">
+                                <i class="ice ice_w"></i>
+                                <div class="t">待处理订单</div>
+                                <span class="number">0</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a  href="{:url('manage/Goods/goodsList')}">
+                                <i class="ice ice_y"></i>
+                                <div class="t">商品数量</div>
+                                <span class="number">0</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{:url('manage/Article/articleList')}">
+                                <i class="ice ice_f"></i>
+                                <div class="t">文章数量</div>
+                                <span class="number">0</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{:url('manage/User/index')}">
+                                <i class="ice ice_n"></i>
+                                <div class="t">会员总数</div>
+                                <span class="number">0</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="clear"></div>
+                <div class="section section_order_count">
+                    <div class="sc_title" style="padding: 12px 0 14px;border-bottom: 1px solid #e4eaec;">
+                        <i class="sc_icon"></i>
+                        <h3>版本信息</h3>
+                    </div>
+                    <div class="sc_warp" style="padding-bottom: 30px;">
+                        <table cellpadding="0" cellspacing="0" class="system_table">
+                            <tbody><tr>
+                                <td class="gray_bg">程序版本:</td>
+                                <td>{:config("extend.xnrcms_name")}{:config('extend.xnrcms_var')}</td>
+                                <td class="gray_bg">更新时间:</td>
+                                <td><?php echo date('Y-m-d H:i:s');?></td>
+                            </tr>
+                            <tr>
+                                <td class="gray_bg">程序开发:</td>
+                                <td>小能人网络科技有限公司</td>
+                                <td class="gray_bg">版权所有:</td>
+                                <td>盗版必究</td>
+                            </tr>
+                            <tr>
+                                <td class="gray_bg">官方授权:</td>
+                                <td>已授权</td>
+                                <td class="gray_bg">技术支持:</td>
+                                <td>562909771@qq.com</td>
+                            </tr>
+                            <tr>
+                                <td class="gray_bg">框架版本:</td>
+                                <td>Thinkphp5.1</td>
+                                <td class="gray_bg"></td>
+                                <td></td>
+                            </tr>
+                            </tbody></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="contentWarp">
+            <div class="section system_section" style="float: none;width: inherit;">
+                <div class="system_section_con">
+                    <div class="sc_title" style="padding: 26px 0 14px;border-bottom: 1px solid #e4eaec;">
+                        <i class="sc_icon"></i>
+                        <h3>系统信息</h3>
+                    </div>
+                    <div class="sc_warp" id="system_warp" style="display: block;padding-bottom: 30px;">
+                        <table cellpadding="0" cellspacing="0" class="system_table">
+                            <tbody><tr>
+                                <td class="gray_bg">服务器操作系统:</td>
+                                <td>{$sys_info.hostsys}</td>
+                                <td class="gray_bg">服务器域名/IP:</td>
+                                <td>{$sys_info.hostdomain} [ {$sys_info.hostip} ]</td>
+                            </tr>
+                            <tr>
+                                <td class="gray_bg">服务器环境:</td>
+                                <td>{$sys_info.hostenv}</td>
+                                <td class="gray_bg">PHP 版本:</td>
+                                <td>{$sys_info.phpv}</td>
+                            </tr>
+                            <tr>
+                                <td class="gray_bg">Mysql 版本:</td>
+                                <td>{$sys_info.mysql_version}</td>
+                                <td class="gray_bg">GD 版本:</td>
+                                <td>{$sys_info.gdinfo}</td>
+                            </tr>
+                            <tr>
+                                <td class="gray_bg">文件上传限制:</td>
+                                <td>{$sys_info.fileupload}</td>
+                                <td class="gray_bg">最大占用内存:</td>
+                                <td>{$sys_info.memory_limit}</td>
+                            </tr>
+                            <tr>
+                                <td class="gray_bg">最大执行时间:</td>
+                                <td>{$sys_info.max_ex_time}</td>
+                                <td class="gray_bg">安全模式:</td>
+                                <td>{$sys_info.safe_mode}</td>
+                            </tr>
+                            <tr>
+                                <td class="gray_bg">Zlib支持:</td>
+                                <td>{$sys_info.zlib}</td>
+                                <td class="gray_bg">Curl支持:</td>
+                                <td>{$sys_info.curl}</td>
+                            </tr>
+                            </tbody></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="footer" style="position: static; bottom: 0px; font-size:14px;">
+    <p><b>版权所有 © 2012-2010 小能人网络科技有限公司，并保留所有权利。</b></p>
+</div>
+<script type="text/javascript">
+    $(function(){
+        $("*[data-toggle='tooltip']").tooltip({
+            position: {
+                my: "left top+5",
+                at: "left bottom"
+            }
+        });
+    });
+</script>
+{include file="public/commonjs" /}
+</body>
+</html>

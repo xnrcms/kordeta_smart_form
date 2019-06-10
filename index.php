@@ -1,0 +1,1 @@
+<?php echo "项目创建成功(PHP)，项目编号为:basecode6,赶紧去部署代码吧~~";exit();

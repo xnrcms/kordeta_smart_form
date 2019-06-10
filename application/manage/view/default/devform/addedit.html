@@ -1,0 +1,104 @@
+{extend name="public/common"}
+{block name="main"}
+<div class="page" style="padding: 10px 20px 0 10px;">
+  {include file="public/list/notice" /}
+  <form action="{:url('','menuid='.$menuid)}" method="post" class="form-horizontal" id="submit_form_data">
+    <div class="ncap-form-default">
+      <dl class="row" id="id_title" data-msg="请输入表单名称">
+        <dt class="tit">
+          <label for="t_mane"><em>*</em>表单名称</label>
+        </dt>
+        <dd class="opt">
+          <input type="text" placeholder="请输入表单名称" class="input-txt" name="title" value="{notempty name='info.title'}{$info.title}{/notempty}">
+          <span class="err" id="err_title" style="color:#F00; display:none;"></span>
+          <p class="notic"></p>
+        </dd>
+      </dl>
+      
+      <dl class="row" id="id_cname" data-msg="请输入调用标识">
+        <dt class="tit">
+          <label for="t_mane"><em>*</em>调用标识</label>
+        </dt>
+        <dd class="opt">
+          <input type="text" placeholder="请输入表单调用标识" class="input-txt" name="cname" value="{notempty name="info.cname"}{$info.cname}{/notempty}">
+          <span class="err" id="err_cname" style="color:#F00; display:none;"></span>
+          <p class="notic">表单调用标识唯一,命名格式必须是[<font color="red">model/controller/action</font>],不能出现特殊字符，不区分大小写</p>
+        </dd>
+      </dl>
+  
+      <dl class="row" >
+        <dt class="tit">
+          <label for="t_mane">状态</label>
+        </dt>
+        <dd class="opt">
+          <div class="onoff">
+            <label for="menu_status1" class="cb-enable {if condition="isset($info.status) && $info.status eq 1"}selected{/if}">启用</label>
+            <label for="menu_status2" class="cb-disable {if condition="isset($info.status) && $info.status eq 2"}selected{/if}">禁用</label>
+            <input id="menu_status1" name="status" value="1" type="radio" {if condition="isset($info.status) && $info.status eq 1"} checked="checked"{/if}>
+            <input id="menu_status2" name="status" value="2" type="radio" {if condition="isset($info.status) && $info.status eq 2"} checked="checked"{/if}>
+          </div>
+          <p class="notic">选择`禁用`表单将对外不可用</p>
+        </dd>        
+      </dl>    
+                        
+      <div class="bot">
+        <a id="submitBtn" class="ncap-btn-big ncap-btn-green" href="JavaScript:void(0);" onClick="$('#submit_form_data').submit();">确认提交</a>
+      </div>
+    </div>
+    <input type="hidden" name="id" value="{notempty name='info.id'}{$info.id}{else/}0{/notempty}">
+    <input type="hidden" name="pid" value="{notempty name='info.pid'}{$info.pid}{else/}0{/notempty}">
+  </form>
+</div>
+<script type="text/javascript">
+$(function(){
+  //数据校验
+  CommonJs.FormCheck  = function(FormObj){
+
+      //表单数据
+      CommonJs.SubmitData = FormObj.serializeArray();
+
+      //验证是否有数据就提交
+      if (!CommonJs.isEmptyData(CommonJs.SubmitData)){
+          layer.msg('数据不存在',{icon: 0,time:2000});return false;
+      }
+
+      var isOk = true;
+
+      $.each( CommonJs.SubmitData, function(i, field){
+          var name    = field.name;
+          var value   = field.value;
+
+          if(name.indexOf("[") != -1){
+            name=name.replace("[","");
+            name=name.replace("]","");
+          }
+
+          //数据校验从这里开始
+          if ($("#id_"+name+" dt[class='tit']").find("em").length > 0) {
+
+            if(!CheckJs.required(value)){
+
+              layer.msg($("#id_"+name).attr("data-msg"),{icon: 2,time:2000});isOk=false;return false;
+            }
+          }
+          //数据校验从这里结束
+      });
+
+      return isOk;
+  };
+
+  //数据提交
+  CommonJs.JsSave("#submit_form_data",function(data){
+    if (data.code == 1) {
+        layer.msg(data.msg, {icon: 6},function(){
+          parent.window.setLists(data.data,'formFormList');
+          parent.layer.close(parent.layer.getFrameIndex(window.name));
+          CommonJs.Loading = false;
+        });
+    }else{
+      layer.msg(data.msg, {icon: 2},function(){ CommonJs.Loading = false;});
+    }
+  });
+});
+</script>
+{/block}

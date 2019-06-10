@@ -1,0 +1,77 @@
+<div class="ncap-form-default" style="padding: 0px;">
+{notempty name="formField"}
+{volist name="formField" id="form"}
+{php}
+$info[$form['tag']] 	= (!isset($info[$form['tag']]) || empty($info[$form['tag']])) ? (isset($form['field_value']) ? $form['field_value'] : '') : $info[$form['tag']];
+$threePartyplug 		= threePartyplugLoadNum($form['type'],$threePartyplug);
+{/php}
+{switch form.type}
+	{case string}{/*字符串类型*/}
+		{include file="public/formelement/string_form" /}
+	{/case}
+	{case number}{/*数字类型*/}
+		{include file="public/formelement/number_form" /}
+	{/case}
+	{case password}{/*密码类型*/}
+		{include file="public/formelement/password_form" /}
+	{/case}
+	{case price}{/*价格类型*/}
+		{include file="public/formelement/price_form" /}
+	{/case}
+	{case textarea}{/*文本域类型*/}
+		{include file="public/formelement/textarea_form" /}
+	{/case}
+	{case radio}{/*单选类型*/}
+		{include file="public/formelement/radio_form" /}
+	{/case}
+	{case checkbox}{/*多选类型*/}
+		{include file="public/formelement/checkbox_form" /}
+	{/case}
+	{case bool}{/*bool类型*/}
+		{include file="public/formelement/bool_form" /}
+	{/case}
+	{case select}{/*枚举下拉类型*/}
+		{include file="public/formelement/select_form" /}
+	{/case}
+	{case datetime}{/*日期ymdhi类型*/}
+		{include file="public/formelement/datetime_form" /}
+	{/case}
+	{case date}{/*日期ymd类型*/}
+		{include file="public/formelement/date_form" /}
+	{/case}
+	{case hidden}{/*隐藏域类型*/}
+		{include file="public/formelement/hidden_form" /}
+	{/case}
+	{case time}{/*日期hi类型*/}
+		{include file="public/formelement/time_form" /}
+	{/case}
+	{case image}{/*图片上传类型*/}
+		{include file="public/formelement/image_form" /}
+	{/case}
+	{case file}{/*文件上传类型*/}
+		{include file="public/formelement/file_form" /}
+	{/case}
+	{case images}{/*多图片上传类型*/}
+		{include file="public/formelement/images_form" /}
+	{/case}
+	{case editor}{/*富文本编辑器类型*/}
+		{include file="public/formelement/editor_form" /}
+	{/case}
+	{case gdmap}{/*高德地图类型*/}
+		{include file="public/formelement/gdmap_form" /}
+	{/case}
+	{case bdmap}{/*百度地图类型*/}
+		{include file="public/formelement/bdmap_form" /}
+	{/case}
+	{case address}{/*地址选择类型*/}
+		{include file="public/formelement/address_form" /}
+	{/case}
+	{case expand}
+	{include file="public/extend/extend" /}
+	{/case}
+	{default /}
+	not find form type
+{/switch}
+{/volist}
+{/notempty}
+</div>

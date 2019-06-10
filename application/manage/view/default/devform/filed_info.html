@@ -1,0 +1,226 @@
+{notempty name="_fieldInfo"}
+<script type="text/javascript" src="/3.0/js/admin.js"></script>
+<script type="text/javascript" src="/3.0/js/common.js"></script>
+<form action="{:url('edit')}" method="post" class="form-horizontal" id="submit_form_data">
+  <div class="ncap-form-default" style="padding: 0px;">
+    <dl class="row">
+      <dt class="tit">
+        <label for="t_mane"><em>*</em>字段名称</label>
+      </dt>
+      <dd class="opt">
+        <input type="text" placeholder="请输入菜单名称" class="input-txt" name="title" value="{notempty name="_fieldInfo.title"}{$_fieldInfo.title}{/notempty}">
+        <span class="err" id="err_title" style="color:#F00; display:none;"></span>
+        <p class="notic">字段名称</p>
+      </dd>
+    </dl>
+
+    <dl class="row">
+      <dt class="tit">
+        <label for="t_mane"><em>*</em>字段标识</label>
+      </dt>
+      <dd class="opt">
+        <input type="text" placeholder="请输入字段标识" class="input-txt" name="tag" value="{notempty name="_fieldInfo.tag"}{$_fieldInfo.tag}{/notempty}">
+        <span class="err" id="err_tag" style="color:#F00; display:none;"></span>
+        <p class="notic">字段标识必须是以字母开始的英文或数字的字符串</p>
+      </dd>
+    </dl>
+
+    <dl class="row">
+      <dt class="tit">
+        <label for="t_mane">字段类型</label>
+      </dt>
+      <dd class="opt">
+        <select name="type" id="type_id" class="form-control">
+          <option value="">选择类型</option>
+          {volist name=":config('extend.form_type_list')" id="v"}
+            <option value="{$key}" {if condition="$_fieldInfo.type eq $key"}selected{/if}>{$v}</option>
+          {/volist}
+        </select>
+
+        <span class="err" id="err_type" style="color:#F00; display:none;"></span>
+        <p class="notic">字段类型默认是字符串</p>
+      </dd>
+    </dl>
+
+    <dl class="row">
+      <dt class="tit">
+        <label for="t_mane">分组标识</label>
+      </dt>
+      <dd class="opt">
+        <input type="text" placeholder="请输入分组标识" class="input-txt" name="group" value="{$_fieldInfo.group|default=""}">
+        <span class="err" id="err_group" style="color:#F00; display:none;"></span>
+        <p class="notic">分组标识，默认可不填写</p>
+      </dd>
+    </dl>
+
+    <dl class="row">
+      <dt class="tit">
+        <label for="t_mane">是否必填</label>
+      </dt>
+      <dd class="opt">
+        <div class="onoff">
+          <label for="menu_require1" class="cb-enable {if condition="isset($_fieldInfo['require']) && $_fieldInfo['require'] eq 1"}selected{/if}">是</label>
+          <label for="menu_require2" class="cb-disable {if condition="isset($_fieldInfo['require']) && $_fieldInfo['require'] eq 2"}selected{/if}">否</label>
+          <input id="menu_require1" name="require" value="1" type="radio" {if condition="isset($_fieldInfo['require']) && $_fieldInfo['require'] eq 1"} checked="checked"{/if}>
+          <input id="menu_require2" name="require" value="2" type="radio" {if condition="isset($_fieldInfo['require']) && $_fieldInfo['require'] eq 2"} checked="checked"{/if}>
+        </div>
+        <span class="err" id="err_require" style="color:#F00; display:none;"></span>
+        <p class="notic">该字段是否必填</p>
+      </dd>
+    </dl>
+    <dl class="row">
+      <dt class="tit">
+        <label for="t_mane">字段默认值</label>
+      </dt>
+      <dd class="opt">
+        <input type="text" placeholder="请输入菜单名称" class="input-txt" name="field_value" value="{$_fieldInfo.field_value|default=""}">
+        <span class="err" id="err_title" style="color:#F00; display:none;"></span>
+        <p class="notic">字段默认值</p>
+      </dd>
+    </dl>
+    <dl class="row">
+      <dt class="tit">
+        <label for="t_mane">使用场景</label>
+      </dt>
+      <dd class="opt">
+
+        <label>
+          <input type="checkbox" class="checkbox_item" name="add" value="1" {if condition="isset($_fieldInfo['add']) && $_fieldInfo['add'] eq 1"}checked{/if}> 新增
+        </label>
+
+        <label>
+          <input type="checkbox" class="checkbox_item" name="edit" value="2" {if condition="isset($_fieldInfo['add']) && $_fieldInfo['edit'] eq 2"}checked{/if}> 编辑
+        </label>
+
+        <span class="err" id="err_form_type" style="color:#F00; display:none;"></span>
+        <p class="notic">新增、编辑时是否显示该字段</p>
+      </dd>
+    </dl>
+    <dl class="row">
+      <dt class="tit">
+        <label for="t_mane">字段提示</label>
+      </dt>
+      <dd class="opt">
+        <input type="text" placeholder="请输入提示" class="input-txt" name="notice" value="{$_fieldInfo.notice|default=""}">
+        <span class="err" id="err_notice" style="color:#F00; display:none;"></span>
+        <p class="notic">字段下方小提示</p>
+      </dd>
+    </dl>
+    <dl class="row">
+      <dt class="tit">
+        <label for="t_mane">字段属性</label>
+      </dt>
+      <dd class="opt">
+        <textarea name="attr" id="" cols="65" style="height: 100px;">{$_fieldInfo['attr']|default=""}</textarea>
+        <span class="err" id="err_attr" style="color:#F00; display:none;"></span>
+        <p class="notic">字段属性设置每行一个</p>
+      </dd>
+    </dl>
+
+    <dl class="row">
+      <dt class="tit">
+        <label for="t_mane">字段附加数据</label>
+      </dt>
+      <dd class="opt">
+        <textarea name="default" id="" cols="65" style="height: 100px;">{$_fieldInfo['default']|default=""}</textarea>
+        <span class="err" id="err_attr" style="color:#F00; display:none;"></span>
+        <p class="notic">
+            字段附加数据是单选、多选、枚举、布尔的选项数据，其他类型此处填写无效
+            填写示例:<br>
+            字符串：string:1=张三,2=李四,....<br>
+            成员变量：parame:parameName<br>
+        </p>
+      </dd>
+    </dl>
+    <dl class="row">
+      <dt class="tit">
+        <label for="t_mane">字段排序</label>
+      </dt>
+      <dd class="opt">
+        <input type="text" placeholder="请输入字段排序" class="input-txt" name="sort" value="{$_fieldInfo.sort|default='1'}"  onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onpaste="this.value=this.value.replace(/[^\d.]/g,'')">
+        <span class="err" id="err_tag" style="color:#F00; display:none;"></span>
+        <p class="notic">字段排序，在表格中的排序，数字越大越靠前</p>
+      </dd>
+    </dl>
+
+    <dl class="row">
+      <dt class="tit">
+        <label for="t_mane">状态</label>
+      </dt>
+      <dd class="opt">
+        <div class="onoff">
+            <label for="menu_status1" class="cb-enable {if condition="isset($_fieldInfo['status']) && $_fieldInfo['status'] eq 1"}selected{/if}">启用</label>
+            <label for="menu_status2" class="cb-disable {if condition="isset($_fieldInfo['status']) && $_fieldInfo['status'] eq 2"}selected{/if}">禁用</label>
+            <input id="menu_status1" name="status" value="1" type="radio" {if condition="isset($_fieldInfo['status']) && $_fieldInfo['status'] eq 1"} checked="checked"{/if}>
+            <input id="menu_status2" name="status" value="2" type="radio" {if condition="isset($_fieldInfo['status']) && $_fieldInfo['status'] eq 2"} checked="checked"{/if}>
+        </div>
+        <p class="notic">选择`是`表单将对外不可用</p>
+      </dd>        
+    </dl>    
+                      
+    <div class="bot"><a id="submitBtn" class="ncap-btn-big ncap-btn-green" href="JavaScript:void(0);" onClick="$('#submit_form_data').submit();">确认提交</a></div>
+  </div>
+  <input type="hidden" name="id" value="{$_fieldInfo.id}">
+  <input type="hidden" name="pid" value="{$_fieldInfo.pid}">
+</form>
+<script type="text/javascript">
+//数据校验
+CommonJs.FormCheck  = function(FormObj){
+
+    //表单数据
+    CommonJs.SubmitData = FormObj.serializeArray();
+
+    //验证是否有数据就提交
+    if (!CommonJs.isEmptyData(CommonJs.SubmitData)){
+        layer.msg('数据不存在',{icon: 0,time:2000});return false;
+    }
+
+    var isOk = true;
+
+    $.each( CommonJs.SubmitData, function(i, field){
+        var name    = field.name;
+        var value   = field.value;
+
+        if(name.indexOf("[") != -1){
+          name=name.replace("[","");
+          name=name.replace("]","");
+        }
+
+        //数据校验从这里开始
+        if(name == 'title' && !CheckJs.required(value)){
+          layer.msg('请输入字段名称',{icon: 2,time:2000});isOk=false;return false;
+        }
+
+        if(name == 'tag' && !CheckJs.required(value)){
+          layer.msg('请输入字段标识',{icon: 2,time:2000});isOk=false;return false;
+        }
+        
+        if(name == 'add'){
+          if (!CheckJs.required(rcVal($("input[name='add']"),0)) && !CheckJs.required(rcVal($("input[name='edit']"),0))) {
+            layer.msg('请选择表单类型',{icon: 2,time:2000});isOk=false;return false;
+          }
+        }
+
+        /*if(name == 'notice' && !CheckJs.required(value)){
+          layer.msg('请输入字段提示',{icon: 2,time:2000});isOk=false;return false;
+        }*/
+
+        //数据校验从这里结束
+    });
+
+    return isOk;
+};
+
+//数据提交
+CommonJs.JsSave("#submit_form_data",function(data){
+    var ic  = data.code == 1 ? 6 : 2;
+    if (data.code == 1) {
+
+        setLists(data.data,'formFieldList');
+        changeColoeLine();
+    }
+
+    layer.msg(data.msg,{icon: ic,time:2000},function(){ CommonJs.Loading = false; });
+});
+</script>
+{/notempty}

@@ -1,0 +1,77 @@
+<div class="admincp-container-left">
+    <div class="top-border"><span class="nav-side"></span><span class="sub-side"></span></div>
+    <div id="admincpNavTabs_index" class="nav-tabs">
+    	<dl>
+		    <dt><a href="javascript:void(0);"><span class="ico-microshop-1"></span><h3>概览</h3></a></dt>
+		    <dd class="sub-menu">
+			    <ul>
+				    <li><a href="javascript:void(0);" data-param="index|center|0">系统后台</a></li>
+			    </ul>
+		    </dd>
+	    </dl>
+    </div>
+    {notempty name="topMenu"}
+    {foreach name="topMenu" item="mv1" key="mk1"}
+    <div id="admincpNavTabs_menu{$mk1}" class="nav-tabs">
+    	{php} $menu2 	= !empty($mv1) ? $thisObj->formatMenu($menu,$mv1['id']) :[];{/php}
+    	{foreach name="menu2" item="mv2" key="mk2"}
+	    <dl>
+		    <dt><a href="javascript:void(0);"><span class="{$mv2.icon|default='ico-system-3'}"></span><h3>{$mv2.title}</h3></a></dt>
+		    <dd class="sub-menu">
+			    <ul>
+			    	{php}$menu3	= !empty($mv2) ? $thisObj->formatMenu($menu,$mv2['id']) :[];{/php}
+			    	{foreach name="menu3" item="mv3"}
+			    		{php}$urls = str_replace('/','|',$mv3['url']).'|'.$mv3['id'];{/php}
+				    	<li><a href="javascript:void(0);" data-param="{$urls}">{$mv3.title}</a></li>
+				    {/foreach}
+			    </ul>
+		    </dd>
+	    </dl>
+    	{/foreach}
+    </div>
+    {/foreach}
+    {/notempty}
+
+    <div class="about" title=""><i class="fa fa-copyright"></i><span>xnrcms.cn</span></div>
+</div>
+
+<div class="menu_dropdown bk_2">
+{notempty name="LeftMenu"}
+	{volist name="LeftMenu" id="LM" key="key"}
+	<dl id="menu-article">
+		<dt>
+			<i class="Hui-iconfont">&#xe616;</i>{$key}
+			<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i>
+		</dt>
+		<dd>
+			<ul>
+				{volist name="LM" id="menus"}
+					<li><a _href="{:url($menus['url'],'menuid='.$menus['id'])}" href="javascript:void(0)" data-title="{$menus.title}">{$menus.title}</a></li>
+				{/volist}
+			</ul>
+		</dd>
+	</dl>
+	{/volist}
+{/notempty}
+{notempty name="nodes"}
+   	{volist name="nodes" id="sub_menu"}
+		{notempty name="sub_menu"}
+   	 		<dl id="menu-article">
+				<dt>
+					<i class="Hui-iconfont">&#xe616;</i>{$sub_menu.name}
+					<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i>
+				</dt>
+				<dd>
+					<ul>
+						{volist name="sub_menu['_child']" id="menus"}
+							<li>
+								<a _href="{:url($menus['url'],'menuid='.$menuid)}" href="javascript:void(0)" data-title="{$menus.name}">{$menus.name}</a>
+							</li>
+			 			{/volist}
+					</ul>
+				</dd>
+			</dl>
+ 		{/notempty}
+ 	{/volist}
+{/notempty}
+</div>

@@ -1,0 +1,37 @@
+{if condition="$threePartyplug['uploads'] eq 1"}
+<script type="text/javascript" src="/3.0/js/uploadFile.js"></script>
+{/if}
+{php}
+$uploadParame 				= [];
+$uploadParame['num'] 		= 1;
+$uploadParame['input'] 		= $form['tag'];
+$uploadParame['tags'] 		= $form['tag'].'_'.$form['id'];
+$uploadParame['func'] 		= 'call_file_back';
+$uploadParame['config'] 	= $form['default'];
+
+$uploadParame 				= urlsafe_b64encode(string_encryption_decrypt(serialize($uploadParame)));
+$uploadUrl 					= url('/manage/Uploadfile/uploadFile','uploadParame=' . $uploadParame);
+$imagePath      			= '/3.0/package/webuploader/images/image.png';
+$imageId      				= 0;
+
+if(isset($info[$form['tag']]) && !empty($info[$form['tag']]) && is_string($info[$form['tag']]))
+{
+    $imageStr   = json_decode($info[$form['tag']]);
+    $imageId  	= isset($imageStr[0]) ? $imageStr[0] : 0;
+    $imagePath  = (isset($imageStr[1]) && !empty($imageStr[1])) ? $imageStr[1] : $imagePath;
+}
+{/php}
+<dl class="row" id="id_{$form.tag}" data-msg="请上传{$form.title}">
+	<dt class="tit">
+        {include file="public/list/devtpl" /}
+		{if condition="$form['require'] eq 1"}<em>*</em>{/if}
+		{$form.title}
+	</dt>
+	<dd class="opt">
+		<div class="upload-images">
+			<img id="image_{$form.tag}" width="150px" src="{$imagePath}" alt="文件上传" onclick="GetUploadify('{$uploadUrl}','文件上传','{$form.default}');">
+		</div>
+		<input type="hidden" name="{$form.tag}" value="{$imageId}">
+		<p class="notic">{$form.notice|raw}</p>
+	</dd>
+</dl>

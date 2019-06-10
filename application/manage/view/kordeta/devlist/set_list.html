@@ -1,0 +1,140 @@
+{extend name="public/common"}
+{block name="headcss_after"}
+<link rel="stylesheet" href="/static/{$tplName}/style/main.css" media="all">
+{/block}
+{block name="main"}
+<div class="layui-fluid" style="padding-top: 0;">
+  <div class="flexigrid">
+    <div class="hDiv">
+      <div class="hDivBox">
+        <table cellspacing="0" cellpadding="0" width="100%">
+          <thead>
+              <tr>
+                <th width="20%"><div>表头名称</div></th>
+                <th width="12%"><div>数据标识</div></th>
+                <th width="12%"><div>表头宽度</div></th>
+                <th width="12%"><div>数据类型</div></th>
+                <th width="12%"><div>数据操作</div></th>
+                <th width="12%"><div>表头排序</div></th>
+                <th width="12%"><div>状态</div></th>
+                <th width="8%"><div>操作</div></th>
+              </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+
+    <div class="bDiv" style="height: auto;">
+      <div id="flexigrid" cellpadding="0" cellspacing="0" border="0">
+        <table width="100%">
+          <tbody>
+            {php}$allwidth = 0;{/php}
+            {foreach name="fieldList" item="vo" key="k"}
+              <tr id="devlist_id_{$vo.id}" data-id ="{$vo.id}" data-pid ="{$vo.pid}">
+                <td width="20%">
+                  <div style="text-align: center;">
+                    <input type="text" size="30" class="qsbox" name="title_{$vo.id}" placeholder="请输入表头名称" value="{$vo.title}" style="width: 90%">
+                  </div>
+                </td>
+
+                <td width="12%">
+                  <div style="text-align: center;">
+                    <input type="text" size="30" class="qsbox" name="tag_{$vo.id}" placeholder="请输入数据标识" value="{$vo.tag}" style="width: 90%">
+                  </div>
+                </td>
+
+                <td width="12%">
+                  <div style="text-align: center;">
+                    <input type="text" size="30" class="qsbox" name="width_{$vo.id}" placeholder="请输入表头宽度" value="{$vo.width}" style="width: 90%">
+                    {php}
+                    if($vo['status'] == 1) $allwidth += $vo['width'];
+                    {/php}
+                  </div>
+                </td>
+
+                <td width="12%">
+                  <div style="text-align: center;">
+                    <select name="type_{$vo.id}" id="type_id" class="form-control">
+                      <option value="">选择类型</option>
+                      <option value="string" {if condition="$vo['config']['type'] eq 'string'"}selected{/if} >字符串</option>
+                      <option value="number" {if condition="$vo['config']['type'] eq 'number'"}selected{/if} >数字</option>
+                      <option value="price" {if condition="$vo['config']['type'] eq 'price'"}selected{/if} >价格</option>
+                      <option value="select" {if condition="$vo['config']['type'] eq 'select'"}selected{/if} >枚举</option>
+                      <option value="bool" {if condition="$vo['config']['type'] eq 'bool'"}selected{/if} >布尔</option>
+                      <option value="datetime" {if condition="$vo['config']['type'] eq 'datetime'"}selected{/if} >时间区间</option>
+                      <option value="image" {if condition="$vo['config']['type'] eq 'image'"}selected{/if} >图片</option>
+                      <option value="done" {if condition="$vo['config']['type'] eq 'done'"}selected{/if} >操作</option>
+                      <option value="id" {if condition="$vo['config']['type'] eq 'id'"}selected{/if} >ID</option>
+                  </select>
+                  </div>
+                </td>
+
+                <td width="12%">
+                  <div style="text-align: center;">
+                    <label>
+                      <input type="checkbox" class="checkbox_item" name="edit_{$vo.id}" value="1" {if condition="$vo['config']['edit'] eq 1"}checked{/if}> 可编辑
+                    </label>
+                    <label>
+                      <input type="checkbox" class="checkbox_item" name="search_{$vo.id}" value="2" {if condition="$vo['config']['search'] eq 2"}checked{/if}> 可搜索
+                    </label>
+                  </div>
+                </td>
+
+                <td width="12%">
+                  <div style="text-align: center;">
+                    <input type="text" size="30" class="qsbox" name="sort_{$vo.id}" placeholder="请输入表头排序" value="{$vo.sort}" style="width: 90%">
+                  </div>
+                </td>
+
+                <td width="12%">
+                  <div class="onoff" style="text-align: center;">
+                    <input id="menu_status1_{$vo.id}" name="status_{$vo.id}" value="1" type="radio" {if condition="$vo.status eq 1"}checked{/if}>
+                    <input id="menu_status0_{$vo.id}" name="status_{$vo.id}" value="2" type="radio" {if condition="$vo.status eq 2"}checked{/if}>
+                    <label for="menu_status1_{$vo.id}" lay-event="cbEnable" class="cb-enable {if condition="$vo.status eq 1"}selected{/if}">启用</label>
+                    <label for="menu_status0_{$vo.id}" lay-event="cbDisable" class="cb-disable {if condition="$vo.status eq 2"}selected{/if}">禁用</label>
+                  </div>
+                </td>
+                
+                <td width="8%">
+                  <div style="text-align: center;">
+                    <a class="btn blue" href="javascript:;" lay-event="submitListData" lay-fieldid="{$vo.id}">保存</a>
+                    <a class="btn blue" href="javascript:;" lay-event="delfun" data-url="{:url('Devlist/del',array('ids'=>$vo['id']))}">删除表头</a>
+                  </div>
+                </td>
+              </tr>
+            {/foreach}
+          </tbody>
+        </table>
+        <a lay-event="addDevList" href="javascript:;">
+            <div class="fbutton"  style="border: none;margin-top: 5px;margin-left: 0px;">
+                <div title="列表模板设置" class="add">
+                    <span><i class="layui-icon layui-icon-add-1"></i>新增</span>
+                </div>
+            </div>
+        </a>
+
+        <a lay-event="refreshPage" href="javascript:;">
+            <div class="fbutton" style="border: none;margin-top: 5px;margin-left: 0px;">
+                <div title="列表模板设置" class="add">
+                    <span><i class="layui-icon layui-icon-refresh"></i></span>
+                </div>
+            </div>
+        </a>
+        <strong style="color:#ff0000;margin-top: 10px;display: block;">列表总宽度不能超过100，目前总宽度为{$allwidth}</strong>
+      </div>
+    </div>
+  </div>
+</div>
+{/block}
+{block name="footjs"}
+<script src="/static/{$tplName}/layui/layui.js"></script>
+<script>
+  CommonJsParame.pid           = '{$listPid}';
+  CommonJsParame.url           = "{:url('Devlist/set_list')}";
+  layui.config({
+    base: '/static/{$tplName}/' //静态资源所在路径
+  }).extend({
+    index: 'lib/index' //主入口模块
+  }).use(['index', 'devlist']);
+</script>
+{/block}

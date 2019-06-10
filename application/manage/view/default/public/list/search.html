@@ -1,0 +1,62 @@
+<div class="mDiv">
+<div class="ftitle">
+    <h3>{$pageData['title1']}</h3>
+    <h5>(共{$_total}条记录)</h5>
+</div>
+<div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div>
+{notempty name="listNode.search"}  
+<form class="navbar-form form-inline" id="searchForm" action="" method="post" onSubmit="return false;">
+    <div class="sDiv">
+        <div class="sDiv2" style="display: flex;align-items: center;">
+            {volist name="listNode.search" id="vo"}
+            <span style="font-size: 12px;">{$vo.title}&nbsp;&nbsp;</span>
+            {switch name="vo.type"}
+                {case string}{/*字符串类型*/}
+                    <input type="text" size="30" class="qsbox" name="data_search_{$vo.tag}" {$vo.attr}>
+                {/case}
+
+                {case number}{/*数字类型*/}
+                    <input type="text" size="30" class="qsbox" name="data_search_{$vo.tag}" {$vo.attr}>
+                </case>
+
+                {case price}{/*价格类型*/}
+                    <input type="text" size="30" class="qsbox" name="data_search_{$vo.tag}" {$vo.attr}>
+                {/case}
+
+                {case select}{/*枚举类型*/}
+                <select name="data_search_{$vo.tag}" class="select" {$vo.attr}>
+                    <option value="">请选择</option>
+                    {if condition="isset($vo['default']['parame'])"}
+                    {volist name="vo.default.parame" id="pa"}
+                    <option value="{$key}">{$pa}</option>
+                    {/volist}
+                    {/if}
+                </select>
+                {/case}
+
+                {case bool}{/*布尔类型*/}
+                <select name="data_search_{$vo.tag}" class="select" {$vo.attr}>
+                    <option value="">请选择</option>
+                    {if condition="isset($vo['default']['parame'])"}
+                    {volist name="vo.default.parame" id="pa"}
+                    <option value="{$key}">{$pa}</option>
+                    {/volist}
+                    {/if}
+                </select>
+                {/case}
+
+                {case datetime}
+                <input class="datetime" name="data_search_start_{$vo.tag}" type="text" readonly {$vo.attr}>
+                <span style="font-size: 12px;">至</span>
+                <input class="datetime" name="data_search_end_{$vo.tag}" type="text" readonly {$vo.attr}>
+                {/case}
+
+                {default /}
+            {/switch}
+            {/volist}
+            <button type="button" class="btn search-input-btn" onClick="return CommonJs.LoadSearch();">提交</button>
+        </div>
+    </div>
+</form>
+{/notempty}
+</div>

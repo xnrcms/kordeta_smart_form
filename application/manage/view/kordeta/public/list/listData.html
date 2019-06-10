@@ -1,0 +1,106 @@
+{php}
+$theadCount  = count($listNode['thead']);
+{/php}
+{notempty name="listData"}
+{volist name="listData" id="list"}
+    {php}
+    $list['uid']       = !isset($list['uid']) ? $uid : $list['uid'];
+    $list['hashid']    = !isset($list['hashid']) ? $hashid : $list['hashid'];
+    {/php}
+    <tr data-id="{$list.id}">
+        {php}$theadNum=0;{/php}
+        {volist name="listNode.thead" id="vo"}
+            {php}
+            $theadNum++;
+            $list[$vo['tag']]  = isset($list[$vo['tag']]) ? $list[$vo['tag']] : '';
+            {/php}
+            {if condition="$vo['tag'] eq 'id'"}
+            <td {$vo.attr} width="{$vo.width}%"><div><i class="ico-check"></i></div></td>
+            {elseif condition="$vo['tag'] eq 'done'" /}
+            <td {$vo.attr} width="{$vo.width}%" class="handle">
+                {if condition="$theadNum eq $theadCount"}
+                    {if condition="$vo['width'] elt 8"}
+                        {include file="public/list/option1" /}
+                    {else /}
+                        {include file="public/list/option2" /}
+                    {/if}
+                {else /}
+                    {include file="public/list/option1" /}
+                {/if}
+            </td>
+            {else /}
+            <td {$vo.attr} width="{$vo.width}%">
+            {if condition="$vo.edit eq 1"}
+                {switch vo.type}
+                {case string}{/*字符串类型*/}
+                <div>
+                    <input type="text" size="30" class="qsbox" name="{$vo.tag}" placeholder="{$vo.title}" value="{$list[$vo['tag']]|raw}" oldValue="{$list[$vo['tag']]}" style="width: 90%" {$vo.attr} onblur="CommonJs.quickEdit(this,'{:url("quickEdit")}','{$vo.tag}','{$list.id}')">
+                </div>
+                {/case}
+                {case number}{/*数字类型*/}
+                    <div>
+                        <input type="text" size="30" class="qsbox" name="{$vo.tag}" placeholder="{$vo.title}" value="{$list[$vo['tag']]}" oldVal="{$list[$vo['tag']]}" style="width: 90%" {$vo.attr} onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onblur="CommonJs.quickEdit(this,'{:url("quickEdit")}','{$vo.tag}','{$list.id}')">
+                    </div>
+                {/case}
+                {case price}{/*价格类型*/}
+                    <div>
+                        <input type="text" size="30" class="qsbox" name="{$vo.tag}" placeholder="{$vo.title}" value="{$list[$vo['tag']]}" oldVal="{$list[$vo['tag']]}" style="width: 90%" {$vo.attr} onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onblur="CommonJs.quickEdit(this,'{:url("quickEdit")}','{$vo.tag}','{$list.id}')">
+                    </div>
+                {/case}
+                {case select}{/*枚举类型*/}
+                    <div>
+                        {if condition="isset($vo['default']['type'])"}
+                        <select name="{$vo.tag}" {$vo.attr} onChange="CommonJs.quickEdit(this,'{:url("quickEdit")}','{$vo.tag}','{$list.id}');">
+                            {if condition="$vo['default']['type'] eq 'string'"}
+                                {volist name="vo.default.parame" id="pa"}
+                                    <option value="{$key}" {if condition="$list[$vo['tag']] eq $key"}selected{/if} >{$pa}</option>
+                                {/volist}
+                                {else /}
+                                {volist name="$vo.default.parame" id="pa"}
+                                    <option value="{$key}" {if condition="$list[$vo['tag']] eq $key"}selected{/if} >{$pa}</option>
+                                {/volist}
+                            {/if}
+                        </select>
+                        {else /}无枚举选择项{/if}
+                    </div>
+                {/case}
+                {case bool}{/*布尔类型*/}
+                    {if condition="isset($vo['default']['parame'][1]) && isset($vo['default']['parame'][2])"}
+                    <div data-yes="{$vo['default']['parame'][1]}" data-no="{$vo['default']['parame'][2]}">
+                    {if condition='$list[$vo["tag"]] eq $vo["default"]["parame"][1]'}
+                      <span class="yes" onClick="CommonJs.quickEdit(this,'{:url("quickEdit")}','{$vo.tag}','{$list.id}');" >
+                      <i class="fa fa-check-circle"></i>{$vo['default']['parame'][1]}</span>
+                    {else /}
+                      <span class="no" onClick="CommonJs.quickEdit(this,'{:url("quickEdit")}','{$vo.tag}','{$list.id}');" >
+                      <i class="fa fa-ban"></i>{$vo['default']['parame'][2]}</span>
+                    {/if}
+                    </div>
+                    {else /}<div>无布尔选择项</div>{/if}
+                {/case}
+                {defalut /}
+                {$list[$vo['tag']]}
+                {/switch}
+            {else /}
+                {if condition="$vo['type'] == 'image'"}
+                    {php}
+                    $imagePath      = '';
+                    if(!empty($list[$vo['tag']]) && is_string($list[$vo['tag']]))
+                    {
+                        $imageStr   = json_decode($list[$vo['tag']]);
+                        $imagePath  = isset($imageStr[1]) ? $imageStr[1] : '';
+                    }
+                    {/php}
+                    <img src="{$imagePath}" alt="" {$vo.attr|raw}>
+                
+                {else /}
+                    <div style="display: inline-block">{$list[$vo['tag']]|raw}</div>
+                {/if}
+            {/if}
+            </td>
+            {/if}
+        {/volist}
+    </tr>
+{/volist}
+{else /}
+<tr><td colspan="{$theadCount}"><div style="text-align: center;">Oh! 暂无数据</div></td></tr>
+{/notempty}

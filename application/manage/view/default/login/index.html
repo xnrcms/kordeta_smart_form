@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<!-- Apple devices fullscreen -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<!-- Apple devices fullscreen -->
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>欢迎您登录{:config("extend.xnrcms_name")} v{:config('extend.xnrcms_var')}</title>
+<!--CSS File Start-->
+<link rel="stylesheet" type="text/css" href="/3.0/package/Hui-iconfont/1.0.7/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="/3.0/css/H-ui.min.css" />
+<link type="text/css" rel="stylesheet" href="/3.0/css/login.css">
+<!--<link type="text/css" rel="stylesheet" href="/public/3.0/font/css/bootstrap.min.css"/>-->
+<!--[if IE 7]>
+  <link rel="stylesheet" href="/public/3.0/font/css/font-awesome-ie7.min.css">
+<![endif]-->
+<!--CSS File End-->
+<!--JS File Start-->
+<script type="text/javascript">
+var PublicPath = "/3.0/";
+</script>
+<script type="text/javascript" src="/3.0/package/jquery/jquery.js"></script>
+<script type="text/javascript" src="/3.0/js/xnrcms_admin.js"></script>
+<script type="text/javascript" src="/3.0/package/jquery/jquery.cookie.js"></script>
+<!--JS File End-->
+
+</head>
+<body>
+<div class="header"></div>
+<div class="loginWraper">
+  <div id="loginform" class="loginBox">
+    <form class="form form-horizontal" action="{:url('Login/index')}" method="post" id="LoginForm">
+      <div class="row cl">
+        <label class="form-label col-xs-3"><i class="Hui-iconfont">&#xe60d;</i></label>
+        <div class="formControls col-xs-8">
+          <input id="username" name="username" type="text" placeholder="账户" class="input-text size-L">
+        </div>
+      </div>
+      <div class="row cl">
+        <label class="form-label col-xs-3"><i class="Hui-iconfont">&#xe60e;</i></label>
+        <div class="formControls col-xs-8">
+          <input id="password" name="password" type="password" placeholder="密码" class="input-text size-L">
+        </div>
+      </div>
+      {eq name="is_verify" value="1"}
+      <div class="row cl">
+        <div class="formControls col-xs-8 col-xs-offset-3">
+          <input id="verify" class="input-text size-L" type="text" name="verify" placeholder="验证码"  value="" style="width:150px;">
+          <img src="{:url('Login/verify')}" class="verifyimg" onclick="return CommonJs.Reloadverify();" style="cursor: pointer;"> </div>
+      </div>
+      {/eq}
+      <div class="row cl">
+        <div class="formControls col-xs-8 col-xs-offset-3">
+          <label for="online">
+            <input type="checkbox" name="remember" id="online" value="1">使我保持登录状态</label>
+        </div>
+      </div>
+      <div class="row cl">
+        <div class="formControls col-xs-8 col-xs-offset-3">
+          <input name="" type="button" onClick="CommonJs.FormSubmit();return false;" class="btn btn-success radius size-L" value="&nbsp;登&nbsp;&nbsp;&nbsp;&nbsp;录&nbsp;">
+          <input name="" type="reset" class="btn btn-default radius size-L" value="&nbsp;取&nbsp;&nbsp;&nbsp;&nbsp;消&nbsp;">
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="footer">小能人CMS v3.0</div>
+
+<script type="text/javascript">
+$.cookie('workspaceParam','index|center|0',{ expires: 1 ,path:"/"});
+var CommonJs={
+    Loading:false,//数据加载标识
+		Verifyimg:$(".verifyimg").attr("src"),
+		IsiVerify:'{$is_verify}',
+		Reloadverify:function(){
+			if(CommonJs.IsiVerify == 1){
+				if( CommonJs.Verifyimg.indexOf('?')>0){
+	                $(".verifyimg").attr("src", CommonJs.Verifyimg+'&random='+Math.random());
+	            }else{
+	                $(".verifyimg").attr("src", CommonJs.Verifyimg.replace(/\?.*$/,'')+'?'+Math.random());
+	            }
+			}
+		},
+
+		FormSubmit:function(){
+
+        if(CommonJs.Loading){
+
+          tusi('有操作在进行，请稍等...');return false;
+        }
+
+        CommonJs.Loading  = true;
+
+	    	loading('登录中...');
+
+        var ThisObj = $("#LoginForm");
+
+				$.post(ThisObj.attr("action"), ThisObj.serialize(), function(data){
+	    			
+            //刷新验证码
+		    		if(data.code == 0 && CommonJs.IsiVerify == 1) CommonJs.Reloadverify();
+		    		
+            loading(false);
+            
+		    		tusi(data.msg,function(){
+
+		    			if(data.code == 1) location.href = data.url;
+		    			
+              CommonJs.Loading 	= false;
+			    	});
+	    		}, "json");
+        
+				return false;
+		},
+};
+
+$("#LoginForm").keyup(function(e) {
+  if (e.keyCode === 13) { CommonJs.FormSubmit();return false;}
+});
+
+</script>
+</body>
+</html>

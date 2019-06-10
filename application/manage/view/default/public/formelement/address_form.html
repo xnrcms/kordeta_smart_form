@@ -1,0 +1,81 @@
+<dl class="row" id="id_{$form.tag}" data-msg="请选择{$form.title}">
+	<dt class="tit">
+        {include file="public/list/devtpl" /}
+		{if condition="$form['require'] eq 1"}<em>*</em>{/if}
+		{$form.title}
+	</dt>
+	<dd class="opt">
+		<select name="province" id="idprovince" class="new-select" style="width:32.9%;height:40px;">
+			<option value="">请选择</option>
+		</select>
+		<select name="city" id="idcity" class="new-select" style="width:32.9%;height:40px;">
+			<option value="">请选择上一级</option>
+		</select>
+		<select name="county" class="new-select" id="idcounty" style="width:32.9%;height:40px;">
+			<option value="">请选择上一级</option>
+		</select>
+		<input value="{$info['province']}-{$info['city']}-{$info['county']}" type="hidden" class="text input-large" id='paths'>
+		<p class="notic">{$form.notice|raw}</p>
+	</dd>
+
+	<script>
+        var paths 		= $("#paths").val();
+        var pathsArr 	= paths.split('-');
+        var pathsCode 	= 'idprovince-idcity-idcounty'.split('-');
+        if(paths == ''){
+            GetArea(0,'idprovince',1) ;
+		}else{
+            for(var i=0;i<pathsArr.length;i++){
+				if(i>0){
+                    GetArea(pathsArr[i-1],pathsCode[i],pathsArr[i]);
+				}else{
+                    GetArea(0,pathsCode[i],pathsArr[i]);
+                }
+            }
+            var is_change = 1 ;
+		}
+
+        $('#idprovince').change(function(){
+            if(this.value==''){ return;}
+			is_change = 0 ;
+            GetArea(this.value,'idcity');
+        });
+        $('#idcity').change(function(){
+            if(this.value==''){ return; }
+            is_change = 0 ;
+            GetArea(this.value,'idcounty');
+
+        });
+        $('#idcounty').change(function(){
+            if(this.value==''){ return;}
+            is_change = 0 ;
+            GetArea(this.value);
+        });
+        function GetArea(pid,selectid,sid){
+            $('#area').val(pid);
+            if(selectid){
+                $.post('{:url("Region/change")}',{pid:pid},function(data,textStatus){
+                    if(data){
+                        $('#'+selectid).empty();//清空原有的数据
+                        $.each(data, function(i,n){
+                            var selected = sid == n.id ? 'selected' : '';
+                            $("<option "+selected+" value='"+n.id+"'>"+n.area+"</option>").appendTo("#"+selectid);
+
+							if(is_change === 0){
+                                if(i==0 && selectid==='idcity'){
+                                    GetArea(n.id,'idcounty');
+                                }
+                                if(i==0 && selectid==='idprovince'){
+                                    GetArea(n.id,'idcity');
+                                }
+							}
+
+                        });
+                    }else{
+                        alert('没有子级了!');
+                    }
+                },'json');
+            }
+        }
+	</script>
+</dl>

@@ -1,0 +1,42 @@
+{if condition="$threePartyplug['gdMap'] eq 1"}
+<script type="text/javascript" src="http://webapi.amap.com/maps?v=1.4.2&key=20153e879652fec288d2e709c40d57fc&plugin=AMap.Autocomplete"></script>
+<script type="text/javascript" src="http://cache.amap.com/lbs/static/addToolbar.js"></script>
+<script type="text/javascript" src="/3.0/js/gdMap.js"></script>
+{php}
+    $getIp              = get_client_ip(0);
+    $getIp              = $getIp == '127.0.0.1' ? '115.205.104.9' : get_client_ip(0);
+    $content            = file_get_contents("http://api.map.baidu.com/location/ip?ak=1b0ace7dde0245f796844a06fb112734&ip=".$getIp."&coor=bd09ll");
+    $json               = json_decode($content);
+    $pname              = $json->content->address_detail->province;
+    $cname              = $json->content->address_detail->city;
+{/php}
+{/if}
+{php}
+$gd_addname     = $form['tag'].'_address';
+$gd_address     = (isset($info[$gd_addname]) && !empty($info[$gd_addname])) ? $info[$gd_addname] : $pname.$cname;
+
+$gd_longname    = $form['tag'].'_long';
+$gd_longvalue   = (isset($info[$gd_longname]) && !empty($info[$gd_longname])) ? $info[$gd_longname] : '';
+
+$gd_latname     = $form['tag'].'_lat';
+$gd_latvalue    = (isset($info[$gd_latname]) && !empty($info[$gd_latname])) ? $info[$gd_latname] : '';
+{/php}
+<dl class="row" id="id_{$form.tag}" data-msg="请选择{$form.title}">
+	<dt class="tit">
+        {include file="public/list/devtpl" /}
+		{if condition="$form['require'] eq 1"}<em>*</em>{/if}
+		{$form.title}
+	</dt>
+	<dd class="opt">
+		<link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>
+		<div id="map_{$gd_addname}" style="width: 85% ; height: 500px;position: relative"></div>
+		<div id="myPageTop" style="margin-right: 12.78%;">
+			<input type="text" placeholder="请输入关键字进行搜索" id="tipinput_{$gd_addname}">
+			<input type="text" readonly="true" id="lnglat_{$gd_addname}">
+		</div>
+		<p class="notic">{$form.notice|raw}</p>
+	</dd>
+</dl>
+<script type="text/javascript">
+loadGdMap('{$gd_longname}','{$gd_latname}','{$gd_addname}');
+</script>

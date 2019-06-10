@@ -1,0 +1,110 @@
+﻿<div class="layui-card-header">
+{if condition="$info['id'] gt 0"}编辑{else /}新增{/if}菜单
+</div>
+<div class="layui-card-body" style="padding: 15px;">
+  <form class="layui-form" action="" lay-filter="component-form-group" onsubmit="return false;">
+    <div class="layui-form-item">
+      <label class="layui-form-label">菜单名称</label>
+      <div class="layui-input-inline" style="width: 40%">
+        <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input" value="{notempty name="info.title"}{$info.title}{/notempty}">
+      </div>
+      <div class="layui-form-mid layui-word-aux">菜单名称必须是1-8个字符</div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">菜单链接</label>
+      <div class="layui-input-inline" style="width: 40%">
+        <input type="text" name="url" lay-verify="url2" autocomplete="off" placeholder="请输入菜单链接" class="layui-input" value="{notempty name="info.url"}{$info.url}{/notempty}">
+      </div>
+      <div class="layui-form-mid layui-word-aux">如果是外链请输入完整的URL，必须携带http/https</div>
+    </div>
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">上级菜单</label>
+      <div class="layui-input-block" style="width: 40%">
+        <select name="pid" lay-filter="aihao">
+          <option value="0">顶级分类</option>
+          {foreach name="menus" item="v"}                                            
+          <option value="{$v['id']}" {if condition="$info['pid'] eq $v['id']"}selected{/if}>
+          <?php echo str_replace('&amp;',"&",$v['title_show']);?></option>
+          {/foreach}
+        </select>
+      </div>
+    </div>
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">菜单状态</label>
+      <div class="layui-input-inline" style="width: 5%">
+        <input type="checkbox" {if condition="$info.status neq 2"}checked="checked"{/if} name="status" value="1" lay-skin="switch" lay-filter="status" lay-text="启用|禁用">
+      </div>
+      <div class="layui-form-mid layui-word-aux">`禁用`状态对外不可现</div>
+    </div>
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">菜单位置</label>
+      <div class="layui-input-inline" style="width: 24%">
+        <input type="radio" name="pos" value="1" title="一般" {if condition="isset($info['pos']) && $info['pos'] eq 1"} checked {/if}>
+        <input type="radio" name="pos" value="2" title="列表顶部" {if condition="isset($info['pos']) && $info['pos'] eq 2"} checked {/if}>
+        <input type="radio" name="pos" value="3" title="列表右边" {if condition="isset($info['pos']) && $info['pos'] eq 3"} checked {/if}>
+      </div>
+      <div class="layui-form-mid layui-word-aux">菜单位置目前只有3个，默认为一般导航菜单</div>
+    </div>
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">交互方式</label>
+      <div class="layui-input-inline" style="width: 30%">
+        <input type="radio" name="posttype" value="1" title="内平铺" {if condition="isset($info['posttype']) && $info['posttype'] eq 1"}checked{/if}>
+        <input type="radio" name="posttype" value="2" title="内呼出" {if condition="isset($info['posttype']) && $info['posttype'] eq 2"}checked{/if}>
+        <input type="radio" name="posttype" value="3" title="确认框" {if condition="isset($info['posttype']) && $info['posttype'] eq 3"}checked{/if}>
+        <input type="radio" name="posttype" value="4" title="新页面" {if condition="isset($info['posttype']) && $info['posttype'] eq 4"}checked{/if}>
+      </div>
+      <div class="layui-form-mid layui-word-aux">菜单位置目前只有3个，默认为一般导航菜单</div>
+    </div>
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">页面大小</label>
+      <div class="layui-input-inline" style="width: 20%">
+        <input type="text" name="fsize" lay-verify="fsize" autocomplete="off" placeholder="请输入页面大小" class="layui-input" value="{notempty name="info.fsize"}{$info.fsize}{/notempty}">
+      </div>
+      <div class="layui-form-mid layui-word-aux">页面大小只有页面为呼出形式才起作用，默认大小为800*550,格式必须是W*H,否则无效</div>
+    </div>
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">菜单图标</label>
+      <div class="layui-input-inline" style="width: 9%">
+        <input type="hidden" name="icon" value="{notempty name='info.icon'}{$info.icon}{/notempty}">
+          <button data-type="selectMenuIcon" class="layui-btn layui-btn-primary">
+            <span>
+              {notempty name="info.icon"}
+              <i class="layui-icon {$info.icon}"></i>
+              {else /}
+              <i class="layui-icon layui-icon-circle"></i>
+              {/notempty}
+            </span>点击选择
+          </button>
+      </div>
+      <div class="layui-form-mid layui-word-aux">请点击选择对应的图标,默认无图标</div>
+    </div>
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">显示顺序</label>
+      <div class="layui-input-inline" style="width: 10%">
+        <input type="text" name="sort" lay-verify="sort" autocomplete="off" placeholder="请输入显示顺序" class="layui-input" value="{notempty name="info.sort"}{$info.sort}{/notempty}">
+      </div>
+      <div class="layui-form-mid layui-word-aux">根据排序进行由小到大排列显示。</div>
+    </div>
+
+    <div class="layui-form-item layui-layout-admin">
+      <div class="layui-input-block">
+        <div class="layui-footer" style="left: 0;">
+          {notempty name="info.id"}
+          <button class="layui-btn" lay-submit lay-filter="form-submit" lay-menuid="{$info.id}">更新菜单</button>
+          {else /}
+          <button class="layui-btn layui-btn-disabled" lay-menuid="-1">更新菜单</button>
+          {/notempty}
+          <button class="layui-btn layui-btn-danger" lay-submit lay-filter="form-submit" lay-menuid="0">新增菜单</button>
+          <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

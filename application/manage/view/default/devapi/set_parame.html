@@ -1,0 +1,452 @@
+{extend name="public/common"}
+{block name="main"}
+<link href="/3.0/package/set-parame/bootstrap.css" rel="stylesheet">
+<link href="/3.0/package/set-parame/common.css" rel="stylesheet">
+<div class="page" >
+  {include file="public/list/notice" /}
+  <div class="flexigrid">
+    <a class="ncap-btn-big ncap-btn-green" style="margin-bottom: 10px;" href="JavaScript:void(0);" onclick="CommonJs.JsStatus({$id},'{:url('Devapi/apirelease')}','发布接口')">发布接口
+    </a>
+    <a class="ncap-btn-big ncap-btn-green" style="margin-bottom: 10px;" href="{:url('Devapi/debug','id='.$id)}">调试
+    </a>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">公共参数</div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr class="success">
+                                    <th>&nbsp;</th>
+                                    <th>参数标识</th>
+                                    <th>排序</th>
+                                    <th>参数名称</th>
+                                    <th>字段类型</th>
+                                    <th>是否必填</th>
+                                    <th>默认值</th>
+                                    <th>参数说明</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {volist name="public_parame" id="pub_field"}
+                            <tr class="">
+                                <td style="text-align:left;width:2%">&nbsp;</a></td>
+                                <td style="text-align:left;width:15%">{$pub_field.tag}</td>
+                                <td style="text-align:left;width:5%">{$i}</td>
+                                <td style="text-align:left;width:15%">{$pub_field.title}</td>
+                                <td style="text-align:left;width:10%">{$pub_field.ptype}</td>
+                                <td style="text-align:left;width:10%">
+                                    {if condition="$pub_field.is_required eq 1"}必填<else />{/if}
+                                </td>
+                                <td style="text-align:left;width:10%">
+                                    {$pub_field.default_value}
+                                </td>
+                                <td style="text-align:left;width: 33%">
+                                    {$pub_field.description}
+                                </td>
+                            </tr>
+                            {/volist}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.table-responsive -->
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-6 -->
+    </div>
+
+    <form role="form" id="js_addApiForm" action="/api/add.html" method="post">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">请求参数</div>
+                <div class="panel-body">
+                    <div class="table-responsive">
+
+                        <div class="panel-request">
+                            <table class="table table-striped table-bordered table-hover">
+                                <thead>
+                                <tr class="success">
+                                    <th>&nbsp;</th>
+                                    <th>参数标识</th>
+                                    <th>排序</th>
+                                    <th>参数名称</th>
+                                    <th>字段类型</th>
+                                    <th>是否必填</th>
+                                    <th>默认值</th>
+                                    <th>参数说明</th>
+                                </tr>
+                                </thead>
+                                    <tbody id="add_request_parame">
+{volist name="request_parame" id="request"}
+<tr class="" data-aaaa="aa{$i}" >
+<td style="width: 2%">
+    <a href="javascript:void(0);" class="fa fa-trash-o " style="margin-top: 12px;" onClick="CommonJs.JsStatus('{$request['id']}','{:url('delDevapiParame')}','删除')"></a>
+</td>
+<td style="width: 15%">
+    <input type="text" value="{$request.tag}" oldValue="{$request.tag}" style="width: 90%;height: 30px;" onblur="CommonJs.quickEdit(this,'{:url('quickEditDevapiParame')}','tag','{$request.id}')">
+</td>
+<td style="width: 5%">
+    <input type="text" value="{$request.sort}" oldValue="{$request.sort}" style="width: 90%;height: 30px;" onblur="CommonJs.quickEdit(this,'{:url('quickEditDevapiParame')}','sort','{$request.id}')">
+</td>
+<td style="width: 15%">
+    <input type="text" value="{$request.title}" oldValue="{$request.title}" style="width: 90%;height: 30px;" onblur="CommonJs.quickEdit(this,'{:url('quickEditDevapiParame')}','title','{$request.id}')">
+</td>
+
+<td style="width: 10%">
+<select name="ptype" id="type_id" style="width: 90%;height: 35px;" class="form-control" onChange="CommonJs.quickEdit(this,'{:url('quickEditDevapiParame')}','ptype','{$request.id}');">
+    {volist name="defaultData['ptype']" id="vo"}
+    <option value="{$key}" {if condition="$request['ptype'] eq $key"} selected="selected"{/if}>{$vo}</option>
+    {/volist}
+</select>                 
+</td>
+<td style="width: 10%">
+
+<dl class="row" id="id_is_required" style="margin-top: 5px;">
+
+    <dd class="opt">
+        <div class="onoff">
+            {volist name="defaultData['is_required']" id="vo"}
+            {if condition="$i eq 1"}
+                <label for="menu_is_required{$i}" class="cb-enable {if condition="$request['is_required'] eq 1"}selected{/if}" onClick="CommonJs.quickEdit('#menu_is_required1','{:url('quickEditDevapiParame')}','is_required','{$request.id}',1)">{$vo}</label>
+            <input id="menu_is_required{$i}" name="is_required" value="{$key}" type="radio" {if condition="$request['is_required'] eq 1"}checked="checked"{/if}>
+            {else /}
+            <label for="menu_is_required{$i}" class="cb-disable {if condition="$request['is_required'] eq 2"}selected{/if}" onClick="CommonJs.quickEdit('#menu_is_required2','{:url('quickEditDevapiParame')}','is_required','{$request.id}',1)">{$vo}</label>
+            <input id="menu_is_required{$i}" name="is_required" value="{$key}" type="radio" {if condition="$request['is_required'] eq 2"}checked="checked"{/if}>
+            {/if}
+            {/volist}
+        </div>
+    </dd>
+</dl>
+
+</td>
+<td style="width: 10%">
+    <input type="text" value="{$request.default_value}" oldValue="{$request.default_value}" style="width: 90%;height: 30px;" onblur="CommonJs.quickEdit(this,'{:url('quickEditDevapiParame')}','default_value','{$request.id}')">
+</td>
+<td style="width: 33%">
+    <input type="text" value="{$request.description}" oldValue="{$request.description}" style="width: 90%;height: 30px;" onblur="CommonJs.quickEdit(this,'{:url('quickEditDevapiParame')}','description','{$request.id}')">
+</td>
+</tr>
+{/volist}
+                                    </tbody>
+                            </table>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="button" class="btn btn-default" onClick="return add_parame(this,1,0,0);">
+                                <i class="fa fa-fw fa-plus"></i>添加参数
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.table-responsive -->
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-6 -->
+    </div>
+
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    返回参数
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <div class="panel-response">
+                            
+<table class="table table-striped table-bordered table-hover">
+    <thead>
+    <tr class="success">
+        <th>&nbsp;</th>
+        <th>参数标识</th>
+        <th>排序</th>
+        <th>参数名称</th>
+        <th>参数类型</th>
+        <th>参数处理</th>
+        <th>参数说明</th>
+    </tr>
+    </thead>
+    <tbody id="add_back_parame">
+        {volist name="back_parame" id="back"}
+        <tr class="{if condition="$back['level'] eq 1"}warning{/if}">
+            <td style="width: 2%">
+                {if condition="$back['ptype'] eq 'array' or $back['ptype'] eq 'object'"}
+                <a href="javascript:void(0);" class="fa fa-plus" onClick="return add_parame(this,2,{$back['id']},{$back.margin});">
+                </a>
+                {/if}
+
+                <a href="javascript:void(0);" class="fa fa-trash-o " onClick="CommonJs.JsStatus('{$back['id']}','{:url('delDevapiParame')}','删除')"></a>
+            </td>
+
+            <td style="text-align: left;padding-left: {$back.margin}px;width: 15%;">
+
+                <input type="text" value="{$back.tag}" oldValue="{$back.tag}" style="width: 95%;height: 30px;" onblur="CommonJs.quickEdit(this,'{:url('quickEditDevapiParame')}','tag','{$back.id}')">
+            </td>
+
+            <td style="width: 5%">
+                <input type="text" value="{$back.sort}" oldValue="{$back.sort}" style="width: 95%;height: 30px;" onblur="CommonJs.quickEdit(this,'{:url('quickEditDevapiParame')}','sort','{$back.id}')">
+            </td>
+
+            <td style="width: 15%">
+                <input type="text" value="{$back.title}" oldValue="{$back.title}" style="width: 95%;height: 30px;" onblur="CommonJs.quickEdit(this,'{:url('quickEditDevapiParame')}','title','{$back.id}')">
+            </td>
+
+            <td style="width: 10%">
+                <select name="ptype" id="type_id" style="width: 95%;height: 35px;" class="form-control" onChange="CommonJs.quickEdit(this,'{:url('quickEditDevapiParame')}','ptype','{$back.id}');">
+                    {volist name="defaultData['ptype2']" id="vo"}
+                    <option value="{$key}" {if condition="$back['ptype'] eq $key"}selected="selected"{/if}>{$vo}</option>
+                    {/volist}
+                </select>                 
+            </td>
+
+            <td style="width: 10%">
+                <input type="text" placeholder="请输入参数处理的函数" value="{$back.mock}" oldValue="{$back.mock}" style="width: 90%;height: 30px;" onblur="CommonJs.quickEdit(this,'{:url('quickEditDevapiParame')}','mock','{$back.id}')">
+            </td>
+
+            <td style="width: 43%">
+                <input type="text" value="{$back.description}" oldValue="{$back.description}" style="width: 95%;height: 30px;" onblur="CommonJs.quickEdit(this,'{:url('quickEditDevapiParame')}','description','{$back.id}')">
+            </td>
+        </tr>
+        {/volist}
+    </tbody>
+</table>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="button" class="btn btn-default" onClick="return add_parame(this,2,0,15);">
+                                <i class="fa fa-fw fa-plus"></i>添加参数
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.table-responsive -->
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-6 -->
+    </div>
+</form>
+</div>
+
+</div>
+<script type="text/javascript">
+
+  function add_parame(obj,type,pid,paddingLeft){
+
+    if (type == 1) {
+
+        $("#add_request_parame").append(get_request_parame(pid));
+
+            $(".cb-enable").click(function(){
+            var parent = $(this).parents('.onoff');
+            $('.cb-disable',parent).removeClass('selected');
+            $(this).addClass('selected');
+            $('.checkbox',parent).attr('checked', true);
+        });
+
+        $(".cb-disable").click(function(){
+            var parent = $(this).parents('.onoff');
+            $('.cb-enable',parent).removeClass('selected');
+            $(this).addClass('selected');
+            $('.checkbox',parent).attr('checked', false);
+        });
+
+    }else{
+
+        if (pid == 0) {
+            $("#add_back_parame").append(get_back_parame(pid,paddingLeft));
+        }else{
+
+            $(obj).parents('tr').after(get_back_parame(pid,paddingLeft+15));
+        }
+        
+    }
+  }
+
+  //快速编辑请求参数
+  function quickEditParame(obj){
+
+    var src         = '',
+        value       = '',
+        oldValue    = '',
+        name        = '';
+        oldValueObj = '';
+    var url         = '{:url("quickEditDevapiParame",'apiid='.$id)}';
+    var fieldName   = $(obj).attr("name");
+    var dataidObj   = $(obj).parent().parent();
+
+    if (fieldName == 'is_required') {
+
+        dataidObj   = $(obj).parents('tr');
+        value       = $(obj).attr("data-value");
+        oldValueObj = $(obj).parent();
+        oldValue    = oldValueObj.attr('oldValue');
+    }else{
+
+        value       = $(obj).val();
+        oldValueObj = $(obj);
+        oldValue    = oldValueObj.attr('oldValue');
+    }
+
+    var dataId      = dataidObj.attr("data-id");
+    var addType     = dataidObj.attr("data-addType");
+    var parentId     = dataidObj.attr("data-parentId");
+
+    if (oldValue == value || !CheckJs.required(value)) {
+        
+        return false;
+    }
+
+    if(!CheckJs.required(dataId) || CheckJs.isIntEqZero(dataId) ){
+
+        layer.msg('数据不存在',{icon: 0,time:2000});return false;
+    }
+
+    var SubmitData = {};
+
+        SubmitData.fieldName    = fieldName;
+        SubmitData.dataId       = dataId;
+        SubmitData.value        = value;
+        SubmitData.addType      = addType;
+        SubmitData.parentId     = parentId;
+
+        if(CommonJs.Loading){
+
+            layer.msg('有操作在进行，请稍等...',{icon: 0,time:2000});return false;
+        }
+
+        CommonJs.Loading    = true;
+
+        $.post(url, SubmitData, function(data){
+
+            CommonJs.Loading    = false;
+
+            if (data.code == 1) {
+
+                oldValueObj.attr('oldValue',value);
+                dataidObj.attr("data-id",data.data);
+
+                layer.msg(data.msg, {icon: 1});
+            }else{
+                layer.msg(data.msg, {icon: 2});
+            }
+
+        }, "json");
+  }
+
+  //快速删除请求参数
+  function quickDelParame(obj){
+
+    var dataidObj   = $(obj).parent().parent();
+    var dataId      = dataidObj.attr("data-id");
+
+    if (parseInt(dataId) > 0) {
+
+        CommonJs.JsStatus(dataId,'{:url("delDevapiParame")}','删除');
+    }else{
+
+        dataidObj.remove();
+    }
+
+    return true;
+  }
+
+  function get_request_parame(pid){
+
+    var $htmls  = '';
+
+    $htmls      += '<tr data-id="-1" data-addType="1" data-parentId="'+pid+'">';
+    $htmls      += '<td style="width: 2%"><a href="javascript:void(0);" class="fa fa-trash-o " style="margin-top: 12px;" onClick="quickDelParame(this)"></a></td>';
+    $htmls      += '<td style="width: 15%">';
+    $htmls      += '<input type="text" name="tag" value="/" oldValue="oldValue" style="width: 90%;height: 30px;" onblur="quickEditParame(this)">';
+    $htmls      += '</td>';
+    $htmls      += '<td style="width: 5%">';
+    $htmls      += '<input type="text" value="1" oldValue="" style="width: 90%;height: 30px;" onblur="quickEditParame(this)">';
+    $htmls      += '</td>';
+    $htmls      += '<td style="width: 15%">';
+    $htmls      += '<input type="text" name="title" value="/" oldValue="oldValue" style="width: 90%;height: 30px;" onblur="quickEditParame(this)">';
+    $htmls      += '</td>';
+
+    $htmls      += '<td style="width: 10%">';
+    $htmls      += '<select name="ptype" id="type_id" style="width: 90%;height: 35px;" class="form-control" onchange="quickEditParame(this);">';
+    $htmls      += '<option value="string" selected="selected">字符串</option>';
+    $htmls      += '<option value="json">JSON</option>';
+    $htmls      += '<option value="number">整形</option>';
+    $htmls      += '<option value="float">浮点型</option>';
+    $htmls      += '</select>';
+    $htmls      += '</td>';
+
+    $htmls      += '<td style="width: 10%">';
+    $htmls      += '<dl class="row" id="id_is_required" style="margin-top: 5px;">';
+    $htmls      += '<dd class="opt">';
+    $htmls      += '<div class="onoff" oldValue="0">';
+    $htmls      += '<label for="menu_is_required1" data-value="1" name="is_required" class="cb-enable selected" onclick="quickEditParame(this)">必填</label>';
+    $htmls      += '<input id="menu_is_required1" value="1" checked="checked" type="radio">';
+    $htmls      += '<label for="menu_is_required2" data-value="2" name="is_required" class="cb-disable " onclick="quickEditParame(this)">不必填</label>';
+    $htmls      += '<input id="menu_is_required2" value="2" type="radio">';
+    $htmls      += '</div>';
+    $htmls      += '</dd>';
+    $htmls      += '</dl>';
+    $htmls      += '</td>';
+
+    $htmls      += '<td style="width: 10%">';
+    $htmls      += '<input type="text" name="default_value" value="/" oldValue="oldValue" style="width: 90%;height: 30px;" onblur="quickEditParame(this)">';
+    $htmls      += '</td>';
+
+    $htmls      += '<td style="width: 38%">';
+    $htmls      += '<input type="text" name="description" value="/" oldValue="oldValue" style="width: 90%;height: 30px;" onblur="quickEditParame(this)">';
+    $htmls      += '</td>';
+    $htmls      += '</tr>';
+
+    return $htmls;
+  }
+
+  function get_back_parame(pid,paddingLeft){
+    var $htmls  = '';
+
+    $htmls      += '<tr data-id="-1" data-addType="2" data-parentId="'+pid+'">';
+    $htmls      += '<td style="width: 2%"><a href="javascript:void(0);" class="fa fa-trash-o" onClick="quickDelParame(this)"></a></td>';
+    $htmls      += '<td style="text-align: left;padding-left: '+paddingLeft+'px;width: 15%;">';
+    $htmls      += '<input value="/" oldvalue="oldvalue" name="tag" style="width: 95%;height: 30px;" onblur="quickEditParame(this)" type="text">';
+    $htmls      += '</td>';
+    $htmls      += '<td style="width: 5%">';
+    $htmls      += '<input type="text" value="1" oldValue="" style="width: 95%;height: 30px;" onblur="quickEditParame(this)">';
+    $htmls      += '</td>';
+    $htmls      += '<td style="width: 15%">';
+    $htmls      += '<input value="/" oldvalue="oldvalue" name="title" style="width: 95%;height: 30px;" onblur="quickEditParame(this);" type="text">';
+    $htmls      += '</td>';
+    $htmls      += '<td style="width: 10%">';
+    $htmls      += '<select name="ptype" id="type_id" style="width: 90%;height: 35px;" class="form-control" onchange="quickEditParame(this);">';
+    $htmls      += '<option value="string" selected="selected">字符串</option>';
+    $htmls      += '<option value="json">JSON</option>';
+    $htmls      += '<option value="number">整形</option>';
+    $htmls      += '<option value="float">浮点型</option>';
+    $htmls      += '<option value="array">数组</option>';
+    $htmls      += '<option value="object">对象</option>';
+    $htmls      += '</select>';
+    $htmls      += '</td>';
+
+    $htmls      += '<td style="width: 10%">';
+    $htmls      += '<input type="text" name="mock" placeholder="请输入参数处理的函数" value="/" oldValue="oldValue" style="width: 90%;height: 30px;" onblur="quickEditParame(this)">';
+    $htmls      += '</td>';
+
+    $htmls      += '<td style="width: 43%">';
+    $htmls      += '<input type="text" name="description" value="/" oldvalue="oldvalue" style="width: 95%;height: 30px;" onblur="quickEditParame(this);">';
+    $htmls      += '</td>';
+    $htmls      += '</tr>';
+
+    return $htmls;
+  }
+</script>
+{/block}

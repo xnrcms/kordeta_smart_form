@@ -1,0 +1,97 @@
+html,body{
+  height: 100%;
+}
+a,button{
+  outline: none;
+}
+a:visited,button:visited,{
+  outline: none;
+  border: none;
+}
+
+.c-container{
+  padding: 20px;
+  height: 100%;
+}
+.c-row{
+  height: 100%;
+  font-size: 15px;
+}
+.c-row>div{
+  box-shadow: 0 0 3px #ccc;
+  height: 100%;
+  margin-left: 30px;
+  padding: 0;
+  position: relative;
+}
+.c-row .c-title{
+  padding: 5px 15px;
+  background: #f1f1f1;
+  line-height: 30px;
+}
+.c-row .c-title button{
+  float: right;
+  padding: 4px 13px;
+  margin-top: 1px;
+  margin-right: -7px;
+}
+.c-row .c-ul{
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 40px;
+  bottom: 0;
+  overflow-y:auto; 
+}
+.c-row .list-group-item{
+  position: relative;
+  border-radius: 0;
+  border: none;
+  border-bottom: solid 1px #eee;
+  margin: 0;
+  cursor: pointer;
+  z-index: 10;
+  min-height: 45px;
+}
+.c-row .list-group-item .c-text{
+  /*margin-right: 25px;*/
+  position: absolute;
+  left:0;
+  right: 25px;
+  top: 0;
+  bottom: 0;
+  padding: 10px 15px;
+  line-height: 22.5px;
+}
+.c-row .list-group-item:hover{
+  background: #f4f4f4;
+}
+.c-row .list-group-item.active:hover{
+  background: #337ab7;
+  border-bottom: solid 1px #eee;
+}
+.c-row .list-group-item>i{
+  position: relative;
+  float: right;
+  color: #999;
+  margin-top: 4px;
+}
+.c-row .list-group-item.active>i{
+  color: #fff;
+  z-index: 15;
+}
+.c-row .col-md-5 .list-group-item:hover{
+  background: none;
+}
+.c-box{
+  display: flex;
+}
+.c-box-left{
+  flex: 0 0 120px;
+  line-height: 34px;
+  text-align: right;
+  margin-right: 15px;
+}
+.c-box-right{
+  flex: 1;
+}

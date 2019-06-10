@@ -1,0 +1,31 @@
+<div style="width:105.5%;height:100%;overflow-x:hidden;overflow-y: auto;">
+<table width="100%">
+  <tbody>
+    {notempty name="_fieldList"}
+    {foreach name="_fieldList" item="vo" key="k"}
+    <tr id="devform_id_{$vo.id}" data-id ="{$vo.id}" data-pid ="{$vo.pid}">
+      <td align="left" class="handle" width="78%">
+        <div>
+          <span class="btn"><em><i class="fa fa-cog"></i>{$vo.title}<i class="arrow"></i></em>
+          <ul>
+            <li><a onClick="delfun(this,'确认删除字段吗？',0)" href="javascript:;" data-url="{:url('Devlist/del',array('ids'=>$vo['id']))}">删除表头</a></li>
+          </ul>
+          </span>
+        </div>
+      </td>
+      
+      <td align="center" class="" width="22%">
+        <div data-yes="启用" data-no="禁用">
+          {if condition='$vo.status eq 1'}
+            <span class="yes" onClick="CommonJs.quickEdit(this,'{:url('Devlist/quickEdit')}','status','{$vo.id}');" ><i class="fa fa-check-circle"></i>启用</span>
+            {else /}
+            <span class="no" onClick="CommonJs.quickEdit(this,'{:url('Devlist/quickEdit')}','status','{$vo.id}');" ><i class="fa fa-ban"></i>禁用</span>
+          {/if}
+        </div>
+      </td>
+    </tr>
+    {/foreach}
+    {/notempty}
+  </tbody>
+</table>
+</div>

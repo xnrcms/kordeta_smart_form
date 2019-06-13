@@ -26,13 +26,13 @@ return [
     'api_auth_url'              => '',//'http://api3.com/',
     'api_auth_id'				=> 'b542da5132138477af8ab448c6ddd38c',
     'api_auth_key'				=> '9b12d0f61a382e19ffa87ed306ff3c3b',
+    
     //项目开发必须在本地
-    'apidoc_project_id'         =>'7',
-    'apidoc_project_url'        =>'http://dev.kordeta.baseproject.com/',
-    'apidoc_url'                =>'http://apidoc.php.xnrcms.cn/',
+    'project_url'               =>'http://dev.smart_form.com/',
+    
     //站点配置
-    'xnrcms_name'               =>'数有专攻',
-    'xnrcms_var'                =>'1.0',
+    'xnrcms_name'               =>'应用快速开发服务',
+    'xnrcms_var'                =>'',
     'is_dev'                    => 1,
     'form_type_list'            => [
         'hidden'        => '隐藏域',

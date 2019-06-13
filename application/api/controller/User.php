@@ -226,5 +226,20 @@ class User extends Base
 
     /*api:8d4fe31070a5465e54248cfca5255ab4*/
 
+    /*api:f361e06c3640311e8255cb1a4e0628f2*/
+    /**
+     * 退出登录
+     * @access public
+     * @param  [array] $parame 扩展参数
+     * @return [json]          接口数据输出
+    */
+    public function logout($parame = [])
+    {
+        //执行接口调用
+        return $this->execApi($parame);
+    }
+
+    /*api:f361e06c3640311e8255cb1a4e0628f2*/
+
     /*接口扩展*/
 }

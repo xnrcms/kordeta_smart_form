@@ -260,12 +260,12 @@ class Base
       if (!$isApiId) return $this->setReturnData(array('Code' => '120024', 'Msg'=>lang('120024')));
 
       //校验用户身份ID是否正确
-      if ( isset($parameData['uid']) && $parameData['uid'] > 0 && isset($parameData['hashid']) )
+      if ( /*isset($parameData['uid']) && $parameData['uid'] > 0 &&*/ isset($parameData['hashid']) )
       {  
         $hashid       = (!isset($parameData['hashid']) || empty($parameData['hashid']) ) ? '' : trim($parameData['hashid']);
-        $uid          = intval($parameData['uid']);
+        //$uid          = intval($parameData['uid']);
 
-        if (!$this->checkHashid($uid,$hashid))
+        if (!$this->checkHashid($hashid))
         return $this->setReturnData(array('Code' => '201', 'Msg'=>lang('text_token_fail')));
       }
       
@@ -320,13 +320,13 @@ class Base
      * @param  string   $hashid 用户秘钥
      * @return bool
      */
-    private function checkHashid($uid,$hashid)
+    private function checkHashid($hashid)
     {
         $token  = string_encryption_decrypt(base64_decode($hashid),'DECODE');
         $key    = config('extend.uc_auth_key');
         $JWT    = \Firebase\JWT\JWT::decode($token,$key,["HS256"]);
 
-        return ((int)$uid > 0 && (int)$JWT->uid === (int)$uid && $JWT->exp > time()) ? true : false;
+        return ((int)$JWT->uid > 0 && $JWT->exp > time()) ? true : false;
     }
 
     private function apiTestData($dataTpl=[],$data=[])

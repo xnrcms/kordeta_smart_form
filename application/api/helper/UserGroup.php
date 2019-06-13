@@ -151,12 +151,10 @@ class UserGroup extends Base
 
         //检测分组名称是否存在
         if ($dbModel->checkValue($saveData['title'],$id,'title'))
-        {
-            return ['Code' => '700002', 'Msg'=>lang('700002')];
-        }
+        return ['Code' => '203', 'Msg'=>lang('error_title_already_exists')];
 
         //规避遗漏定义入库数据
-        if (empty($saveData)) return ['Code' => '120021', 'Msg'=>lang('120021')];
+        if (empty($saveData)) return ['Code' => '203', 'Msg'=>lang('notice_undefined_data')];
 
         //自行处理数据入库条件
         //...
@@ -164,12 +162,23 @@ class UserGroup extends Base
         //通过ID判断数据是新增还是更新 定义新增条件下数据
         if ($id <= 0)
         {
+            $gid       = model('user_group_access')->getUserGroupAccessListByUid($parame['uid']);
+            $ownerid   = 0;
+            
+            if (isset($gid[0]) && $gid[0] > 0 && in_array($gid[0], [1,2])) {
+                $ownerid   = $gid[0] == 2 ? (int)$parame['uid'] : 0;
+            }else{
+                //其他分组暂时不能添加
+                return ['Code' => '203', 'Msg'=>lang('error_gropu_add_fail')];
+            }
+
+            $saveData['ownerid']            = $ownerid;
             $saveData['create_time']        = time();
         }
 
         $info    = $dbModel->saveData($id,$saveData);
 
-        return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '100015', 'Msg'=>lang('100015')];
+        return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '203', 'Msg'=>lang('notice_api_fail')];
     }
 
     /**

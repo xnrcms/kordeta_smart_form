@@ -6,5 +6,6 @@
 
 return [
     // 系统错误提示
-    '200'                   => '请求OK',
+    'error_title_already_exists'                   	=> '分组名称已经存在',
+    'error_gropu_add_fail'                   		=> '分组添加失败',
 ];

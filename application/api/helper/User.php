@@ -759,6 +759,26 @@ class User extends Base
 
     /*api:8d4fe31070a5465e54248cfca5255ab4*/
 
+    /*api:f361e06c3640311e8255cb1a4e0628f2*/
+    /**
+     * * 退出登录
+     * @param  [array] $parame 接口参数
+     * @return [array]         接口输出数据
+     */
+    private function logout($parame)
+    {
+        //主表数据库模型
+        $dbModel                = model($this->mainTable);
+
+        //自行书写业务逻辑代码
+
+        //需要返回的数据体
+
+        return ['Code' => '200', 'Msg'=>lang('logout_success'),'Data'=>''];
+    }
+
+    /*api:f361e06c3640311e8255cb1a4e0628f2*/
+
     /*接口扩展*/
 
     /**

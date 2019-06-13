@@ -364,20 +364,15 @@ class User extends Base
         $Data['nickname']                 = $userDetail['nickname'];
         $Data['face']                     = $userDetail['face'];
         $Data['face_path']                = get_cover($userDetail['face'],'path');
-        $Data['invitation_code']          = get_invitation_code($ucUserInfo['id']);
         $Data['account']                  = $userDetail['account'];
-        $Data['cash_money']               = $userDetail['cash_money'];
-        $Data['score']                    = $userDetail['score'];
         $Data['login']                    = $userDetail['login'];
         $Data['last_login_ip']            = $userDetail['last_login_ip'];
         $Data['last_login_time']          = !empty($userDetail['last_login_time']) ? date('Y-m-d H:i:s',$userDetail['last_login_time']):'/';
         $Data['urules']                   = $userDetail['rules'];
         $Data['sex']                      = $userDetail['sex'];
-        $Data['cash_pwd']                 = !empty($userDetail['cash_pwd']) ? 1 : 2;
 
         $Data['status']                   = $ucUserInfo['status'];
         $Data['detail_id']                = $userDetail['id'];
-        $Data['lottery_id']               = $userDetail['lottery_id'];
 
         $groupInfo                        = $this->getGroupRules($Data);
 
@@ -717,7 +712,7 @@ class User extends Base
         $reppwd                 = isset($parame['confirm_password']) ? $parame['confirm_password'] : '';
 
         if (empty($newpwd) || md5($newpwd) !== md5($reppwd) )
-        return ['Code' => '203', 'Msg'=>lang('200012')];
+        return ['Code' => '203', 'Msg'=>lang('notice_confirm_not_same')];
 
         //修改密码
         $uid    = model('user_center')->updatePassword($newpwd,$parame['uid'],3,$oldpwd);

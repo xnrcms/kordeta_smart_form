@@ -313,6 +313,12 @@ class Base
       return md5('xnrcms_api_key'.$apiId) == $this->ApiKey ? true : false;
     }
 
+    public function getUserId($hashid)
+    {
+      $JWT    = $this->getJwtInfo($hashid);
+      return (!empty($JWT) && (int)$JWT->uid > 0 && $JWT->exp > time()) ? (int)$JWT->uid : 0;
+    }
+
     /**
      * [checkHashid 校验uid和hashid是否合法]
      * @access private
@@ -322,11 +328,18 @@ class Base
      */
     private function checkHashid($hashid)
     {
+        $JWT    = $this->getJwtInfo($hashid);
+
+        return (!empty($JWT) && (int)$JWT->uid > 0 && $JWT->exp > time()) ? true : false;
+    }
+
+    private function getJwtInfo($hashid)
+    {
         $token  = string_encryption_decrypt(base64_decode($hashid),'DECODE');
         $key    = config('extend.uc_auth_key');
         $JWT    = \Firebase\JWT\JWT::decode($token,$key,["HS256"]);
 
-        return ((int)$JWT->uid > 0 && $JWT->exp > time()) ? true : false;
+        return !empty($JWT) ? $JWT : null;
     }
 
     private function apiTestData($dataTpl=[],$data=[])

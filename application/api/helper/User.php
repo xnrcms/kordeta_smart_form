@@ -704,9 +704,9 @@ class User extends Base
         //主表数据库模型
         $dbModel                = model('user_center');
 
+        $uid                    = $this->getUserId($parame['hashid']);
+
         //获取用户ID
-        $safeid                 = isset($parame['safeid']) ? $parame['safeid'] : '';
-        $uid                    = !empty($safeid) ? (int)string_encryption_decrypt($safeid,'DECODE') : 0;
         $userinfo               = $dbModel->getOneById($uid);
 
         //用户不存在
@@ -717,7 +717,7 @@ class User extends Base
         $reppwd                 = isset($parame['confirm_password']) ? $parame['confirm_password'] : '';
 
         if (empty($newpwd) || md5($newpwd) !== md5($reppwd) )
-        return ['Code' => '200012', 'Msg'=>lang('200012')];
+        return ['Code' => '203', 'Msg'=>lang('200012')];
 
         //修改密码
         $uid    = model('user_center')->updatePassword($newpwd,$parame['uid'],3,$oldpwd);

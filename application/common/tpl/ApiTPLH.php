@@ -121,7 +121,7 @@ class {HelperNameTPL} extends Base
 
     	$lists['lists'] 			= $data;
 
-    	return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$lists];
+    	return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$lists];
     }
 
     /**
@@ -155,7 +155,7 @@ class {HelperNameTPL} extends Base
 
     	$info                                       = $dbModel->saveData($id,$saveData);
 
-        return !empty($info) ? ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$info] : ['Code' => '100015', 'Msg'=>lang('100015')];
+        return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '100015', 'Msg'=>lang('100015')];
     }
 
     /**
@@ -175,7 +175,7 @@ class {HelperNameTPL} extends Base
         //数据详情
         $info               = $dbModel->getRow($id);
 
-        return !empty($info) ? ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$info] : ['Code' => '100015', 'Msg'=>lang('100015')];
+        return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '100015', 'Msg'=>lang('100015')];
     }
 
     /**
@@ -195,7 +195,7 @@ class {HelperNameTPL} extends Base
         //根据ID更新数据
         $info               = $dbModel->saveData($id,[$parame['fieldName']=>$parame['updata']]);
 
-        return !empty($info) ? ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$info] : ['Code' => '100015', 'Msg'=>lang('100015')];
+        return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '100015', 'Msg'=>lang('100015')];
     }
 
     /**
@@ -218,7 +218,7 @@ class {HelperNameTPL} extends Base
         //执行删除操作
     	$delCount				= $dbModel->deleteData($id);
 
-    	return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>['count'=>$delCount]];
+    	return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['count'=>$delCount]];
     }
 
     /*接口扩展*/

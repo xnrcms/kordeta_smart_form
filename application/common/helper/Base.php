@@ -69,7 +69,7 @@ class Base
       $base         = ['Code' =>'100000','Msg'=>lang('100000'),'Time'=>$apitime,'ApiUrl'=>$apiurl,'Data'=>''];
 
       $this->returnData = array_merge($base,$data);
-      return $this->returnData['Code'] === '000000' ? true : false;
+      return $this->returnData['Code'] === '200' ? true : false;
     }
 
     /**
@@ -265,7 +265,8 @@ class Base
         $hashid       = (!isset($parameData['hashid']) || empty($parameData['hashid']) ) ? '' : trim($parameData['hashid']);
         $uid          = intval($parameData['uid']);
 
-        if (!$this->checkHashid($uid,$hashid)) return $this->setReturnData(array('Code' => '100010', 'Msg'=>lang('100010')));
+        if (!$this->checkHashid($uid,$hashid))
+        return $this->setReturnData(array('Code' => '201', 'Msg'=>lang('text_token_fail')));
       }
       
       return $parameData;
@@ -321,7 +322,11 @@ class Base
      */
     private function checkHashid($uid,$hashid)
     {
-      return md5($uid.config('extend.uc_auth_key')) == $hashid ? true : false;
+        $token  = string_encryption_decrypt(base64_decode($hashid),'DECODE');
+        $key    = config('extend.uc_auth_key');
+        $JWT    = \Firebase\JWT\JWT::decode($token,$key,["HS256"]);
+
+        return ((int)$uid > 0 && (int)$JWT->uid === (int)$uid && $JWT->exp > time()) ? true : false;
     }
 
     private function apiTestData($dataTpl=[],$data=[])

@@ -396,7 +396,7 @@ class Crontab extends Base
                     $return_data    = json_decode($return_data,true);
                     
                     if (isset($return_data['head']) && !empty($return_data['head'])) {
-                        if ($return_data['head']['respCode'] === '000000') {
+                        if ($return_data['head']['respCode'] === '200') {
                             $out_trade_no       = $return_data['body']['orderCode'];
                             $money              = intval($return_data['body']['totalAmount']) / 100;
                         }else{

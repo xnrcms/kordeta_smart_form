@@ -13,8 +13,8 @@
 // | 模板设置
 // +----------------------------------------------------------------------
 
-$tplName        = 'kordeta';
-//$tplName        = 'default';
+//$tplName        = 'kordeta';
+$tplName        = 'default';
 
 return [
     // 模板引擎类型 支持 php think 支持扩展

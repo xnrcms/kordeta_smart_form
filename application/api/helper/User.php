@@ -118,7 +118,7 @@ class User extends Base
 
     	$lists['lists'] 			= $data;
 
-    	return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$lists];
+    	return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$lists];
     }
 
     /**
@@ -158,7 +158,7 @@ class User extends Base
         {
             $data['id']                 = intval($uid);
 
-            return ['Code' => '000000', 'Msg'=>lang('200020'),'Data'=>$data];
+            return ['Code' => '200', 'Msg'=>lang('200020'),'Data'=>$data];
         }
 
         return $this->userMessage($uid);
@@ -184,7 +184,7 @@ class User extends Base
             //自行对数据格式化输出
             //...
 
-    		return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$info];
+    		return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info];
     	}else{
 
     		return ['Code' => '100015', 'Msg'=>lang('100015')];
@@ -210,7 +210,7 @@ class User extends Base
 
     	if (!empty($info)) {
 
-    		return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>['id'=>$parame['id']]];
+    		return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['id'=>$parame['id']]];
     	}else{
 
     		return ['Code' => '100015', 'Msg'=>lang('100015')];
@@ -237,7 +237,7 @@ class User extends Base
         //执行删除操作
     	$delCount				= $dbModel->delData($parame['id']);
 
-    	return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>['count'=>$delCount]];
+    	return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['count'=>$delCount]];
     }
 
     /*api:14d21e95293b34d2358478519fba550f*/
@@ -270,15 +270,31 @@ class User extends Base
         if ($uid > 0)
         {
             //根据group_id确定用户是否正确登录
-            $login_type     = !empty($parame['login_type']) ? explode(',',$parame['login_type']) :[-1];
+            /*
+            $login_type     = !empty($parame['login_type']) ? explode(',',$parame['login_type']) : [-1];
             $guid           = model('user_group_access')->getUserGroupAccessListByUid($uid);
             
             if (empty(array_intersect($login_type, $guid))) return $this->userMessage(-1);
+            */
+           
+            $key                        = config('extend.uc_auth_key');
+            $time                       = time();
+            $token = [
+                "iss"=>"",  //签发者 可以为空
+                "aud"=>"", //面象的用户，可以为空
+                "iat" => $time, //签发时间
+                "nbf" => $time, //在什么时候jwt开始生效  （这里表示生成100秒后才生效）
+                "exp" => $time + (24 * 3600 * 1), //token 过期时间
+                "uid" => intval($uid)
+            ];
+
+            $token                      = \Firebase\JWT\JWT::encode($token,$key,"HS256");
+
 
             //数据返回
             $data                       = [];
             $data['uid']                = intval($uid);
-            $data['hashid']             = md5($uid.config('extend.uc_auth_key'));
+            $data['hashid']             = base64_encode(string_encryption_decrypt($token,'ENCODE'));
 
             $userDetailModel            = model('user_detail');
             $userDetailInfo             = $userDetailModel->getOneById($uid);
@@ -305,7 +321,7 @@ class User extends Base
 
             $userDetailModel->updateById($uid,$loginInfo);
 
-            return ['Code' => '000000', 'Msg'=>lang('200008'),'Data'=>$data];
+            return ['Code' => '200', 'Msg'=>lang('login_success'),'Data'=>$data];
         }
 
         return $this->userMessage($uid);
@@ -386,7 +402,7 @@ class User extends Base
 
         $Data['rules']                   = $rules;
 
-        return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$Data];
+        return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$Data];
     }
 
     /*api:defd702febff8d73420c41546d79bdc9*/
@@ -433,7 +449,7 @@ class User extends Base
 
         //检验验证码
         $checkCode                  = $this->helper($checkParame,'Api','Sms','checkCode');
-        if ($checkCode['Code'] !== '000000')
+        if ($checkCode['Code'] !== '200')
         return ['Code' => '200030', 'Msg'=>lang('200030',[$checkCode['Msg']])];
 
         $uid                        = model('user_center')->register($parame);
@@ -464,7 +480,7 @@ class User extends Base
             //日志
             model('Logs')->addLog(['uid'=>$data['uid'],'log_type'=>1,'info'=>lang('3')]);
 
-            return ['Code' => '000000', 'Msg'=>lang('200020'),'Data'=>$data];
+            return ['Code' => '200', 'Msg'=>lang('200020'),'Data'=>$data];
         }
 
         return $this->userMessage($uid);
@@ -495,7 +511,7 @@ class User extends Base
 
         if (!empty($info)) {
 
-            return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>['id'=>$parame['id']]];
+            return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['id'=>$parame['id']]];
         }else{
 
             return ['Code' => '100015', 'Msg'=>lang('100015')];
@@ -530,7 +546,7 @@ class User extends Base
             $dbModel->delDetailDataCacheByUid($userDetail['uid']);
         }
 
-        return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>['id'=>$parame['uid']]];
+        return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['id'=>$parame['uid']]];
     }
 
     /*api:3b1f712d3cbb6874011b78fc67271ef2*/
@@ -575,7 +591,7 @@ class User extends Base
 
         //检验验证码
         $checkCode              = $this->helper($checkParame,'Api','Sms','checkCode');
-        if ($checkCode['Code'] !== '000000')
+        if ($checkCode['Code'] !== '200')
         return ['Code' => '200030', 'Msg'=>lang('200030',[$checkCode['Msg']])];
 
         //修改密码
@@ -587,7 +603,7 @@ class User extends Base
             $this->helper(['id'=>$checkCode['Data']['smsid']],'Api','Sms','delCode');
 
             //返回数据
-            return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>['res_status'=>'ok']];
+            return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['res_status'=>'ok']];
         }
 
         Lang::load( \Env::get('APP_PATH') . 'common/lang/zh-cn/user.php');
@@ -611,7 +627,7 @@ class User extends Base
         $updata['tags']            = 'face';
 
         $uploadRes                 = $this->helper($upload,'admin','Upload','uploadImg');
-        if ($uploadRes['Code'] != '000000')  return $uploadRes;
+        if ($uploadRes['Code'] != '200')  return $uploadRes;
 
         $imageData  = (isset($uploadRes['Data']['data']) && !empty($uploadRes['Data']['data'])) ? json_decode($uploadRes['Data']['data']) : '';
         $imageid                    = isset($imageData['lists'][0]['id']) ? $imageData['lists'][0]['id'] : 0;
@@ -620,7 +636,7 @@ class User extends Base
 
         $data['url']       = get_cover($imageid,'path');
         
-        return ['Code' => '000000', 'Msg'=>lang('200008'),'Data'=>$data];
+        return ['Code' => '200', 'Msg'=>lang('200008'),'Data'=>$data];
     }
 
     /*api:b7004d3672538f104606ec6f34ba1d00*/
@@ -660,7 +676,7 @@ class User extends Base
 
         //检验验证码
         $checkCode                  = $this->helper($checkParame,'Api','Sms','checkCode');
-        if ($checkCode['Code'] !== '000000')
+        if ($checkCode['Code'] !== '200')
         return ['Code' => '200030', 'Msg'=>lang('200030',[$checkCode['Msg']])];
 
         $res    = $dbModel->updateById($parame['uid'],['mobile'=>$new_mobile]);
@@ -672,7 +688,7 @@ class User extends Base
         //需要返回的数据体
         $Data['id']                   = $userinfo['id'];
 
-        return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$Data];
+        return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$Data];
     }
 
     /*api:026ea8a777269ba40b5233d8e5403c67*/
@@ -708,7 +724,7 @@ class User extends Base
         if ($uid > 0)
         {
             //返回数据
-            return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>['res_status'=>'ok']];
+            return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['res_status'=>'ok']];
         }
         
         Lang::load( \Env::get('APP_PATH') . 'common/lang/zh-cn/user.php');
@@ -738,7 +754,7 @@ class User extends Base
         //需要返回的数据体
         $Data                   = ['id'=>$parame['id']];
 
-        return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$Data];
+        return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$Data];
     }
 
     /*api:8d4fe31070a5465e54248cfca5255ab4*/
@@ -753,7 +769,7 @@ class User extends Base
     private function initUserDetail($parame)
     {
         //主表数据库模型
-        $dbModel                      = model($this->mainTable);
+        $dbModel                      = model('user_detail');
 
         //初始化数据
         $updata                       = [];
@@ -761,6 +777,7 @@ class User extends Base
         $updata['last_login_ip']      = request()->ip();
         $updata['last_login_time']    = time();
         $updata['invitation_code']    = isset($parame['invitation_code']) ? $parame['invitation_code'] : '';
+
         $userDetail                   = $dbModel->addUserDetailData($updata);
 
         return true;

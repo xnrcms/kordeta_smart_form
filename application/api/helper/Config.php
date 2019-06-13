@@ -118,7 +118,7 @@ class Config extends Base
 
     	$lists['lists'] 			= $data;
 
-    	return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$lists];
+    	return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$lists];
     }
 
     /**
@@ -153,7 +153,7 @@ class Config extends Base
         
         if ($addConfig) {
 
-            return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>['counts'=>count($config)]];
+            return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['counts'=>count($config)]];
         }else{
 
             return ['Code' => '100015', 'Msg'=>lang('100015')];
@@ -182,7 +182,7 @@ class Config extends Base
 
         $data['config']     = !empty($info) ? json_encode($info) : '';
 
-        return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$data];
+        return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$data];
     }
 
     /**
@@ -204,7 +204,7 @@ class Config extends Base
 
     	if (!empty($info)) {
 
-    		return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>['id'=>$id]];
+    		return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['id'=>$id]];
     	}else{
 
     		return ['Code' => '100015', 'Msg'=>lang('100015')];
@@ -231,7 +231,7 @@ class Config extends Base
         //执行删除操作
     	$delCount				= $dbModel->delData($id);
 
-    	return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>['count'=>$delCount]];
+    	return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['count'=>$delCount]];
     }
 
     /*接口扩展*/

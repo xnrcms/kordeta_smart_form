@@ -126,7 +126,7 @@ class Logs extends Base
 
     	$lists['lists'] 			= $data;
 
-    	return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$lists];
+    	return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$lists];
     }
 
     /**
@@ -165,7 +165,7 @@ class Logs extends Base
 
     	if (!empty($info)) {
 
-    		return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$info];
+    		return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info];
     	}else{
 
     		return ['Code' => '100015', 'Msg'=>lang('100015')];
@@ -197,7 +197,7 @@ class Logs extends Base
             //自行对数据格式化输出
             //...
 
-    		return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$info];
+    		return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info];
     	}else{
 
     		return ['Code' => '100015', 'Msg'=>lang('100015')];
@@ -223,7 +223,7 @@ class Logs extends Base
 
     	if (!empty($info)) {
 
-    		return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>['id'=>$id]];
+    		return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['id'=>$id]];
     	}else{
 
     		return ['Code' => '100015', 'Msg'=>lang('100015')];
@@ -250,7 +250,7 @@ class Logs extends Base
         //执行删除操作
     	$delCount				= $dbModel->delData($id);
 
-    	return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>['count'=>$delCount]];
+    	return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['count'=>$delCount]];
     }
 
     /*api:1c6d967a78ed832677c6ac12b00de3b6*/
@@ -268,7 +268,7 @@ class Logs extends Base
         $clearCount             = $dbModel->clearData($parame);
 
         //需要返回的数据体
-        return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>['count'=>$clearCount]];
+        return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['count'=>$clearCount]];
     }
 
     /*api:1c6d967a78ed832677c6ac12b00de3b6*/

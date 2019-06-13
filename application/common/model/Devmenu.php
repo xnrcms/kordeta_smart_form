@@ -115,4 +115,46 @@ class Devmenu extends Base
 
         return $rules;
     }
+
+    public function getRow($id = 0)
+    {
+      $info       = $this->getOneById($id);
+      $info       = !empty($info) ? $info->toArray() : [];
+
+      //自定义扩展
+      //.......
+
+      return $info;
+    }
+
+    public function getList($parame)
+    {
+      $ckey       = (isset($parame['cacheKey']) && !empty($parame['cacheKey'])) ? $this->name . json_encode($parame['cacheKey']) : '';
+      $ctag       = 'table_' . $this->name . '_getList';
+      $data       = $this->getCache($ckey);
+
+      //自定义扩展
+      //.......
+      
+      if (empty($data))
+      {
+          $data   = $this->getPageList($parame);
+
+          $this->setCache($ckey,$data,$ctag);
+      }
+
+      return $data;
+    }
+
+    public function deleteData($id = 0)
+    {
+      $delCount     = $this->delData($id);
+
+      //自定义扩展
+      //.......
+      
+      $this->clearCache(['ctag'=>'table_' . $this->name . '_getList']);
+
+      return $delCount;
+    }
 }

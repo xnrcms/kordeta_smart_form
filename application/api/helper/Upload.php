@@ -137,7 +137,7 @@ class Upload extends Base
 
     	$lists['lists'] 			= $data;
 
-    	return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$lists];
+    	return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$lists];
     }
 
     /**
@@ -176,7 +176,7 @@ class Upload extends Base
 
     	if (!empty($info)) {
 
-    		return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$info];
+    		return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info];
     	}else{
 
     		return ['Code' => '100015', 'Msg'=>lang('100015')];
@@ -208,7 +208,7 @@ class Upload extends Base
             //自行对数据格式化输出
             //...
 
-    		return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$info];
+    		return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info];
     	}else{
 
     		return ['Code' => '100015', 'Msg'=>lang('100015')];
@@ -234,7 +234,7 @@ class Upload extends Base
 
     	if (!empty($info)) {
 
-    		return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>['id'=>$id]];
+    		return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['id'=>$id]];
     	}else{
 
     		return ['Code' => '100015', 'Msg'=>lang('100015')];
@@ -277,7 +277,7 @@ class Upload extends Base
         //执行删除操作
         $delCount               = $dbModel->delData($id);
 
-        return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>['count'=>$delCount]];
+        return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['count'=>$delCount]];
     }
 
     /*api:f4a1c26f65b071cd7abb7537fc335e0c*/
@@ -349,7 +349,7 @@ class Upload extends Base
         if($res){
             $data['path']               = request()->domain().$path ;
             $data['id']                 = $res -> getAttr('id') ;
-            return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$data];
+            return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$data];
         }else{
 
         }return ['Code' => '120000', 'Msg'=>'上传失败，请稍后再试'];
@@ -456,7 +456,7 @@ class Upload extends Base
 
         $data['total'] = count($re) ;
 
-        return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>['data'=>json_encode($data)]];
+        return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['data'=>json_encode($data)]];
     }
 
     /*api:51af390161a18f647760fc7e58fbadf7*/

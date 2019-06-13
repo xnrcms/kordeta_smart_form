@@ -38,7 +38,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="javascript:void(0);">项目名称:{$project.title}</a>
+        <a class="navbar-brand" href="javascript:void(0);">{$project.title}</a>
     </div>
     
     <div class="navbar-default sidebar" role="navigation">
@@ -158,13 +158,16 @@
                         <p class="text-muted"><label><label style="width: 24px;"></label>项目名称：</label>{$project.title}</p>
                         <p class="text-muted"><label><label style="width: 42px;"></label>APIID：</label>{$project.api_id}&nbsp;<button type="button" data-clipboard-text="{$project.api_id}" class="btn btn-xs btn-success js_copyApiInfo">复制</button></p>
                         <p class="text-muted"><label><label style="width: 26px;"></label>APIKEY：</label>{$project.api_key} &nbsp;<button type="button" data-clipboard-text="{$project.api_key}" class="btn btn-xs btn-success js_copyApiInfo">复制</button></p>
-                        <p class="text-muted"><label><label style="width: 7px;"></label>项目创建人：</label>{$project.user_id}</p>
+                        {/*
+                            <p class="text-muted"><label><label style="width: 7px;"></label>项目创建人：</label></p> 
+                        */}
                         <p class="text-muted"><label><label style="width: 20px;"></label>创建时间：</label>{$project.create_time}</p>
                         <p class="text-muted"><label><label style="width: 20px;"></label>更新时间：</label>{$project.update_time}</p>
-
+                        {/*
                         <p class="text-muted"><label><label style="width: 20px;"></label>项目描述：</label>
-                            <span style="word-break:break-all">{$project.description}</span>
+                            <span style="word-break:break-all"></span>
                         </p>
+                        */}
                         <p class="text-muted"><label><label style="width: 20px;"></label>接口域名：</label>
                         </p><div class="table-responsive">
                             <table class="table table-striped table-bordered table-hover">

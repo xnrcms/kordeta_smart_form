@@ -30,7 +30,7 @@ if (!function_exists('is_dev'))
 	function is_dev()
 	{
 		$domain 		= get_domain();
-		$project_url 	= config('extend.apidoc_project_url');
+		$project_url 	= config('extend.project_url');
 		$dev_path 		= \Env::get('APP_PATH') . 'admin/index.html';
 
 		return  trim($domain,'/') == trim($project_url,'/') && file_exists($dev_path) ? true : false;

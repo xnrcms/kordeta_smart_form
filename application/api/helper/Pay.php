@@ -104,7 +104,7 @@ class Pay extends Base
             $extend['uid']          = $parame['uid'] ;
 
             $payInfo   = $this->getPayInfo($order_sn,$body,$attach,$fee,$paytype,$extend,$uid,$banktag,$parame['terminal']);
-            if($payInfo['Code'] !== '000000') return ['Code' => $payInfo['Code'], 'Msg'=>$payInfo['Msg']];
+            if($payInfo['Code'] !== '200') return ['Code' => $payInfo['Code'], 'Msg'=>$payInfo['Msg']];
 
             //事先写入订单数据 未支付状态
             $orderData                  = [] ;
@@ -120,7 +120,7 @@ class Pay extends Base
 
             model('order_recharge') ->addData($orderData) ;
 
-            return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$payInfo['Data']];
+            return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$payInfo['Data']];
         }catch (\Exception $exception){
             return ['Code'=>(string)$exception->getCode(),'Msg'=>$exception->getCode()==0?$exception->getMessage().$exception->getLine():$exception->getMessage()] ;
         }
@@ -232,7 +232,7 @@ class Pay extends Base
                 if (isset($result['respCode']) && $result['respCode'] == '0000') {
 
                     $dbModel->updateById($id,['status'=>3,'order_sn'=>$result['orderCode']]);
-                    return ['Code' => '000000', 'Msg'=>lang('000000')];
+                    return ['Code' => '200', 'Msg'=>lang('text_req_success')];
                 }else{
                     $msg        = (isset($result['respDesc'])) ? $result['respDesc'] : lang('200009');
                     return ['Code' => '200007', 'Msg'=>$msg];
@@ -271,7 +271,7 @@ class Pay extends Base
 
                     $payInfo = Charge::run('ali_app',$config,$options);
 
-                    return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>['alipay'=>$payInfo,'wxpay'=>[]]];
+                    return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['alipay'=>$payInfo,'wxpay'=>[]]];
 
                 }catch (PayException $exception){
                     return ['Code'=>'10000','Msg'=>$exception->errorMessage()] ;
@@ -297,7 +297,7 @@ class Pay extends Base
 
                     $payInfo = Charge::run('wx_app',$config,$options);
                     $payInfo = !empty($payInfo) ? json_encode($payInfo) : '';
-                    return ['Code' => '000000','Msg'=>lang('000000'),'Data'=>['alipay'=>"",'wxpay'=>$payInfo]];
+                    return ['Code' => '200','Msg'=>lang('text_req_success'),'Data'=>['alipay'=>"",'wxpay'=>$payInfo]];
 
                 }catch (PayException $exception){
                     return ['Code'=>'10000','Msg'=>$exception->errorMessage()] ;
@@ -338,7 +338,7 @@ class Pay extends Base
                     $html       .= "<input type='hidden' name='p26_ext1' value='".$p26_ext1."'>";
                     $html       .= "</form>";
                     $html       .= '<script type="text/javascript">function submitForm() { document.getElementById("yeepay").submit();}</script></body></html>';
-                    return ['Code' => '000000','Msg'=>lang('000000'),'Data'=>['alipay'=>$html,'wxpay'=>[]]];
+                    return ['Code' => '200','Msg'=>lang('text_req_success'),'Data'=>['alipay'=>$html,'wxpay'=>[]]];
                     break ;
                 }catch (PayException $exception){
                     return ['Code'=>'10000','Msg'=>$exception->errorMessage()] ;
@@ -405,7 +405,7 @@ class Pay extends Base
                 $html       .= '<script type="text/javascript">function submitForm() { document.getElementById("sandpay").submit();}</script></body></html>';
                 //unlink('./pay.html');
                 //file_put_contents('./pay.html',$html,FILE_APPEND);
-                return ['Code' => '000000','Msg'=>lang('000000'),'Data'=>['alipay'=>$html,'wxpay'=>[]]];
+                return ['Code' => '200','Msg'=>lang('text_req_success'),'Data'=>['alipay'=>$html,'wxpay'=>[]]];
                 break;
             default :
                 return ['Code' => '200001', 'Msg'=>lang('200001')];break ;

@@ -67,7 +67,7 @@ class Sys extends Base
     {
         \Cache::clear();
         delFile(\Env::get('RUNTIME_PATH'),true);
-        return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>['res'=>'ok']];
+        return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['res'=>'ok']];
     }
 
     /*api:50832e1dd757d4c7a43fbed57ee438af*/
@@ -97,7 +97,7 @@ class Sys extends Base
         $paytype                        = !empty($paytype) ? (string)$paytype : '';
         $config['pay_type']             = $paytype;
 
-        return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$config];
+        return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$config];
     }
 
     /*api:32f1425373f20c820bf8c97645f5d42e*/

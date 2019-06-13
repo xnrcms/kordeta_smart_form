@@ -356,7 +356,7 @@ class User extends Base
         $signData                   = $this->tpl->getFormTplData($postData);
         $signData['uid']            = $this->uid;
         $signData['hashid']         = $this->hashid;
-    
+
         //请求数据
         if (!isset($this->apiUrl['save_data'])||empty($this->apiUrl['save_data'])) 
         $this->error('未设置接口地址');

@@ -167,7 +167,7 @@ class Sms extends Base
             $Data['sendtime']       = $ttime;
 
             //返回数据
-            return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>['send_status'=>'ok']];
+            return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['send_status'=>'ok']];
         }
 
         return ['Code' => '200009', 'Msg'=>lang('200009',[$res[1]])];
@@ -239,7 +239,7 @@ class Sms extends Base
 
         if (!empty($id) && $id>0){
 
-            return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>['smsid'=>$id]];
+            return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['smsid'=>$id]];
         }
 
         return ['Code' => '200011', 'Msg'=>lang('200011')];

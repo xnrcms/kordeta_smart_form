@@ -118,7 +118,7 @@ class DevapiModule extends Base
 
     	$lists['lists'] 			= $data;
 
-    	return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$lists];
+    	return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$lists];
     }
 
     /**
@@ -173,7 +173,7 @@ class DevapiModule extends Base
 
     	if (!empty($info)) {
 
-    		return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$info];
+    		return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info];
     	}else{
 
     		return ['Code' => '100015', 'Msg'=>lang('100015')];
@@ -204,7 +204,7 @@ class DevapiModule extends Base
             //自行对数据格式化输出
             //...
 
-    		return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$info];
+    		return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info];
     	}else{
 
     		return ['Code' => '100015', 'Msg'=>lang('100015')];
@@ -229,7 +229,7 @@ class DevapiModule extends Base
 
     	if (!empty($info)) {
 
-    		return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>['id'=>$id]];
+    		return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['id'=>$id]];
     	}else{
 
     		return ['Code' => '100015', 'Msg'=>lang('100015')];
@@ -266,7 +266,7 @@ class DevapiModule extends Base
         //执行删除操作
     	$delCount				= $dbModel->delData($id);
 
-    	return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>['count'=>$delCount]];
+    	return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['count'=>$delCount]];
     }
 
     /*api:9b970e254e738a4c48c26d1a92c615db*/
@@ -300,7 +300,7 @@ class DevapiModule extends Base
 
         //需要返回的数据体
         $Data['exportData']         = json_encode($exportData);
-        return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$Data];
+        return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$Data];
     }
 
     /*api:9b970e254e738a4c48c26d1a92c615db*/
@@ -357,7 +357,7 @@ class DevapiModule extends Base
         //需要返回的数据体
         $Data['id']                   = 1;
 
-        return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$Data];
+        return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$Data];
     }
 
     /*api:e395328b9fd150e692a62db9cd0b6cb6*/

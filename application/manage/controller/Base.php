@@ -248,7 +248,7 @@ class Base extends Controller
 
 				$backData		= json_decode($backData,true);
 
-				if ($backData['Code'] == '000000') {
+				if ($backData['Code'] == '200') {
                     //指定cookie保存30天时间
                     cookie(md5('admin_username'.config('extend.uc_auth_key')),string_encryption_decrypt($username,'ENCODE'),2592000);
                     cookie(md5('admin_password'.config('extend.uc_auth_key')),string_encryption_decrypt($password,'ENCODE'),2592000);
@@ -313,7 +313,7 @@ class Base extends Controller
         		return false;
         	}
 
-            if ($backData['Code'] === '000000'  && isset($backData['Data'])) {
+            if ($backData['Code'] === '200'  && isset($backData['Data'])) {
             	
             	$this->setApiData($backData['Data']);
             	return true;

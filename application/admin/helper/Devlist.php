@@ -118,7 +118,7 @@ class Devlist extends Base
 
     	$lists['lists'] 			= $data;
 
-    	return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$lists];
+    	return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$lists];
     }
 
     /**
@@ -181,7 +181,7 @@ class Devlist extends Base
         //保存后发布数据
         $this->releaseData(['id'=>!empty($info) ? ($info['pid'] > 0 ? $info['pid'] : $info['id']) : 0]);
 
-        return !empty($info) ? ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$info] : ['Code' => '100015', 'Msg'=>lang('100015')];
+        return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '100015', 'Msg'=>lang('100015')];
     }
 
     /**
@@ -210,7 +210,7 @@ class Devlist extends Base
             //自行对数据格式化输出
             //...
 
-    		return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$info];
+    		return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info];
     	}else{
 
     		return ['Code' => '100015', 'Msg'=>lang('100015')];
@@ -237,7 +237,7 @@ class Devlist extends Base
         //保存后发布数据
         $this->releaseData(['id'=>!empty($info) ? ($info['pid'] > 0 ? $info['pid'] : $info['id']) : 0]);
 
-        return !empty($info) ? ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$info] : ['Code' => '100015', 'Msg'=>lang('100015')];
+        return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '100015', 'Msg'=>lang('100015')];
     }
 
     /**
@@ -271,7 +271,7 @@ class Devlist extends Base
 
         $this->releaseData(['id'=>$id]);
 
-    	return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>['count'=>$delCount]];
+    	return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['count'=>$delCount]];
     }
 
     /*api:41859b72c709045e8aed6e83e4c39ada*/
@@ -403,7 +403,7 @@ class Devlist extends Base
 
             $this->releaseData(['id'=>$pid]);
 
-            return ['Code' => '000000', 'Msg'=>lang('200011'),'Data'=>['id'=>$pid]];
+            return ['Code' => '200', 'Msg'=>lang('200011'),'Data'=>['id'=>$pid]];
         }
 
         $dbModel->delData($pid);
@@ -447,7 +447,7 @@ class Devlist extends Base
 
             set_release_data($data,$info['cname'],'list');
 
-            return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>['count'=>$releaseCount]];
+            return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['count'=>$releaseCount]];
         }
 
         return ['Code' => '200014', 'Msg'=>lang('200014')];
@@ -529,7 +529,7 @@ class Devlist extends Base
         //需要返回的数据体
         $Data['id']                   = $id;
 
-        return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$Data];
+        return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$Data];
     }
 
     /*api:44afc1012eeec0faba90927299896f19*/

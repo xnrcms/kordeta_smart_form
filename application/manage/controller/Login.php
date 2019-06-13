@@ -33,8 +33,8 @@ class Login extends Controller
 
 			$parame['username']		= $username;
 			$parame['password']		= $password;
-			$parame['login_type'] 	= '1,3';
-			$parame['jpushid'] 		= '';
+			/*$parame['login_type'] 	= '1,3';
+			$parame['jpushid'] 		= '';*/
 
 			$requestRes 			= apiReq($parame,'api/User/passwordLogin');
 
@@ -45,7 +45,7 @@ class Login extends Controller
 
 				if (empty($backData)) $this->error('登录数据错误！');
 
-				if ($backData['Code'] == '000000') {
+				if ($backData['Code'] == '200') {
 
 					if ($remember == 1){
 	                    //指定cookie保存30天时间

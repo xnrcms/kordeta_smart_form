@@ -489,7 +489,7 @@ class Devapi extends Base
             //$backData           = json_encode($backInfo);
             if ($backInfo)
             {
-                if ($backInfo['Code'] === "000000")
+                if ($backInfo['Code'] === "200")
                 {
                     if (strpos(strtolower($info['apiurl']).'@','login'))
                     {
@@ -1167,7 +1167,7 @@ class Devapi extends Base
         $api_sign_key       = config('dev_config.api_sign_key');
         $product_name       = config('extend.xnrcms_name');
         $api_url            = config('dev_config.api_debug_url');
-        $api_url            = !empty($api_url) ? explode("\n", $api_url) : [];
+        $api_url            = !empty($api_url) ? explode("|", $api_url) : [];
 
         $envs               = 
         [

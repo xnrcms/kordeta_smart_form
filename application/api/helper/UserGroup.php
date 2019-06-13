@@ -124,7 +124,7 @@ class UserGroup extends Base
 
     	$lists['lists'] 			= $data;
 
-    	return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$lists];
+    	return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$lists];
     }
 
     /**
@@ -169,7 +169,7 @@ class UserGroup extends Base
 
         $info    = $dbModel->saveData($id,$saveData);
 
-        return !empty($info) ? ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$info] : ['Code' => '100015', 'Msg'=>lang('100015')];
+        return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '100015', 'Msg'=>lang('100015')];
     }
 
     /**
@@ -197,7 +197,7 @@ class UserGroup extends Base
             //自行对数据格式化输出
             //...
 
-    		return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$info];
+    		return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info];
     	}else{
 
     		return ['Code' => '100015', 'Msg'=>lang('100015')];
@@ -221,7 +221,7 @@ class UserGroup extends Base
         //根据ID更新数据
         $info               = $dbModel->saveData($id,[$parame['fieldName']=>$parame['updata']]);
 
-        return !empty($info) ? ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$info] : ['Code' => '100015', 'Msg'=>lang('100015')];
+        return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '100015', 'Msg'=>lang('100015')];
     }
 
     /**
@@ -244,7 +244,7 @@ class UserGroup extends Base
         //执行删除操作
         $delCount               = $dbModel->deleteData($id);
 
-        return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>['count'=>$delCount]];
+        return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['count'=>$delCount]];
     }
 
     /*api:7e4c48b4dc57e8859f642e2eaaaa341f*/
@@ -275,7 +275,7 @@ class UserGroup extends Base
         //需要返回的数据体
         $Data                   = !empty($lists) ? $lists : [];
 
-        return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$lists];
+        return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$lists];
     }
 
     /*api:7e4c48b4dc57e8859f642e2eaaaa341f*/

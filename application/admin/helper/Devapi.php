@@ -119,7 +119,7 @@ class Devapi extends Base
 
     	$lists['lists'] 			= $data;
 
-    	return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$lists];
+    	return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$lists];
     }
 
     /**
@@ -185,7 +185,7 @@ class Devapi extends Base
             //新增接口时入库默认参数
             if ($id <= 0) $this->addFixedParame($info,$saveData['api_type']);
 
-    		return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$info];
+    		return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info];
     	}else{
 
     		return ['Code' => '100015', 'Msg'=>lang('100015')];
@@ -212,7 +212,7 @@ class Devapi extends Base
             //自行对数据格式化输出
             //...
 
-    		return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$info];
+    		return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info];
     	}else{
 
     		return ['Code' => '100015', 'Msg'=>lang('100015')];
@@ -237,7 +237,7 @@ class Devapi extends Base
 
     	if (!empty($info)) {
 
-    		return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>['id'=>$id]];
+    		return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['id'=>$id]];
     	}else{
 
     		return ['Code' => '100015', 'Msg'=>lang('100015')];
@@ -302,7 +302,7 @@ class Devapi extends Base
             //删除接口参数
             model('devapi_parame')->delParameByApiId($id);
 
-            return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>['count'=>$delCount]];
+            return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['count'=>$delCount]];
         }
 
         //接口不存在
@@ -372,7 +372,7 @@ class Devapi extends Base
             //入库语言包
             $this->save_lang_file($cName,$id);
 
-            return ['Code' => '000000', 'Msg'=>lang('200003')];
+            return ['Code' => '200', 'Msg'=>lang('200003')];
         }
 
         //接口不存在
@@ -420,7 +420,7 @@ class Devapi extends Base
         $lang['common']     = !empty($commonLang) ? $commonLang : '暂无';
         $lang[$filename]    = !empty($modelLang) ? $modelLang : '暂无';
 
-        return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>['error_code'=>json_encode($lang)]];
+        return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['error_code'=>json_encode($lang)]];
     }
 
     /*api:da0c33cedc0ec6f4033357bd8fa36dd6*/
@@ -500,7 +500,7 @@ class Devapi extends Base
         //需要返回的数据体
         $Data                   = ['TEST'];
 
-        return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$Data];
+        return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$Data];
     }
 
     /*api:133fa7a972d6f258444a5a3673722c78*/
@@ -1120,10 +1120,10 @@ class Devapi extends Base
 
             ksort($modelNameFile);
 
-            return ['Code' => '000000', 'Msg'=>lang('200000001',[count($modelNameFile),implode($modelNameFile,',')])];
+            return ['Code' => '200', 'Msg'=>lang('200000001',[count($modelNameFile),implode($modelNameFile,',')])];
         }
 
-        return ['Code' => '000000', 'Msg'=>lang('200000002',[0])];
+        return ['Code' => '200', 'Msg'=>lang('200000002',[0])];
     }
 
     //生成语言包文件
@@ -1145,7 +1145,7 @@ class Devapi extends Base
     private function save_lang_file($cName = '',$id=0)
     {
         $code   = $this->getErrorCode(['filename'=>$cName]);
-        if ($code['Code'] != '000000' || $id <= 0)  return false;
+        if ($code['Code'] != '200' || $id <= 0)  return false;
 
         if (isset($code['Data']['error_code']) && !empty($code['Data']['error_code'])) {
             

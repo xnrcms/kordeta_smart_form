@@ -39,7 +39,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="javascript:void(0);">项目名称:{$project.title}</a>
+        <a class="navbar-brand" href="javascript:void(0);">{$project.title}</a>
     </div>
     
     <div class="navbar-default sidebar" role="navigation">
@@ -116,7 +116,7 @@
                                 <tbody>
                                 {volist name="envs" id="vo"}
                                 {php}
-                                $apiurl = trim($vo['domain'],'/') . trim($apiInfo['apiurl']);
+                                $apiurl = trim($vo['domain'],'/') . '/' . trim($apiInfo['apiurl']);
                                 {/php}
                                 <tr>
                                     <td style="width: 20%;">{$vo.title}({$vo.name})</td>

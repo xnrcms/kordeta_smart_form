@@ -76,7 +76,7 @@ class Index extends Base
         $adParame['search']    = json_encode($search);
 
         $adList                = $this->helper($adParame,'Api','Ad','listData');
-        if ($adList['Code'] === '000000' && isset($adList['Data']['lists']) && !empty($adList['Data']['lists']))
+        if ($adList['Code'] === '200' && isset($adList['Data']['lists']) && !empty($adList['Data']['lists']))
         {
             
             $adData     = $adList['Data']['lists'];
@@ -91,7 +91,7 @@ class Index extends Base
         $noticeParame['page']      = 1;
 
         $noticeList                = $this->helper($adParame,'Api','Article','notice');
-        if ($noticeList['Code'] === '000000' && isset($noticeList['Data']['lists']) && !empty($noticeList['Data']['lists'])){
+        if ($noticeList['Code'] === '200' && isset($noticeList['Data']['lists']) && !empty($noticeList['Data']['lists'])){
             $notice     = $noticeList['Data']['lists'];
             if (!empty($notice) && isset($notice[0])) {
                 $notice[0]['title']     = strip_tags($notice[0]['content']);
@@ -110,7 +110,7 @@ class Index extends Base
         $catParame['isstatus']  = 1;
 
         $catList                = $this->helper($catParame,'Admin','Category','listData');
-        if ($catList['Code'] === '000000' && isset($catList['Data']['lists']) && !empty($catList['Data']['lists']))
+        if ($catList['Code'] === '200' && isset($catList['Data']['lists']) && !empty($catList['Data']['lists']))
         {
             
             $catData            = $catList['Data']['lists'];
@@ -174,7 +174,7 @@ class Index extends Base
         $Data['ad_list']        = $adData;
         $Data['cat_list']       = [$newData];
 
-        return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$Data];
+        return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$Data];
     }
 
     /*api:2dcf1a0ebcd7e6de04c2685efbb72b05*/

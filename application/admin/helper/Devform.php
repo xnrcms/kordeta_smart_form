@@ -118,7 +118,7 @@ class Devform extends Base
 
     	$lists['lists'] 			= $data;
 
-    	return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$lists];
+    	return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$lists];
     }
 
     /**
@@ -180,7 +180,7 @@ class Devform extends Base
         //保存后发布数据
         $this->releaseData(['id'=>!empty($info) ? ($info['pid'] > 0 ? $info['pid'] : $info['id']) : 0]);
 
-        return !empty($info) ? ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$info] : ['Code' => '100015', 'Msg'=>lang('100015')];
+        return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '100015', 'Msg'=>lang('100015')];
     }
 
     /**
@@ -209,7 +209,7 @@ class Devform extends Base
             //自行对数据格式化输出
             //...
 
-    		return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$info];
+    		return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info];
     	}else{
 
     		return ['Code' => '100015', 'Msg'=>lang('100015')];
@@ -236,7 +236,7 @@ class Devform extends Base
         //保存后发布数据
         $this->releaseData(['id'=>!empty($info) ? ($info['pid'] > 0 ? $info['pid'] : $info['id']) : 0]);
 
-        return !empty($info) ? ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$info] : ['Code' => '100015', 'Msg'=>lang('100015')];
+        return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '100015', 'Msg'=>lang('100015')];
     }
 
     /**
@@ -267,7 +267,7 @@ class Devform extends Base
 
         $this->releaseData(['id'=>$id]);
 
-    	return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>['count'=>$delCount]];
+    	return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['count'=>$delCount]];
     }
 
     /*api:6d85a74742f0718de2bfd3d994955525*/
@@ -401,7 +401,7 @@ class Devform extends Base
 
             $this->releaseData(['id'=>$pid]);
 
-            return ['Code' => '000000', 'Msg'=>lang('200011'),'Data'=>['id'=>$pid]];
+            return ['Code' => '200', 'Msg'=>lang('200011'),'Data'=>['id'=>$pid]];
         }
         
         $dbModel->delData($pid);
@@ -445,7 +445,7 @@ class Devform extends Base
 
             set_release_data($data,$info['cname'],'form');
 
-            return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>['count'=>$releaseCount]];
+            return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['count'=>$releaseCount]];
         }
 
         return ['Code' => '200014', 'Msg'=>lang('200014')];
@@ -526,7 +526,7 @@ class Devform extends Base
         //需要返回的数据体
         $Data['id']                   = $id;
 
-        return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$Data];
+        return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$Data];
     }
 
     /*api:3a6f32c1317c6b3070e395aaf910a89a*/

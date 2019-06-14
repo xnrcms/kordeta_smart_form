@@ -65,6 +65,10 @@ class UserGroup extends Base
      */
     private function listData($parame)
     {
+        //权限校验
+        $menuid  = (isset($parame['menuid']) && (int)$parame['menuid'] > 0) ? (int)$parame['menuid'] : 0;
+        if (!$this->checkUserPower($menuid)) return ['Code' => '202', 'Msg'=>lang('202')];
+
         //主表数据库模型
 		$dbModel					= model($this->mainTable);
 
@@ -164,7 +168,7 @@ class UserGroup extends Base
         {
             $gid       = model('user_group_access')->getUserGroupAccessListByUid($parame['uid']);
             $ownerid   = 0;
-            
+
             if (isset($gid[0]) && $gid[0] > 0 && in_array($gid[0], [1,2])) {
                 $ownerid   = $gid[0] == 2 ? (int)$parame['uid'] : 0;
             }else{

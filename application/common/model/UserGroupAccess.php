@@ -51,18 +51,18 @@ class UserGroupAccess extends Base
     {
       if (empty($uid))  return [];
 
-      $ckey                       = 'getUserGroupAccessListByUid='.$uid;
-      $data                       = $this->getCache($ckey);
+      $ckey             = 'getUserGroupAccessListByUid='.$uid;
+      $data             = $this->getCache($ckey);
 
-      if (empty($data)){
+      if (empty($data))
+      {
+          $lists       = $this->where('uid','=',$uid)->field('uid,group_id')->select()->toArray();
+          $data        = [];
 
-          $lists                  = $this->where('uid','=',$uid)->field('uid,group_id')->select()->toArray();
-          $data                   = [];
-
-          if (!empty($lists)) {
-            
-            foreach ($lists as $key => $value) {
-              
+          if (!empty($lists))
+          {  
+            foreach ($lists as $key => $value)
+            {  
               $data[$value['group_id']]  = $value['group_id'];
             }
 
@@ -82,9 +82,11 @@ class UserGroupAccess extends Base
       $this->where('uid','=',$uid)->delete();
       $this->clearCache(['ckey'=>'getUserGroupAccessListByUid='.$uid]);
 
-      if (!empty($gid)) {
+      if (!empty($gid))
+      {
         $gdata    = [];
-        foreach ($gid as $key => $value) {
+        foreach ($gid as $key => $value)
+        {
           $gdata[]  = ['uid'=>$uid,'group_id'=>$value];
         }
 

@@ -35,6 +35,17 @@ class UserDetail extends Base
         return $model;
     }
 
+    public function getRow($id = 0)
+    {
+      $info       = $this->getOneById($id);
+      $info       = !empty($info) ? $info->toArray() : [];
+
+      //自定义扩展
+      //.......
+
+      return $info;
+    }
+
     public function getOneByUid($uid)
     {
     	if ($uid <= 0) return null;

@@ -250,4 +250,15 @@ class UserCenter extends Base
 
         return 0;
     }
+
+    public function getRow($id = 0)
+    {
+      $info       = $this->getOneById($id);
+      $info       = !empty($info) ? $info->toArray() : [];
+
+      //自定义扩展
+      //.......
+
+      return $info;
+    }
 }

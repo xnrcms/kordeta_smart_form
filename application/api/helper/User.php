@@ -766,7 +766,7 @@ class User extends Base
         $dbModel                = model($this->mainTable);
 
         //自行书写业务逻辑代码
-        model('api_token')->saveData($this->getUserId($parame['hashid']),['token'=>'']);
+        model('api_token')->saveData($this->getUserId(),['token'=>'']);
         //需要返回的数据体
 
         return ['Code' => '200', 'Msg'=>lang('logout_success'),'Data'=>''];

@@ -19,6 +19,8 @@ class Base
     public  $controllerName;
     public  $actionName;
     public  $moduleName;
+    private $UserToken;
+    private $UserId;
 
     public function __construct($parame=[],$controllerName='',$actionName='',$moduleName='')
     {
@@ -33,6 +35,8 @@ class Base
       $this->actionName       = $actionName;
       $this->moduleName       = $moduleName;
       $this->postData         = $parame;
+      $this->UserToken        = "";
+      $this->UserId           = 0;
 
       //加载语言包
       $this->loadLang('zh-cn',$this->controllerName);
@@ -259,14 +263,20 @@ class Base
       $isApiId  = $this->checkApiId($signData['apiId']);
       if (!$isApiId) return $this->setReturnData(array('Code' => '120024', 'Msg'=>lang('120024')));
 
-      //校验用户身份ID是否正确
-      if ( /*isset($parameData['uid']) && $parameData['uid'] > 0 &&*/ isset($parameData['hashid']) )
-      {  
-        $hashid       = (!isset($parameData['hashid']) || empty($parameData['hashid']) ) ? '' : trim($parameData['hashid']);
-        //$uid          = intval($parameData['uid']);
+      $this->UserToken  = isset($parameData['hashid']) ? trim($parameData['hashid']) : '';
 
-        if ($this->checkHashid($hashid) <= 0)
-        return $this->setReturnData(array('Code' => '201', 'Msg'=>lang('201')));
+      //校验用户身份ID是否正确
+      if (!empty($this->UserToken))
+      {
+        //检验UserToken是否合法
+        if ( $this->checkHashid() <= 0 ) return $this->setReturnData(['Code'=>'201','Msg'=>lang('201')]);
+
+        //检验用户是否异常
+        $userStatus     = $this->checkUserInfo();
+
+        if ($userStatus !== 1) $this->clearToken();
+        if ($userStatus === 0) return $this->setReturnData(['Code'=>'205','Msg'=>lang('205')]);
+        if ($userStatus === 2) return $this->setReturnData(['Code'=>'206','Msg'=>lang('206')]);
       }
       
       return $parameData;
@@ -313,10 +323,9 @@ class Base
       return md5('xnrcms_api_key'.$apiId) == $this->ApiKey ? true : false;
     }
 
-    public function getUserId($hashid)
+    public function getUserId()
     {
-      $JWT    = $this->getJwtInfo($hashid);
-      return (!empty($JWT) && (int)$JWT->uid > 0 && $JWT->exp > time()) ? (int)$JWT->uid : 0;
+      return $this->UserId;
     }
 
     /**
@@ -326,21 +335,44 @@ class Base
      * @param  string   $hashid 用户秘钥
      * @return bool
      */
-    private function checkHashid($hashid)
+    private function checkHashid()
     {
-        $JWT    = $this->getJwtInfo($hashid);
+        $JWT    = $this->getJwtInfo($this->UserToken);
+        $token  = md5($this->UserToken);
 
         if (is_numeric($JWT) && $JWT === -1) return -1;
-        if (is_object($JWT) && !empty($JWT) && (int)$JWT->uid > 0 && $JWT->exp > time()){
+        if (is_object($JWT) && !empty($JWT) && (int)$JWT->uid > 0 && $JWT->exp > time())
+        {
           $tokenInfo    = model('api_token')->getRow($JWT->uid);
-          if (!empty($tokenInfo) && isset($tokenInfo['token']) && $tokenInfo['token'] === md5($hashid)) 
-          return 1;
+
+          if ( !empty($tokenInfo) && isset($tokenInfo['token']) && $tokenInfo['token'] === $token )
+          {
+            $this->UserId     = (int)$JWT->uid;
+            return 1;
+          }
         }
 
         return 0;
     }
 
-    private function getJwtInfo($hashid)
+    private function clearToken()
+    {
+      model('api_token')->saveData($this->UserId,['token'=>'']);
+    }
+
+    private function checkUserInfo()
+    {
+        $userInfo     = model('user_center')->getRow($this->UserId);
+        if(!empty($userInfo))
+        {
+          //1用户正常 2用户被禁用
+          return isset($userInfo['status']) && $userInfo['status'] === 1 ? 1 : 2;
+        }
+
+        return 0;//用户不存
+    }
+
+    private function getJwtInfo($hashid = '')
     {
         try{
           $token  = string_encryption_decrypt(base64_decode($hashid),'DECODE');
@@ -473,5 +505,47 @@ class Base
       Lang::load(\Env::get('APP_PATH') . 'common/lang/' . $code . '/lang.php');
       Lang::load(\Env::get('APP_PATH') . 'common/lang/' . $code . '/common.php');
       Lang::load(\Env::get('APP_PATH') . 'common/lang/' . $code . '/' . strtolower($cname) . '.php');
+    }
+
+    public function getUserRulesId()
+    {
+      //获取用户私有权限
+      $userInfo       = model('user_detail')->getRow($this->UserId);
+
+      //私有权限
+      $urules         = (isset($userInfo['rules']) && !empty($userInfo['rules'])) ? explode(',', $userInfo['rules']) : [];
+
+      //分组权限
+      $gids           = model('user_group_access')->getUserGroupAccessListByUid($this->UserId);
+
+      //获取用户组列表
+      $glist          = model('user_group')->getUserGroupListById($gids);
+      
+      //整理组权限
+      $grules         = [];
+      if (!empty($glist))
+      {    
+          foreach ($glist as $key => $value)
+          {
+              $rules  = !empty($value['rules']) ? explode(',', $value['rules']) : [];
+              $grules = array_merge($rules,$grules);
+          }
+      }
+
+      $allRules     = array_merge($urules,$grules);
+      $allRules     = array_flip(array_flip($allRules));
+
+      return $allRules;
+    }
+
+    public function checkUserPower( $menuid = 0 )
+    {
+      //不需要验证或者是超级管理员ID 不校验权限
+      $administrator_id        = config('extend.administrator_id');
+      if ($menuid == -1 || (int)$administrator_id === $this->UserId) return true;
+      
+      $userAllRules    = $this->getUserRulesId();
+
+      return in_array($menuid, $userAllRules) ? true : false;
     }
 }

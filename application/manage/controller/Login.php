@@ -16,7 +16,6 @@ class Login extends Controller
 	 */
 	public function index($username = null, $password = null, $verify = null,$remember  = 0)
 	{
-
 		$is_verify 			= config('extend.is_verify');
 		//接口调用实现
 
@@ -98,6 +97,8 @@ class Login extends Controller
 		session('user_auth_sign', null);
 		session('apidoc_user_auth', null);
 		session('apidoc_user_auth_sign', null);
+        session('api_uid',null);
+        session('api_hashid',null);
 		session('[destroy]');
 		cookie(null);
 		$this->success('退出成功！', url('login/index'));

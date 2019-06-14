@@ -197,6 +197,19 @@ class Base extends Controller
 
         $userInfo			= $res  ? $this->getApiData() : [];
 
+        if (is_string($this->getApiError()) && $this->getApiError() == 'Token过期')
+        {
+            session('user_auth', null);
+            session('user_auth_sign', null);
+            session('apidoc_user_auth', null);
+            session('apidoc_user_auth_sign', null);
+            session('api_uid',null);
+            session('api_hashid',null);
+            session('[destroy]');
+            cookie(null);
+            $this->goLogin();
+        }
+
         if (!empty($userInfo))
         {	
 			$userInfo['nickname']	 = empty($userInfo['nickname'])?$userInfo['username']:$userInfo['nickname'];

@@ -265,8 +265,8 @@ class Base
         $hashid       = (!isset($parameData['hashid']) || empty($parameData['hashid']) ) ? '' : trim($parameData['hashid']);
         //$uid          = intval($parameData['uid']);
 
-        if (!$this->checkHashid($hashid))
-        return $this->setReturnData(array('Code' => '201', 'Msg'=>lang('text_token_fail')));
+        if ($this->checkHashid($hashid) <= 0)
+        return $this->setReturnData(array('Code' => '201', 'Msg'=>lang('201')));
       }
       
       return $parameData;
@@ -330,16 +330,29 @@ class Base
     {
         $JWT    = $this->getJwtInfo($hashid);
 
-        return (!empty($JWT) && (int)$JWT->uid > 0 && $JWT->exp > time()) ? true : false;
+        if (is_numeric($JWT) && $JWT === -1) return -1;
+        if (is_object($JWT) && !empty($JWT) && (int)$JWT->uid > 0 && $JWT->exp > time()){
+          $tokenInfo    = model('api_token')->getRow($JWT->uid);
+          if (!empty($tokenInfo) && isset($tokenInfo['token']) && $tokenInfo['token'] === md5($hashid)) 
+          return 1;
+        }
+
+        return 0;
     }
 
     private function getJwtInfo($hashid)
     {
-        $token  = string_encryption_decrypt(base64_decode($hashid),'DECODE');
-        $key    = config('extend.uc_auth_key');
-        $JWT    = \Firebase\JWT\JWT::decode($token,$key,["HS256"]);
+        try{
+          $token  = string_encryption_decrypt(base64_decode($hashid),'DECODE');
+          $key    = config('extend.uc_auth_key');
+          $JWT    = \Firebase\JWT\JWT::decode($token,$key,["HS256"]);
 
-        return !empty($JWT) ? $JWT : null;
+          return !empty($JWT) ? $JWT : 0;
+        }
+        catch (\Exception $exception)
+        {
+          return $exception->getMessage() === 'Expired token' ? -1 : 0;
+        }
     }
 
     private function apiTestData($dataTpl=[],$data=[])

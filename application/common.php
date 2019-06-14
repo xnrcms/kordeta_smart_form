@@ -726,7 +726,7 @@ if (!function_exists('apiReq'))
 
 		$backData 	= !empty($backData) ? is_array($backData) ? $backData : json_encode($backData,true) : [];
 		$errorInfo 	= !empty($errorInfo) ? is_array($errorInfo) ? $backData : json_encode($errorInfo,true) : [];
-
+		
 		return [$backData,$errorInfo];
 	}
 }

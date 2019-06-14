@@ -280,16 +280,13 @@ class User extends Base
             $key                        = config('extend.uc_auth_key');
             $time                       = time();
             $token = [
-                "iss"=>"",  //签发者 可以为空
-                "aud"=>"", //面象的用户，可以为空
-                "iat" => $time, //签发时间
-                "nbf" => $time, //在什么时候jwt开始生效  （这里表示生成100秒后才生效）
-                "exp" => $time + (24 * 3600 * 1), //token 过期时间
+                "iat" => $time,
+                "nbf" => $time,
+                "exp" => $time + (24 * 3600 * 1),
                 "uid" => intval($uid)
             ];
 
             $token                      = \Firebase\JWT\JWT::encode($token,$key,"HS256");
-
 
             //数据返回
             $data                       = [];
@@ -298,6 +295,9 @@ class User extends Base
 
             $userDetailModel            = model('user_detail');
             $userDetailInfo             = $userDetailModel->getOneById($uid);
+
+            //维护token
+            model('api_token')->saveData($uid,['id'=>$uid,'token'=>md5($data['hashid'])]);
 
             //极光ID
             if (isset($parame['jpushid']) && !empty($parame['jpushid']))
@@ -766,7 +766,7 @@ class User extends Base
         $dbModel                = model($this->mainTable);
 
         //自行书写业务逻辑代码
-
+        model('api_token')->saveData($this->getUserId($parame['hashid']),['token'=>'']);
         //需要返回的数据体
 
         return ['Code' => '200', 'Msg'=>lang('logout_success'),'Data'=>''];

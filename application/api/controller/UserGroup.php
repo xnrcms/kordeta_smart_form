@@ -76,7 +76,7 @@ class UserGroup extends Base
         return $this->execApi($parame);
     }
 
-    /*api:7e4c48b4dc57e8859f642e2eaaaa341f*/
+    /*api:1a08f4cc54d01d345a9039698c7da566*/
     /**
      * 获取用户组列表（用户组设置）
      * @access public
@@ -89,7 +89,7 @@ class UserGroup extends Base
         return $this->execApi($parame);
     }
 
-    /*api:7e4c48b4dc57e8859f642e2eaaaa341f*/
+    /*api:1a08f4cc54d01d345a9039698c7da566*/
 
     /*接口扩展*/
 }

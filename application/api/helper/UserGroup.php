@@ -267,7 +267,7 @@ class UserGroup extends Base
         return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['count'=>$delCount]];
     }
 
-    /*api:7e4c48b4dc57e8859f642e2eaaaa341f*/
+    /*api:1a08f4cc54d01d345a9039698c7da566*/
     /**
      * * 获取用户组列表（用户组设置）
      * @param  [array] $parame 接口参数
@@ -280,17 +280,12 @@ class UserGroup extends Base
 
         //自行书写业务逻辑代码
         $lists                  = $dbModel->getAllUserGorupTitle();
-        $gaccess                = model('user_group_access')->getUserGroupAccessListByUid($parame['id']);
 
-        if (!empty($lists)) {
+        /*if (!empty($lists)) {
             foreach ($lists as $key => $value) {
-                if (in_array($value['id'], $gaccess)) {
-                    $lists[$key]['selected']    = 1;
-                }else{
-                    $lists[$key]['selected']    = 0;
-                }
+                
             }
-        }
+        }*/
 
         //需要返回的数据体
         $Data                   = !empty($lists) ? $lists : [];
@@ -298,7 +293,7 @@ class UserGroup extends Base
         return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$lists];
     }
 
-    /*api:7e4c48b4dc57e8859f642e2eaaaa341f*/
+    /*api:1a08f4cc54d01d345a9039698c7da566*/
 
     /*接口扩展*/
 }

@@ -22,6 +22,8 @@ class UserGroup extends Base
 	
 	public function __construct($parame=[],$className='',$methodName='',$modelName='')
     {
+
+        wr($parame);
         parent::__construct($parame,$className,$methodName,$modelName);
         $this->apidoc           = request()->param('apidoc',0);
     }

@@ -83,6 +83,9 @@ class User extends Base
         $RelationTab['user_detail'] = [
             'Ralias'=>'ud','Ron'=>'ud.uid=main.id','Rtype'=>'LEFT','Rfield'=>['uid as ugauid','nickname','face']
         ];
+        $RelationTab['user_center'] = [
+            'Ralias'=>'uc1','Ron'=>'uc1.id=main.ownerid','Rtype'=>'LEFT','Rfield'=>['username as oname']
+        ];
 
 		$modelParame['RelationTab']	= $RelationTab;
 
@@ -113,6 +116,7 @@ class User extends Base
         if (!empty($data)) {
             foreach ($data as $key => $value) {
                 $data[$key]['gtitle']   = $this->getUserGroupTitle($value['id']);
+                $data[$key]['oname']    = !empty($value['oname']) ? $value['oname'] : '系统用户';
             }
         }
 

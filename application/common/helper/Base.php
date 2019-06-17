@@ -546,6 +546,7 @@ class Base
       
       $userAllRules    = $this->getUserRulesId();
 
+        wr($userAllRules);
       return in_array($menuid, $userAllRules) ? true : false;
     }
 }

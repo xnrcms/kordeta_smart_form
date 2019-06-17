@@ -157,4 +157,20 @@ class Devmenu extends Base
 
       return $delCount;
     }
+
+    public function getMenuAuthList($menuid = [],$uid = 0)
+    {
+      if (empty($menuid) || (int)$uid <= 0 || !is_array($menuid)) return [];
+
+      $ckey       = 'getMenuAuthListByUid=' . $uid;
+      $data       = $this->getCache($ckey);
+      if (empty($data))
+      {
+        $data     = $this->where("status","=",1)->where("id","in",$menuid)->select()->toArray();
+
+        $this->setCache($ckey,$data);
+      }
+
+      return $data;
+    }
 }

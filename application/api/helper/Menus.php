@@ -73,48 +73,16 @@ class Menus extends Base
         //主表数据库模型
 		$dbModel					= model($this->mainTable);
 
-		/*定义数据模型参数*/
-		//主表名称，可以为空，默认当前模型名称
-		$modelParame['MainTab']		= $this->mainTable;
-
-		//主表名称，可以为空，默认为main
-		$modelParame['MainAlias']	= 'main';
-
-		//主表待查询字段，可以为空，默认全字段
-		$modelParame['MainField']	= [];
-
-		//定义关联查询表信息，默认是空数组，为空时为单表查询,格式必须为一下格式
-		//Rtype :`INNER`、`LEFT`、`RIGHT`、`FULL`，不区分大小写，默认为`INNER`。
-		$RelationTab				= [];
-		//$RelationTab['member']		= array('Ralias'=>'me','Ron'=>'me.uid=main.uid','Rtype'=>'LEFT','Rfield'=>array('nickname'));
-
-		$modelParame['RelationTab']	= $RelationTab;
-
-        //接口数据
-        $modelParame['apiParame']   = $parame;
-
-		//检索条件 需要对应的模型里面定义查询条件 格式为formatWhere...
-		$modelParame['whereFun']	= 'formatWhereDefault';
-
-		//排序定义
-		$modelParame['order']		= 'main.id desc';		
-		
-		//数据分页步长定义
-		$modelParame['limit']		= isset($parame['limit']) ? $parame['limit'] : 10;
-
-		//数据分页页数定义
-		$modelParame['page']		= (isset($parame['page']) && $parame['page'] > 0) ? $parame['page'] : 1;
-
-		//数据缓存是时间，默认0 不缓存 ,单位秒
-		$modelParame['cacheKey']	= [];
+        //有权限的菜单ID
+        $authMenuIds                = $this->getUserRulesId();
 
 		//列表数据
-		$lists 						= $dbModel->getList($modelParame);
+		$lists 						= $dbModel->getMenuAuthList($authMenuIds,$this->getUserId());
 
 		//数据格式化
-		$data 						= (isset($lists['lists']) && !empty($lists['lists'])) ? $lists['lists'] : [];
+        wr($lists);
 
-    	if (!empty($data))
+    	if (!empty($lists))
         {
             //自行定义格式化数据输出
     		/*foreach($data as $k=>$v)
@@ -123,7 +91,7 @@ class Menus extends Base
     		}*/
     	}
 
-    	$lists['lists'] 			= $data;
+    	$lists['lists'] 			= $lists;
 
     	return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$lists];
     }

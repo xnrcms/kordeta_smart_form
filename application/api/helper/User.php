@@ -83,9 +83,9 @@ class User extends Base
         $RelationTab['user_detail'] = [
             'Ralias'=>'ud','Ron'=>'ud.uid=main.id','Rtype'=>'LEFT','Rfield'=>['uid as ugauid','nickname','face']
         ];
-        $RelationTab['user_center'] = [
+        /*$RelationTab['user_center'] = [
             'Ralias'=>'uc1','Ron'=>'uc1.id=main.ownerid','Rtype'=>'LEFT','Rfield'=>['username as oname']
-        ];
+        ];*/
 
 		$modelParame['RelationTab']	= $RelationTab;
 

@@ -80,19 +80,20 @@ class UserGroup extends Base
         //自定义扩展
         //.......
         
-        $this->clearCache(['ctag'=>'table_' . $this->name . '_getList']);
+        $ownerid  = isset($parame['ownerid']) ? $parame['ownerid'] : 0;
+        $this->clearCache(['ctag'=>'table_' . $this->name . '_getList_Ownerid'.$ownerid]);
 
         return $info;
     }
 
-    public function deleteData($id = 0)
+    public function deleteData($id = 0,$ownerid = 0)
     {
       $delCount     = $this->delData($id);
 
       //自定义扩展
       //.......
       
-      $this->clearCache(['ctag'=>'table_' . $this->name . '_getList']);
+      $this->clearCache(['ctag'=>'table_' . $this->name . '_getList_Ownerid'.$ownerid]);
 
       return $delCount;
     }
@@ -123,14 +124,18 @@ class UserGroup extends Base
         return !empty($res) ? true : false;
     }
     
-    public function getAllUserGorupTitle()
+    public function getAllUserGorupTitle($ownerid = 0)
     {
         $ckey                       = md5('getAllUserGorupTitle');
-        $ctag                       = 'table_' . $this->name . '_getList';
+        $ctag                       = 'table_' . $this->name . '_getList_Ownerid'.$ownerid;
         $data                       = $this->getCache($ckey);
         if (empty($data))
         {
-            $data                   = $this->where('status','=',1)->field('id,title')->select()->toArray();
+            $map                    = [];
+            $map['status']          = 1;
+            $map['ownerid']         = $ownerid;
+
+            $data                   = $this->where($map)->field('id,title')->select()->toArray();
             $this->setCache($ckey,$data,$ctag);
         }
 

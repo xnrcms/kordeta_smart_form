@@ -58,8 +58,9 @@ class Usergroup extends Base
 
         //获取列表数据
         $parame             = [];
-        $parame['menuid']   = $menuid;
+        $parame['uid']      = $this->uid;
         $parame['hashid']   = $this->hashid;
+        $parame['menuid']   = $menuid;
         $parame['page']     = $page;
         $parame['search']   = !empty($search) ? json_encode($search) : '' ;
 

@@ -22,8 +22,6 @@ class UserGroup extends Base
 	
 	public function __construct($parame=[],$className='',$methodName='',$modelName='')
     {
-
-        wr($parame);
         parent::__construct($parame,$className,$methodName,$modelName);
         $this->apidoc           = request()->param('apidoc',0);
     }
@@ -115,7 +113,7 @@ class UserGroup extends Base
         ];
 
         //列表数据
-        $lists                      = $dbModel->getList($modelParame);
+        $lists                      = $dbModel->getList($modelParame,$this->getOwnerId());
 
         //数据格式化
         $data                       = (isset($lists['lists']) && !empty($lists['lists'])) ? $lists['lists'] : [];
@@ -170,15 +168,10 @@ class UserGroup extends Base
         //通过ID判断数据是新增还是更新 定义新增条件下数据
         if ($id <= 0)
         {
-            $gid       = model('user_group_access')->getUserGroupAccessListByUid($parame['uid']);
-            $ownerid   = 0;
+            $ownerid   = $this->getOwnerId();
 
-            if (isset($gid[0]) && $gid[0] > 0 && in_array($gid[0], [1,2])) {
-                $ownerid   = $gid[0] == 2 ? (int)$parame['uid'] : 0;
-            }else{
-                //其他分组暂时不能添加
-                return ['Code' => '203', 'Msg'=>lang('error_gropu_add_fail')];
-            }
+            //其他分组暂时不能添加
+            if ($ownerid === -1) return ['Code' => '203', 'Msg'=>lang('error_gropu_add_fail')];
 
             $saveData['ownerid']            = $ownerid;
             $saveData['create_time']        = time();
@@ -233,7 +226,10 @@ class UserGroup extends Base
 
         //数据ID
         $id                 = isset($parame['id']) ? intval($parame['id']) : 0;
-        if ($id <= 0) return ['Code' => '120023', 'Msg'=>lang('120023')];
+        if ($id <= 0) return ['Code' => '203', 'Msg'=>lang('notice_data_id')];
+
+        //其他分组暂时不能编辑
+        if ($this->getOwnerId() === -1) return ['Code' => '203', 'Msg'=>lang('error_gropu_edit_fail')];
 
         //根据ID更新数据
         $info               = $dbModel->saveData($id,[$parame['fieldName']=>$parame['updata']]);
@@ -241,7 +237,7 @@ class UserGroup extends Base
         //清楚分组权限缓存
         if ($parame['fieldName'] == 'rules') model('user_group_access')->clearMenuAuthListByGid($id);
 
-        return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '100015', 'Msg'=>lang('100015')];
+        return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '203', 'Msg'=>lang('notice_api_fail')];
     }
 
     /**
@@ -256,13 +252,16 @@ class UserGroup extends Base
 
         //数据ID
         $id                 = isset($parame['id']) ? intval($parame['id']) : 0;
-        if ($id <= 0) return ['Code' => '120023', 'Msg'=>lang('120023')];
+        if ($id <= 0) return ['Code' => '203', 'Msg'=>lang('notice_data_id')];
+
+        //其他分组暂时不能删除
+        if ($this->getOwnerId() === -1) return ['Code' => '203', 'Msg'=>lang('error_gropu_del_fail')];
 
         //自行定义删除条件
         //...
         
         //执行删除操作
-        $delCount               = $dbModel->deleteData($id);
+        $delCount               = $dbModel->deleteData($id,$this->getOwnerId());
 
         return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['count'=>$delCount]];
     }
@@ -275,17 +274,25 @@ class UserGroup extends Base
      */
     private function glistData($parame)
     {
+        //权限校验
+        if (!$this->checkUserPower(-1)) return ['Code' => '202', 'Msg'=>lang('202')];
+
         //主表数据库模型
         $dbModel                = model($this->mainTable);
 
         //自行书写业务逻辑代码
-        $lists                  = $dbModel->getAllUserGorupTitle();
+        $lists                  = $dbModel->getAllUserGorupTitle($this->getOwnerId());
+        $gaccess                = model('user_group_access')->getUserGroupAccessListByUid($parame['id']);
 
-        /*if (!empty($lists)) {
+        if (!empty($lists)) {
             foreach ($lists as $key => $value) {
-                
+                if (in_array($value['id'], $gaccess)) {
+                    $lists[$key]['selected']    = 1;
+                }else{
+                    $lists[$key]['selected']    = 0;
+                }
             }
-        }*/
+        }
 
         //需要返回的数据体
         $Data                   = !empty($lists) ? $lists : [];

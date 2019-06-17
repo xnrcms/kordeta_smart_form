@@ -37,6 +37,7 @@ class Base
       $this->postData         = $parame;
       $this->UserToken        = "";
       $this->UserId           = 0;
+      $this->OwnerId          = 0;
 
       //加载语言包
       $this->loadLang('zh-cn',$this->controllerName);
@@ -328,6 +329,23 @@ class Base
       return $this->UserId;
     }
 
+    public function getOwnerId()
+    {
+      //如果是系统会员
+      $gids     = $this->getGroupIds();
+      
+      if (isset($gids[0]) && in_array($gids[0], [1]) ) {
+        $this->OwnerId  = 0;
+      } else if (isset($gids[0]) && in_array($gids[0], [2]) ) {
+        $this->OwnerId  = $this->UserId;
+      }else{
+        //暂时不支持 -1
+        $this->OwnerId  = -1;
+      }
+
+      return $this->OwnerId;
+    }
+
     /**
      * [checkHashid 校验uid和hashid是否合法]
      * @access private
@@ -507,6 +525,11 @@ class Base
       Lang::load(\Env::get('APP_PATH') . 'common/lang/' . $code . '/' . strtolower($cname) . '.php');
     }
 
+    private function getGroupIds()
+    {
+      return model('user_group_access')->getUserGroupAccessListByUid($this->UserId);
+    }
+
     public function getUserRulesId()
     {
       //获取用户私有权限
@@ -516,7 +539,7 @@ class Base
       $urules         = (isset($userInfo['rules']) && !empty($userInfo['rules'])) ? explode(',', $userInfo['rules']) : [];
 
       //分组权限
-      $gids           = model('user_group_access')->getUserGroupAccessListByUid($this->UserId);
+      $gids           = $this->getGroupIds();
 
       //获取用户组列表
       $glist          = model('user_group')->getUserGroupListById($gids);

@@ -82,16 +82,18 @@ class UserGroupAccess extends Base
       $this->where('uid','=',$uid)->delete();
       $this->clearCache(['ckey'=>'getUserGroupAccessListByUid='.$uid]);
       $this->clearCache(['ckey'=>'getMenuAuthListByUid='.$uid]);
-
+      
       if (!empty($gid))
       {
         $gdata    = [];
         foreach ($gid as $key => $value)
         {
-          $gdata[]  = ['uid'=>$uid,'group_id'=>$value];
+          if ($value != -1) {
+            $gdata[]  = ['uid'=>$uid,'group_id'=>$value];
+          }
         }
 
-        $this->saveAll($gdata);
+        if (!empty($gdata)) $this->saveAll($gdata);
       }
     }
 

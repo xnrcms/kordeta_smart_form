@@ -39,6 +39,10 @@ class UserGroup extends Base
           }
         }
 
+        if (isset($parame['ownerid'])) {
+          $model->where('main.ownerid','eq',$parame['ownerid']);
+        }
+
         return $model;
     }
 
@@ -53,10 +57,10 @@ class UserGroup extends Base
       return $info;
     }
 
-    public function getList($parame)
+    public function getList($parame,$ownerid = 0)
     {
       $ckey       = (isset($parame['cacheKey']) && !empty($parame['cacheKey'])) ? $this->name . json_encode($parame['cacheKey']) : '';
-      $ctag       = 'table_' . $this->name . '_getList';
+      $ctag       = 'table_' . $this->name . '_getList_Ownerid' . $ownerid;
       $data       = $this->getCache($ckey);
 
       //自定义扩展
@@ -64,7 +68,9 @@ class UserGroup extends Base
       
       if (empty($data))
       {
-          $data   = $this->getPageList($parame);
+          $parame['apiParame']['ownerid']    = $ownerid;
+
+          $data                 = $this->getPageList($parame);
 
           $this->setCache($ckey,$data,$ctag);
       }
@@ -80,8 +86,9 @@ class UserGroup extends Base
         //自定义扩展
         //.......
         
-        $ownerid  = isset($parame['ownerid']) ? $parame['ownerid'] : 0;
-        $this->clearCache(['ctag'=>'table_' . $this->name . '_getList_Ownerid'.$ownerid]);
+        $ownerid  = isset($info['ownerid']) ? $info['ownerid'] : 0;
+        $ctag     = 'table_' . $this->name . '_getList_Ownerid'.$ownerid;
+        $this->clearCache(['ctag'=>$ctag]);
 
         return $info;
     }
@@ -129,12 +136,13 @@ class UserGroup extends Base
         $ckey                       = md5('getAllUserGorupTitle');
         $ctag                       = 'table_' . $this->name . '_getList_Ownerid'.$ownerid;
         $data                       = $this->getCache($ckey);
+
         if (empty($data))
         {
             $map                    = [];
             $map['status']          = 1;
             $map['ownerid']         = $ownerid;
-
+            
             $data                   = $this->where($map)->field('id,title')->select()->toArray();
             $this->setCache($ckey,$data,$ctag);
         }

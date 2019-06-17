@@ -752,7 +752,7 @@ class User extends Base
         //自行书写业务逻辑代码
         $menu_id                = isset($parame['menu_id']) ? $parame['menu_id'] : '';
         $group_id               = isset($parame['group_id']) ? explode(',', $parame['group_id']) : [];
-
+        
         model('user_detail')->updateById($parame['id'],['rules'=>$menu_id,'update_time'=>time()]);
         model('user_group_access')->setGroupAccess($parame['id'],$group_id);
 

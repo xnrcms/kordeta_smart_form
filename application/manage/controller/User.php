@@ -357,6 +357,7 @@ class User extends Base
         $signData['uid']            = $this->uid;
         $signData['hashid']         = $this->hashid;
         $signData['gid']            = 0;
+        $signData['mark']           = '';
 
         //请求数据
         if (!isset($this->apiUrl['save_data'])||empty($this->apiUrl['save_data'])) 

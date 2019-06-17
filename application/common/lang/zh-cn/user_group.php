@@ -8,4 +8,6 @@ return [
     // 系统错误提示
     'error_title_already_exists'                   	=> '分组名称已经存在',
     'error_gropu_add_fail'                   		=> '分组添加失败',
+    'error_gropu_del_fail'                   		=> '分组删除失败',
+    'error_gropu_edit_fail'                   		=> '分组更新失败',
 ];

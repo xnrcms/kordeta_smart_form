@@ -55,4 +55,6 @@ return [
 
     'notice_undefined_data'    => '未定义入库数据',
     'notice_api_fail'          => '接口数据返回失败',
+
+    'message_save_success'     => '更新成功',
 ];

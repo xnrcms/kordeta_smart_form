@@ -138,6 +138,9 @@ class User extends Base
         if (!empty($parame['password']) && md5($parame['password']) !== md5($parame['repeatpwd']))
         return ['Code' => '200012', 'Msg'=>lang('200012')];
 
+        //是否设置了分组
+        $gid                        = isset($parame['gid']) ? intval($parame['gid']) : 0;
+
         //更新
         if ($id <= 0)
         {
@@ -156,9 +159,12 @@ class User extends Base
         //更新成功
         if ($uid >0)
         {
+
+            if ($gid > 0 ) model('user_group_access')->setGroupAccess($uid,[$gid]);
+
             $data['id']                 = intval($uid);
 
-            return ['Code' => '200', 'Msg'=>lang('200020'),'Data'=>$data];
+            return ['Code' => '200', 'Msg'=>lang('message_save_success'),'Data'=>$data];
         }
 
         return $this->userMessage($uid);

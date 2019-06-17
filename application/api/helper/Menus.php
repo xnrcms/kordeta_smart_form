@@ -80,7 +80,7 @@ class Menus extends Base
 		$lists 						= $dbModel->getMenuAuthList($authMenuIds,$this->getUserId());
 
 		//数据格式化
-        wr($lists);
+        //wr($lists);
 
     	if (!empty($lists))
         {
@@ -91,7 +91,7 @@ class Menus extends Base
     		}*/
     	}
 
-    	$lists['lists'] 			= $lists;
+    	//$lists['lists'] 			= $lists;
 
     	return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$lists];
     }

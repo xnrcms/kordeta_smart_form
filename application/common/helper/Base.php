@@ -545,8 +545,7 @@ class Base
       if ($menuid == -1 || (int)$administrator_id === $this->UserId) return true;
       
       $userAllRules    = $this->getUserRulesId();
-
-        wr($userAllRules);
+      
       return in_array($menuid, $userAllRules) ? true : false;
     }
 }

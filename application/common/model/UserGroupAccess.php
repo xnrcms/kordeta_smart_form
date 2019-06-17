@@ -81,6 +81,7 @@ class UserGroupAccess extends Base
 
       $this->where('uid','=',$uid)->delete();
       $this->clearCache(['ckey'=>'getUserGroupAccessListByUid='.$uid]);
+      $this->clearCache(['ckey'=>'getMenuAuthListByUid='.$uid]);
 
       if (!empty($gid))
       {
@@ -124,6 +125,13 @@ class UserGroupAccess extends Base
       return $this->where($map)->value('uid');
     }
 
+    public function clearMenuAuthListByGid($gid = 0)
+    {
+        $lists  = $this->where("group_id","=",$gid)->select()->toArray();
+        if (!empty($lists)) {
+          foreach ($lists as $value) $this->clearCache(['ckey'=>'getMenuAuthListByUid='.$value['uid']]);
+        }
+    }
     //自行扩展更多
     //...
 }

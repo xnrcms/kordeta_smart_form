@@ -745,7 +745,7 @@ class User extends Base
 
         model('user_detail')->updateById($parame['id'],['rules'=>$menu_id,'update_time'=>time()]);
         model('user_group_access')->setGroupAccess($parame['id'],$group_id);
-    
+
         //需要返回的数据体
         $Data                   = ['id'=>$parame['id']];
 

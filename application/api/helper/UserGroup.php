@@ -234,6 +234,9 @@ class UserGroup extends Base
         //根据ID更新数据
         $info               = $dbModel->saveData($id,[$parame['fieldName']=>$parame['updata']]);
 
+        //清楚分组权限缓存
+        if ($parame['fieldName'] == 'rules') model('user_group_access')->clearMenuAuthListByGid($id);
+
         return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '100015', 'Msg'=>lang('100015')];
     }
 

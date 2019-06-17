@@ -123,9 +123,11 @@ class UserGroup extends Base
     	if (!empty($data))
         {
             //自行定义格式化数据输出
-    		//foreach($data as $k=>$v){
-
-    		//}
+    		foreach($data as $k=>$v)
+            {
+                $gusers                 = '1';
+                $data[$k]['gusers']     = $gusers;
+    		}
     	}
 
     	$lists['lists'] 			= $data;

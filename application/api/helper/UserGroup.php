@@ -171,7 +171,7 @@ class UserGroup extends Base
             $ownerid   = $this->getOwnerId();
 
             //其他分组暂时不能添加
-            if ($ownerid === -1) return ['Code' => '203', 'Msg'=>lang('error_gropu_add_fail')];
+            if ($ownerid < 0) return ['Code' => '203', 'Msg'=>lang('error_gropu_add_fail')];
 
             $saveData['ownerid']            = $ownerid;
             $saveData['create_time']        = time();
@@ -229,7 +229,7 @@ class UserGroup extends Base
         if ($id <= 0) return ['Code' => '203', 'Msg'=>lang('notice_data_id')];
 
         //其他分组暂时不能编辑
-        if ($this->getOwnerId() === -1) return ['Code' => '203', 'Msg'=>lang('error_gropu_edit_fail')];
+        if ($this->getOwnerId() < 0) return ['Code' => '203', 'Msg'=>lang('error_gropu_edit_fail')];
 
         //根据ID更新数据
         $info               = $dbModel->saveData($id,[$parame['fieldName']=>$parame['updata']]);
@@ -255,7 +255,7 @@ class UserGroup extends Base
         if ($id <= 0) return ['Code' => '203', 'Msg'=>lang('notice_data_id')];
 
         //其他分组暂时不能删除
-        if ($this->getOwnerId() === -1) return ['Code' => '203', 'Msg'=>lang('error_gropu_del_fail')];
+        if ($this->getOwnerId() < 0) return ['Code' => '203', 'Msg'=>lang('error_gropu_del_fail')];
 
         //自行定义删除条件
         //...

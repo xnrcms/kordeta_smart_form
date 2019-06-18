@@ -143,7 +143,7 @@ class User extends Base
         return ['Code' => '200012', 'Msg'=>lang('200012')];
 
         //是否设置了分组
-        $gid                        = isset($parame['gid']) ? intval($parame['gid']) : 0;
+        $gid                        = isset($parame['group_id']) ? intval($parame['group_id']) : 0;
 
         //更新
         if ($id <= 0)

@@ -77,6 +77,12 @@ class UserCenter extends Base
 		}
 	}
 
+    public function resetPwd($uid = 0)
+    {
+        $defPwd         = '123456';
+        $this->updateById($uid,['password'=>data_md5($defPwd, config('extend.uc_auth_key'))]);
+    }
+
     public function register($parame)
     {	
     	$username 	= (isset($parame['username']) && !empty($parame['username'])) ?  $parame['username'] : '';

@@ -88,6 +88,7 @@ class UserGroup extends Base
         
         $ownerid  = isset($info['ownerid']) ? $info['ownerid'] : 0;
         $ctag     = 'table_' . $this->name . '_getList_Ownerid'.$ownerid;
+
         $this->clearCache(['ctag'=>$ctag]);
 
         return $info;

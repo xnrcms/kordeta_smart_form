@@ -241,5 +241,20 @@ class User extends Base
 
     /*api:f361e06c3640311e8255cb1a4e0628f2*/
 
+    /*api:f41838ec0bbc7feb996582f9c9bd3f00*/
+    /**
+     * 密码重置（管理员通过用户ID重置密码）
+     * @access public
+     * @param  [array] $parame 扩展参数
+     * @return [json]          接口数据输出
+    */
+    public function resetPwd($parame = [])
+    {
+        //执行接口调用
+        return $this->execApi($parame);
+    }
+
+    /*api:f41838ec0bbc7feb996582f9c9bd3f00*/
+
     /*接口扩展*/
 }

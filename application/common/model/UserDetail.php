@@ -70,6 +70,25 @@ class UserDetail extends Base
 		return $info;
     }
 
+    public function saveData($parame)
+    {
+        $id                             = isset($parame['id']) ?  intval($parame['id']) : 0;
+        
+        $updata                         = [];
+        $updata['update_time']          = time();
+
+        if (isset($parame['faceid']))               $updata['face']             = $parame['faceid'];
+        if (isset($parame['nickname']))             $updata['nickname']         = $parame['nickname'];
+        if (isset($parame['mark']))                 $updata['mark']             = $parame['mark'];
+        if (isset($parame['last_login_time']))      $updata['last_login_time']  = time();
+        if (isset($parame['last_login_ip']))        $updata['last_login_ip']    = request()->ip();
+
+        $info      = $id <= 0 ? $this->addData($updata) : $this->updateById($id,$updata);
+        $info      = !empty($info) ? $info->toArray() : [];
+
+        return $info;
+    }
+
     public function addUserDetailData($parame)
     {
     	$info			= null;

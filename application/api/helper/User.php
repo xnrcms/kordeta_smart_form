@@ -163,10 +163,16 @@ class User extends Base
         //更新成功
         if ($uid >0)
         {
-
             if ($gid > 0 ) model('user_group_access')->setGroupAccess($uid,[$gid]);
 
             $data['id']                 = intval($uid);
+
+            //更新详细信息
+            $detailData                 = [];
+            $detailData['id']           = $data['id'];
+            $detailData['mark']         = isset($parame['mark']) ? trim($parame['mark']) : '';
+            
+            model('user_detail')->saveData($detailData);
 
             return ['Code' => '200', 'Msg'=>lang('message_save_success'),'Data'=>$data];
         }
@@ -357,12 +363,6 @@ class User extends Base
         if (empty($ucUserInfo))  return ['Code' => '200004', 'Msg'=>lang('200004')];
         $ucUserInfo             = $ucUserInfo->toArray();
 
-        if (empty($userDetail)) {
-
-            //初始化用户详细资料数据
-            $this->initUserDetail($parame);
-        }
-
         //需要返回的数据体
         $Data                             = [];
         $Data['id']                       = $ucUserInfo['id'];
@@ -383,6 +383,7 @@ class User extends Base
 
         $Data['status']                   = $ucUserInfo['status'];
         $Data['detail_id']                = $userDetail['id'];
+        $Data['mark']                     = $userDetail['mark'];
 
         $groupInfo                        = $this->getGroupRules($Data);
 
@@ -469,8 +470,9 @@ class User extends Base
             $data['hashid']             = md5($uid.config('extend.uc_auth_key'));
             $data['invitation_code']    = $invitation_code;
 
+
             //初始化用户详细资料数据
-            $this->initUserDetail($data);
+            model('user_detail')->saveData($data);
 
             //自动分配到会员组里面
             model('user_group_access')->saveData($uid,2);
@@ -536,22 +538,26 @@ class User extends Base
         //主表数据库模型
         $dbModel                = model($this->mainTable);
 
-        $faceid                 = isset($parame['faceid']) ? intval($parame['faceid']) : '';
-        $nickname               = isset($parame['nickname']) ? $parame['nickname'] : '';
-        $sex                    = isset($parame['sex']) ? intval($parame['sex']) : '';
+        $faceid                 = isset($parame['faceid']) ? intval($parame['faceid']) : -1;
+        $nickname               = isset($parame['nickname']) ? $parame['nickname'] : 'no';
+        $sex                    = isset($parame['sex']) ? intval($parame['sex']) : -1;
+        $mark                   = isset($parame['mark']) ? trim($parame['mark']) : 'no';
+        $id                     = isset($parame['id']) ? intval($parame['id']) : 0;
 
         $updata                 = [];
-        if ($faceid > 0)        $updata['face']         = $faceid;
-        if (!empty($nickname))  $updata['nickname']     = $nickname;
-        if ($sex > 0)           $updata['sex']          = $sex;
+        if ($faceid != -1)      $updata['face']         = $faceid;
+        if ($nickname != 'no')  $updata['nickname']     = $nickname;
+        if ($sex != -1)         $updata['sex']          = $sex;
+        if ($mark != 'no')      $updata['mark']         = $mark;
 
-        if (!empty($updata)) {
-            $userDetail       = $dbModel->getOneById($parame['uid']);
-            $info             = $dbModel->updateById($userDetail['id'],$updata);
-            $dbModel->delDetailDataCacheByUid($userDetail['uid']);
+        if (!empty($updata))
+        {
+            //$userDetail       = $dbModel->getOneById($parame['uid']);
+            $info     = $id > 0 ? $dbModel->updateById($id,$updata) : $dbModel->saveData($updata);
+            //$dbModel->delDetailDataCacheByUid($userDetail['uid']);
         }
 
-        return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['id'=>$parame['uid']]];
+        return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['id'=>$id]];
     }
 
     /*api:3b1f712d3cbb6874011b78fc67271ef2*/
@@ -784,30 +790,35 @@ class User extends Base
 
     /*api:f361e06c3640311e8255cb1a4e0628f2*/
 
-    /*接口扩展*/
-
+    /*api:f41838ec0bbc7feb996582f9c9bd3f00*/
     /**
-     * 初始化用户资料数据
+     * * 密码重置（管理员通过用户ID重置密码）
      * @param  [array] $parame 接口参数
      * @return [array]         接口输出数据
      */
-    private function initUserDetail($parame)
+    private function resetPwd($parame)
     {
         //主表数据库模型
-        $dbModel                      = model('user_detail');
+        $dbModel                = model($this->mainTable);
 
-        //初始化数据
-        $updata                       = [];
-        $updata['uid']                = $parame['id'];
-        $updata['last_login_ip']      = request()->ip();
-        $updata['last_login_time']    = time();
-        $updata['invitation_code']    = isset($parame['invitation_code']) ? $parame['invitation_code'] : '';
+        //自行书写业务逻辑代码
+        $uid                    = isset($parame['id']) ? (int)$parame['id'] : 0;
+        $userInfo               = $dbModel->getOneById($uid);
 
-        $userDetail                   = $dbModel->addUserDetailData($updata);
+        if (empty($userInfo)) return ['Code' => '203', 'Msg'=>lang('notice_user_not_exist')];
 
-        return true;
+        $dbModel->resetPwd($uid);
+
+        //需要返回的数据体
+        $Data                   = ['id'=>$uid];
+
+        return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$Data];
     }
-    
+
+    /*api:f41838ec0bbc7feb996582f9c9bd3f00*/
+
+    /*接口扩展*/
+
     /**
      * 获取用户组权限信息
      * @param  [array] $parame 接口参数

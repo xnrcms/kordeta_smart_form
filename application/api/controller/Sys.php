@@ -50,5 +50,20 @@ class Sys extends Base
 
     /*api:32f1425373f20c820bf8c97645f5d42e*/
 
+    /*api:edc438abfae19f530dedb76108d9d370*/
+    /**
+     * 通用字段校验是否存在接口
+     * @access public
+     * @param  [array] $parame 扩展参数
+     * @return [json]          接口数据输出
+    */
+    public function checkField($parame = [])
+    {
+        //执行接口调用
+        return $this->execApi($parame);
+    }
+
+    /*api:edc438abfae19f530dedb76108d9d370*/
+
     /*接口扩展*/
 }

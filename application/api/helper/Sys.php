@@ -102,5 +102,40 @@ class Sys extends Base
 
     /*api:32f1425373f20c820bf8c97645f5d42e*/
 
+    /*api:edc438abfae19f530dedb76108d9d370*/
+    /**
+     * * 通用字段校验是否存在接口
+     * @param  [array] $parame 接口参数
+     * @return [array]         接口输出数据
+     */
+    private function checkField($parame)
+    {
+        $table             = [
+            '',
+            'devform2'
+        ];
+
+        $dataTag                = isset($parame['dataTag']) ? $parame['dataTag'] : '';
+        $dataId                 = isset($parame['dataId']) ? $parame['dataId'] : '';
+        $fieldName              = isset($parame['fieldName']) ? $parame['fieldName'] : '';
+        $fieldValue             = isset($parame['fieldValue']) ? $parame['fieldValue'] : '';
+        $tableName              = isset($table[$dataTag]) ? $table[$dataTag] : '';
+
+        if (empty($tableName))
+        return ['Code' => '203', 'Msg'=>lang('notice_tag_not_exists')];
+
+
+        //主表数据库模型
+        $dbModel                = model($tableName);
+
+        //自行书写业务逻辑代码
+
+        $isOk   = (int)$dbModel->checkValue($fieldValue,$dataId,$fieldName);
+
+        return ['Code' => '200', 'Msg'=>lang('200'),'Data'=>$isOk];
+    }
+
+    /*api:edc438abfae19f530dedb76108d9d370*/
+
     /*接口扩展*/
 }

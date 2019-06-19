@@ -85,6 +85,12 @@ class Base extends Model
 		return !empty($data) ? unserialize($data) : [];
 	}
 
+	public function checkValue($value,$id,$field)
+    {
+        $res    = $this->where('id','not in',[$id])->where($field,'eq',$value)->value($field);
+        return !empty($res) ? true : false;
+    }
+
 	//新增
 	protected function baseAddData($data)
 	{

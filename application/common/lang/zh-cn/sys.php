@@ -6,5 +6,5 @@
 
 return [
     // 系统错误提示
-    '200'                   => '请求OK',
+    'notice_tag_not_exists'                   => '数据校验标识不存在',
 ];

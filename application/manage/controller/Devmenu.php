@@ -250,6 +250,9 @@ class Devmenu extends Base
             $parame['icon']     = $param['icon'];
             $parame['sort']     = $param['sort'];
             $parame['id']       = $param['id'];
+            $parame['url_type']     = 0;
+            $parame['open_type']    = 0;
+            $parame['operation']    = "";
 
 
 	        $res       = $this->apiData($parame,$this->apiUrl['save_data']) ;

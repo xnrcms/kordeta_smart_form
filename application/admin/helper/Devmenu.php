@@ -134,6 +134,17 @@ class Devmenu extends Base
 
         //数据ID
         $id                         = isset($parame['id']) ? intval($parame['id']) : 0;
+        
+        //数据操作类型
+        $operation                      = isset($parame['operation']) ? trim($parame['operation']) : '';
+        if (!empty($operation))
+        {
+            $operation                  = explode(',', $operation);
+            foreach ($operation as $val) {
+                if (!in_array($val, [1,2,3,4]))
+                return ['Code' => '203', 'Msg'=>lang('notice_operation_type')];
+            }
+        }
 
         //自行定义入库数据 为了防止参数未定义报错，先采用isset()判断一下
         $saveData                   = [];
@@ -148,6 +159,8 @@ class Devmenu extends Base
         $saveData['fsize']          = isset($parame['fsize']) ? $parame['fsize'] : '800*550';
         $saveData['project_id']     = isset($parame['project_id']) ? $parame['project_id'] : 1;
         $saveData['update_time']    = time();
+        $saveData['open_type']      = isset($parame['open_type']) ? (int)$parame['open_type'] : 0;
+        $saveData['url_type']       = isset($parame['url_type']) ? (int)$parame['url_type'] : 0;
         //$saveData['parame']       = isset($parame['parame']) ? $parame['parame'] : '';
 
         //数据校验
@@ -166,12 +179,16 @@ class Devmenu extends Base
 		
         //通过ID判断数据是新增还是更新
     	if ($id <= 0) {
+            $saveData['ownerid']                = $this->getOwnerId();
             $saveData['create_time']            = time();
     	}
 
         $info                                   = $dbModel->saveData($id,$saveData);
 
     	if (!empty($info)) {
+
+            //处理数据操作
+            $this->addDataOperation($operation,$info);
 
     		return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info];
     	}else{
@@ -295,4 +312,50 @@ class Devmenu extends Base
     /*api:3fb60204afa7d463d2e65238cc913f37*/
 
     /*接口扩展*/
+
+    //处理数据操作菜单
+    private function addDataOperation($operation = [],$info)
+    {
+        //主表数据库模型
+        $dbModel                = model($this->mainTable);
+        $pid                    = isset($info['id']) ? $info['id'] : 0;
+        $ownerid                = isset($info['ownerid']) ? $info['ownerid'] : 0;
+
+        $purl                   = isset($info['url']) ? $info['url'] : '';
+        $purl                   = !empty($purl) ? explode('/', $purl) : [];
+        $purl                   = isset($purl[0]) ? $purl[0] : '';
+
+        //删除子菜单 根据父ID
+        $dbModel->delOperationMenuByPid($pid,$this->getOwnerId());
+
+        //无操作直接返回
+        if (empty($operation)) return;
+
+        $title      = [1=>'新增',2=>'查看',3=>'编辑',4=>'删除'];
+        $url        = [1=>'addOperation',2=>'viewOperation',3=>'editOperation',4=>'delOperation'];
+        $addData    = [];
+
+        foreach ($operation as $value)
+        {
+            $addData[]  = [
+                'title'             => isset($title[$value]) ? $title[$value] : '',
+                'pid'               => $pid,
+                'sort'              => 100 - $value,
+                'url'               => trim($purl,'/') . '/' . (isset($url[$value]) ? $url[$value] : ''),
+                'pos'               => 0,
+                'status'            => 0,
+                'create_time'       => time(),
+                'update_time'       => time(),
+                'posttype'          => 0,
+                'ownerid'           => $ownerid,
+                'open_type'         => 0,
+                'url_type'          => 0
+            ]; 
+        }
+
+        if (!empty($addData))
+        {
+            $dbModel->addDataOperation($addData,$ownerid);
+        }
+    }
 }

@@ -173,4 +173,23 @@ class Devmenu extends Base
 
       return $data;
     }
+
+    public function delOperationMenuByPid($pid = 0,$ownerid = 0)
+    {
+      if ($pid <= 0)  return ;
+
+      $map              = [];
+      $map['ownerid']   = $ownerid;
+      $map['pid']       = $pid;
+
+      $this->where($map)->delete();
+
+      $this->clearCache(['ctag'=>'table_' . $this->name . '_getList_' . $ownerid]);
+    }
+
+    public function addDataOperation($addData = [],$ownerid = 0)
+    {
+      $this->insertAll($addData);
+      $this->clearCache(['ctag'=>'table_' . $this->name . '_getList_' . $ownerid]);
+    }
 }

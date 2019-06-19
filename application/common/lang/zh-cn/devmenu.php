@@ -6,5 +6,5 @@
 
 return [
     // 系统错误提示
-    '200'                   => '请求OK',
+    'notice_operation_type'                   => '数据操作类型错误',
 ];

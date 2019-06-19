@@ -81,7 +81,7 @@ class User extends Base
 		//Rtype :`INNER`、`LEFT`、`RIGHT`、`FULL`，不区分大小写，默认为`INNER`。
 		$RelationTab				= [];
         $RelationTab['user_detail'] = [
-            'Ralias'=>'ud','Ron'=>'ud.uid=main.id','Rtype'=>'LEFT','Rfield'=>['uid as ugauid','nickname','face']
+            'Ralias'=>'ud','Ron'=>'ud.uid=main.id','Rtype'=>'LEFT','Rfield'=>['uid as ugauid','nickname','face','mark']
         ];
         /*$RelationTab['user_center'] = [
             'Ralias'=>'uc1','Ron'=>'uc1.id=main.ownerid','Rtype'=>'LEFT','Rfield'=>['username as oname']

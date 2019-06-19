@@ -145,11 +145,12 @@ class UserGroup extends Base
 
         //自行定义入库数据 为了防止参数未定义报错，先采用isset()判断一下
         $saveData                   = [];
-        $saveData['title']          = isset($parame['title']) ? $parame['title'] : '';
-        $saveData['description']    = isset($parame['description']) ?  $parame['description'] : '';
-        $saveData['status']         = isset($parame['status']) ? $parame['status'] : 0;
-        $saveData['status']         = $saveData['status'] == 1 ? 1 : 2;
-        $saveData['rules']          = isset($parame['rules'])  ? $parame['rules'] : '';
+
+        if (isset($parame['title']))        $saveData['title']          = $parame['title'];
+        if (isset($parame['description']))  $saveData['description']    = $parame['description'];
+        if (isset($parame['status']))       $saveData['status']         = $parame['status'] == 1 ? 1 : 2;
+        if (isset($parame['rules']))        $saveData['rules']          = $parame['rules'];
+
         $saveData['update_time']    = time();
 
         //数据ID
@@ -158,6 +159,20 @@ class UserGroup extends Base
         //检测分组名称是否存在
         if ($dbModel->checkValue($saveData['title'],$id,'title'))
         return ['Code' => '203', 'Msg'=>lang('error_title_already_exists')];
+
+        //分组成员ID
+        $gusersid                   = [];
+        if (isset($parame['gusers']))
+        {
+            $gusers         = explode(',', $parame['gusers']);
+            foreach ($gusers as $key => $value)
+            {
+                $gid            = model('user_group_access')->getUserGroupAccessListByUid($value);
+                if (!empty($gid)) return ['Code' => '203', 'Msg'=>lang('notice_user_already_bind_group')];
+
+                $gusersid[]     = $value;
+            }
+        }
 
         //规避遗漏定义入库数据
         if (empty($saveData)) return ['Code' => '203', 'Msg'=>lang('notice_undefined_data')];
@@ -178,6 +193,12 @@ class UserGroup extends Base
         }
 
         $info    = $dbModel->saveData($id,$saveData);
+
+        //添加组员
+        if (isset($parame['gusers']))
+        {
+            foreach ($gusersid as $uid) model('user_group_access')->setGroupAccess($uid,$info['id']);
+        }
 
         return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '203', 'Msg'=>lang('notice_api_fail')];
     }
@@ -313,27 +334,15 @@ class UserGroup extends Base
         //主表数据库模型
         $dbModel                = model($this->mainTable);
 
-        $group_id               = isset($parame['group_id']) ? (int)$parame['group_id'] : 0;
         $user_name              = isset($parame['username']) ? trim($parame['username']) : '';
-
-        $group_info             = $dbModel->getOneById($group_id);
-        if (empty($group_info)) return ['Code' => '203', 'Msg'=>lang('notice_group_info_not_exists')];
-
         $uid                    = (int)model("user_center")->getUserCenterIdByUserName($user_name);
 
         //用户是否存在
         if ($uid <= 0) return ['Code' => '203', 'Msg'=>lang('notice_user_not_exist')];
 
-        //用户是否已经加入当前分组
-        $guid           = (int)model('user_group_access')->checkGroupByUidAndGid($uid,$group_id);
-        if ( $guid > 0) return ['Code' => '203', 'Msg'=>lang('notice_user_already_bind')];
-
         //用户是否已经加入到其他分组
         $gid            = model('user_group_access')->getUserGroupAccessListByUid($uid);
         if (!empty($gid)) return ['Code' => '203', 'Msg'=>lang('notice_user_already_bind_group')];
-
-        //自行书写业务逻辑代码
-        model('user_group_access')->setGroupAccess($uid,[$group_id]);
 
         //需要返回的数据体
         $Data['id']                   = $uid;

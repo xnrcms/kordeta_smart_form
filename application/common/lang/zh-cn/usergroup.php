@@ -12,6 +12,6 @@ return [
     'error_gropu_edit_fail'                   		=> '分组更新失败',
     'notice_user_not_exist'                     	=> '用户不存在',
     'notice_user_already_bind'                		=> '用户已经绑定过当前组',
-    'notice_user_already_bind_group'                => '用户已经绑定其他组',
+    'notice_user_already_bind_group'                => '用户已经绑定其他组或当前分组',
     'notice_group_info_not_exists'                  => '分组信息不存在',
 ];

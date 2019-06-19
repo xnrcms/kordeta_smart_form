@@ -812,7 +812,7 @@ class User extends Base
         //需要返回的数据体
         $Data                   = ['id'=>$uid];
 
-        return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$Data];
+        return ['Code' => '200', 'Msg'=>lang('resetpwd_success'),'Data'=>$Data];
     }
 
     /*api:f41838ec0bbc7feb996582f9c9bd3f00*/

@@ -47,6 +47,7 @@ return [
 
     'login_success'                             => '登录成功',
     'logout_success'                            => '退出成功',
+    'resetpwd_success'                          => '密码重置成功',
 
     'notice_confirm_not_same'                   => '两次密码输入不一致',
     'notice_user_not_exist'                     => '用户不存在',

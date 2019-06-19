@@ -356,7 +356,7 @@ class User extends Base
         $signData                   = $this->tpl->getFormTplData($postData);
         $signData['uid']            = $this->uid;
         $signData['hashid']         = $this->hashid;
-        $signData['gid']            = 0;
+        $signData['group_id']       = 0;
         $signData['mark']           = '';
 
         //请求数据

@@ -267,4 +267,9 @@ class UserCenter extends Base
 
       return $info;
     }
+
+    public function getUserCenterIdByUserName($username = 0)
+    {
+        return $this->where('username|mobile|email','eq',$username)->value('id');
+    }
 }

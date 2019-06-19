@@ -124,13 +124,6 @@ class UserGroup extends Base
 
       return $lists;
     }
-
-    public function checkValue($value,$id,$field)
-    {
-        $res    = $this->where('id','not in',[$id])->where($field,'eq',$value)->value($field);
-
-        return !empty($res) ? true : false;
-    }
     
     public function getAllUserGorupTitle($ownerid = 0)
     {

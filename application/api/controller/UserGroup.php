@@ -91,5 +91,20 @@ class UserGroup extends Base
 
     /*api:1a08f4cc54d01d345a9039698c7da566*/
 
+    /*api:1c3d588bc0f96f58a7a138a7eedfabb9*/
+    /**
+     * 添加用户组组员
+     * @access public
+     * @param  [array] $parame 扩展参数
+     * @return [json]          接口数据输出
+    */
+    public function bindUser($parame = [])
+    {
+        //执行接口调用
+        return $this->execApi($parame);
+    }
+
+    /*api:1c3d588bc0f96f58a7a138a7eedfabb9*/
+
     /*接口扩展*/
 }

@@ -302,5 +302,46 @@ class UserGroup extends Base
 
     /*api:1a08f4cc54d01d345a9039698c7da566*/
 
+    /*api:1c3d588bc0f96f58a7a138a7eedfabb9*/
+    /**
+     * * 添加用户组组员
+     * @param  [array] $parame 接口参数
+     * @return [array]         接口输出数据
+     */
+    private function bindUser($parame)
+    {
+        //主表数据库模型
+        $dbModel                = model($this->mainTable);
+
+        $group_id               = isset($parame['group_id']) ? (int)$parame['group_id'] : 0;
+        $user_name              = isset($parame['username']) ? trim($parame['username']) : '';
+
+        $group_info             = $dbModel->getOneById($group_id);
+        if (empty($group_info)) return ['Code' => '203', 'Msg'=>lang('notice_group_info_not_exists')];
+
+        $uid                    = (int)model("user_center")->getUserCenterIdByUserName($user_name);
+
+        //用户是否存在
+        if ($uid <= 0) return ['Code' => '203', 'Msg'=>lang('notice_user_not_exist')];
+
+        //用户是否已经加入当前分组
+        $guid           = (int)model('user_group_access')->checkGroupByUidAndGid($uid,$group_id);
+        if ( $guid > 0) return ['Code' => '203', 'Msg'=>lang('notice_user_already_bind')];
+
+        //用户是否已经加入到其他分组
+        $gid            = model('user_group_access')->getUserGroupAccessListByUid($uid);
+        if (!empty($gid)) return ['Code' => '203', 'Msg'=>lang('notice_user_already_bind_group')];
+
+        //自行书写业务逻辑代码
+        model('user_group_access')->setGroupAccess($uid,[$group_id]);
+
+        //需要返回的数据体
+        $Data['id']                   = $uid;
+
+        return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$Data];
+    }
+
+    /*api:1c3d588bc0f96f58a7a138a7eedfabb9*/
+
     /*接口扩展*/
 }

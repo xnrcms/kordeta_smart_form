@@ -163,7 +163,7 @@ class User extends Base
         //更新成功
         if ($uid >0)
         {
-            if ($gid > 0 ) model('user_group_access')->setGroupAccess($uid,[$gid]);
+            if ($gid > 0 && $gid != 3) model('user_group_access')->setGroupAccess($uid,[$gid]);
 
             $data['id']                 = intval($uid);
 

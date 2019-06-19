@@ -116,6 +116,11 @@ class Devmenu extends Base
         return $rules;
     }
 
+    public function getChildMenuByPid($pid = 0)
+    {
+      return $this->where("pid","=",$pid)->select()->toArray();
+    }
+
     public function getRow($id = 0)
     {
       $info       = $this->getOneById($id);

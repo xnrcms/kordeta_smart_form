@@ -350,7 +350,7 @@ class UserGroup extends Base
         //需要返回的数据体
         $Data['id']                   = $uid;
 
-        return ['Code' => '000000', 'Msg'=>lang('000000'),'Data'=>$Data];
+        return ['Code' => '200', 'Msg'=>lang('200'),'Data'=>$Data];
     }
 
     /*api:1c3d588bc0f96f58a7a138a7eedfabb9*/

@@ -965,7 +965,7 @@ if (!function_exists('add_helper_action'))
         //需要返回的数据体
         $Data                   = [\'TEST\'];
 
-        return [\'Code\' => \'000000\', \'Msg\'=>lang(\'000000\'),\'Data\'=>$Data];
+        return [\'Code\' => \'200\', \'Msg\'=>lang(\'200\'),\'Data\'=>$Data];
     }
 
     /*api:'.$methodCode.'*/';

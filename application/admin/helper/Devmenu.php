@@ -161,6 +161,7 @@ class Devmenu extends Base
         $saveData['update_time']    = time();
         $saveData['open_type']      = isset($parame['open_type']) ? (int)$parame['open_type'] : 0;
         $saveData['url_type']       = isset($parame['url_type']) ? (int)$parame['url_type'] : 0;
+        $saveData['operation']      = implode(',', $operation);
         //$saveData['parame']       = isset($parame['parame']) ? $parame['parame'] : '';
 
         //数据校验
@@ -267,6 +268,22 @@ class Devmenu extends Base
         $id                 = isset($parame['id']) ? intval($parame['id']) : 0;
         if ($id <= 0) return ['Code' => '120023', 'Msg'=>lang('120023')];
 
+        $menuinfo           = $dbModel->getOneById($id);
+        
+        if ( isset($menuinfo['operation']) && !empty($menuinfo['operation']))
+        {
+            $childMenus     = $dbModel->getChildMenuByPid($menuinfo['id']);
+            foreach ($childMenus as $value)
+            {
+                $dbModel->delData($value['id']);
+            }
+
+            //执行删除操作
+            $delCount               = $dbModel->delData($id);
+
+            return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['count'=>$delCount]];
+        }
+
         //自行定义删除条件
         //...
         $modelParame['whereFun']    = 'formatWhereChildMenu';
@@ -276,7 +293,7 @@ class Devmenu extends Base
 
         if ($childMenuCount > 0) {
 
-            return ['Code' => '500004', 'Msg'=>lang('500004')];
+            return ['Code' => '203', 'Msg'=>lang('500004')];
         }
 
         //执行删除操作

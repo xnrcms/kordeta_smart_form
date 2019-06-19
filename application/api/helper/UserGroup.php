@@ -124,7 +124,7 @@ class UserGroup extends Base
     		foreach($data as $k=>$v)
             {
                 $gusers                 = '1';
-                $data[$k]['gusers']     = $gusers;
+                $data[$k]['gusers']     = $dbModel->getGuserByGroupId($v['id']);
     		}
     	}
 
@@ -224,6 +224,9 @@ class UserGroup extends Base
         {	
             //格式为数组
             $info                   = $info->toArray();
+
+            $guser                  = $dbModel->getGuserByGroupId($info['id']);
+            $info['guser']          = !empty($guser) ? json_encode($guser) : json_encode([]);
 
             //自行对数据格式化输出
             //...

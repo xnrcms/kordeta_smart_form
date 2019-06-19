@@ -144,6 +144,39 @@ class UserGroup extends Base
         return $data;
     }
 
+    public function getGuserByGroupId($gid = 0)
+    {
+      if ($gid <= 0) return [];
+
+      $ckey                       = md5('getGuserByGroupId='.$gid);
+      $data                       = $this->getCache($ckey);
+
+      if (empty($data))
+      {
+          //根据分组ID获取所有用户ID
+          $ugaModel   = model('user_group_access');
+          $glists     = $ugaModel->where("group_id","=",$gid)->field('uid')->select()->toArray();
+
+          $guid       = [];
+          $ulist      = [];
+
+          foreach ($glists as $value)
+          {
+            $guid[$value['uid']]  = $value['uid'];
+          }
+
+          if (!empty($guid))
+          {
+            $uModel   = model('user_center');
+            $data    = $uModel->where("id","in",$guid)->field('id,username')->select()->toArray();
+          }
+
+          $this->setCache($ckey,$data);
+      }
+
+      return $data;
+    }
+
     //自行扩展更多
     //...
 }

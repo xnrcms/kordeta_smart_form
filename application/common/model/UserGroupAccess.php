@@ -62,7 +62,7 @@ class UserGroupAccess extends Base
           if (!empty($lists))
           {  
             foreach ($lists as $key => $value)
-            {  
+            {
               $data[$value['group_id']]  = $value['group_id'];
             }
 

@@ -84,6 +84,7 @@ class Devmenu extends Base
 
 		$modelParame['RelationTab']	= $RelationTab;
 
+        $parame['ownerid']          = $this->getOwnerId();
         //接口数据
         $modelParame['apiParame']   = $parame;
 
@@ -136,7 +137,7 @@ class Devmenu extends Base
         $id                         = isset($parame['id']) ? intval($parame['id']) : 0;
         
         //数据操作类型
-        $operation                      = isset($parame['operation']) ? trim($parame['operation']) : '';
+        $operation                      = isset($parame['operation']) ? trim($parame['operation']) : [];
         if (!empty($operation))
         {
             $operation                  = explode(',', $operation);
@@ -161,7 +162,7 @@ class Devmenu extends Base
         $saveData['update_time']    = time();
         $saveData['open_type']      = isset($parame['open_type']) ? (int)$parame['open_type'] : 0;
         $saveData['url_type']       = isset($parame['url_type']) ? (int)$parame['url_type'] : 0;
-        $saveData['operation']      = implode(',', $operation);
+        $saveData['operation']      = !empty($operation) ? implode(',', $operation) : '';
         //$saveData['parame']       = isset($parame['parame']) ? $parame['parame'] : '';
 
         //数据校验
@@ -360,7 +361,7 @@ class Devmenu extends Base
                 'sort'              => 100 - $value,
                 'url'               => trim($purl,'/') . '/' . (isset($url[$value]) ? $url[$value] : ''),
                 'pos'               => 0,
-                'status'            => 0,
+                'status'            => 1,
                 'create_time'       => time(),
                 'update_time'       => time(),
                 'posttype'          => 0,

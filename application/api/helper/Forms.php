@@ -141,9 +141,6 @@ class Forms extends Base
         //数据ID
         $id                         = isset($parame['id']) ? intval($parame['id']) : 0;
 
-       /* $info   = $dbModel->getRow($id);
-        $this->initTableAndField($info);return ['Code' => '120021', 'Msg'=>lang('120021')];*/
-
         //自行定义入库数据 为了防止参数未定义报错，先采用isset()判断一下
         $saveData                   = [];
         $saveData['title']          = isset($parame['title']) ? $parame['title'] : '';
@@ -178,9 +175,9 @@ class Forms extends Base
     	}
 
     	$info                               = $dbModel->saveData($id,$saveData);
-
+        
         //根据表单数据创建数据表和表字段
-        //$this->initTableAndField($info);
+        $this->initTableAndField($info);
 
         return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '100015', 'Msg'=>lang('100015')];
     }
@@ -257,12 +254,12 @@ class Forms extends Base
         $dbModel        = model($this->mainTable);
         $tablePrefix    = config("database.prefix");
         $database       = config("database.database");
-        $tableName      = $tablePrefix . "kor_table_" . $data['id'];
+        $tableName      = $tablePrefix . "kor_table" . $data['id'];
 
         $isTable        = $dbModel->query('SHOW TABLES LIKE "' . $tableName . '"');
         
         //检查表是否存在 不存在创建
-        if (empty($isTable))  $this->createTable($tableName,$data['title']);
+        if (empty($isTable))  $this->createTable($tableName,$data['title'],$tablePrefix);
 
         $this->createTableField($database,$tableName,$data['form_config']);
         
@@ -271,26 +268,118 @@ class Forms extends Base
     private function createTableField($database,$tableName,$form_config)
     {
         $dbModel        = model($this->mainTable);
+        $add_field      = [];
+        $edit_field     = [];
+        $del_field      = [];
+        $form_field     = [];
+        $sqlArr         = [];
+        $fieldInfo      = [];
+        $sorts          = [];
+        $afterField     = 'FIRST';
+
         //获取表字段
-        
         $fields         = $dbModel->query("SELECT COLUMN_NAME as field FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '" . $tableName . "' AND table_schema = '".$database."'");
         
         $allField       = [];
 
         if (!empty($fields))
         {
-            foreach ($fields as $key => $value)  $allField[] = $value['field'];
+            foreach ($fields as $key => $value) $allField[] = $value['field'];
         }
 
         $defField       = ['id','create_time','update_time','ownerid'];
 
         //处理表单配置信息
         $form_config    = !empty($form_config) ? json_decode($form_config,true) : [];
-        $field_list
-        wr($form_config);
+        $form_list      = isset($form_config['list']) ? $form_config['list'] : [];
+
+        //取出需要保存的字段信息，页面提交过来的字段数据
+        foreach ($form_list as $key => $value)
+        {
+            $form_field[$value['model']]        = $value['model'];
+            $fieldInfo[$value['model']]         = [
+                'title' => $value['name'],
+                'type'  => $value['type']
+            ];
+        }
+
+        //取出要删除的字段
+        foreach ($allField as $key1 => $value1)
+        {   
+            $sorts[$value1]     = $afterField;
+            $afterField         = "AFTER `".$value1."`";
+
+            if (in_array($value1, $defField)) continue;
+
+            if (!in_array($value1, $form_field)){
+                $afterField         = $sorts[$value1];
+                $del_field[$value1] = $value1;
+            }
+        }
+
+        foreach ($form_field as $key2=>$value2)
+        {
+            if (in_array($value2, $defField)) continue;
+
+            if (in_array($value2, $allField)) $edit_field[$value2]  = $value2;
+            if (!in_array($value2, $allField)) $add_field[$value2]   = $value2;
+        }
+
+        foreach ($del_field as $dvalue)
+        {
+            $sqlArr[]   = 'DROP COLUMN `' . $dvalue . '`';
+        }
+
+    
+        foreach ($edit_field as $evalue)
+        {
+            $type       = isset($fieldInfo[$evalue]['type']) ? $fieldInfo[$evalue]['type'] : '';
+            $comment    = isset($fieldInfo[$evalue]['title']) ? $fieldInfo[$evalue]['title'] : '';
+            $sqlArr[]   = "MODIFY COLUMN `".$evalue."` ".$this->getTableFieldType($type)." CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '" . $comment . "123' ". $afterField;
+
+            $afterField = "AFTER `".$evalue."`";
+        }
+
+        foreach ($add_field as $avalue)
+        {
+            $type       = isset($fieldInfo[$avalue]['type']) ? $fieldInfo[$avalue]['type'] : '';
+            $comment    = isset($fieldInfo[$avalue]['title']) ? $fieldInfo[$avalue]['title'] : '';
+            $sqlArr[]   = "ADD COLUMN `" . $avalue ."` ".$this->getTableFieldType($type)." NULL DEFAULT '' COMMENT '" . $comment . "' " . $afterField;
+
+            $afterField = "AFTER `".$avalue."`";
+        }
+
+        if (!empty($sqlArr))
+        {
+            $sqlStr     = "ALTER TABLE `".$tableName."` ";
+            $sqlStr     .= implode(',', $sqlArr);
+
+            $dbModel->query($sqlStr);
+        }
+
+        /*wr([
+            'sqlStr'=>$sqlStr,
+            'sorts'=>$sorts,
+            'sqlArr'=>$sqlArr,
+            'add_field'=>$add_field,
+            'edit_field'=>$edit_field,
+            'del_field'=>$del_field
+        ]);*/
     }
 
-    private function createTable($tableName,$title)
+    private function getTableFieldType($type = '')
+    {
+        $defType       = "varchar(255)";
+        /*if (in_array($type, ['input','checkbox'])) {
+           $defType       = "varchar(255)";
+        }elseif (in_array($type, ['date','select'])) {
+            $defType       = "int(10)";
+        }*/
+
+        return $defType;
+    }
+
+    private function createTable($tableName,$title,$prefix = '')
     {
         model($this->mainTable)->query("CREATE TABLE `".$tableName."` (
 `id`  int(10) NOT NULL AUTO_INCREMENT COMMENT '数据ID' ,
@@ -298,5 +387,19 @@ class Forms extends Base
 `update_time`  int(10) NOT NULL DEFAULT 0 COMMENT '数据修改时间' ,
 `ownerid`  int(10) NOT NULL DEFAULT 0 COMMENT '拥有者ID' ,
 PRIMARY KEY (`id`) ) COMMENT='自动表单（".$title."）表'");
+
+        //生成模型文件
+        $tname      = str_replace($prefix,'',$tableName);
+        $modelName  = formatStringToHump($tname);
+
+        if (!empty($modelName))
+        {
+            //检测文件是否存在
+            $file       = \Env::get('APP_PATH') .'common/model/'. $modelName .'.php';
+            $base       = \Env::get('APP_PATH') .'common/tpl/ApiTPLM.php';
+
+            if (!file_exists($file) && file_exists($base))
+            file_put_contents($file,str_replace('{ModelNameTPL}',$modelName,file_get_contents($base)));
+        }
     }
 }

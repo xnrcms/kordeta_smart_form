@@ -16,6 +16,10 @@ class Devmenu extends Base
 
     public function formatWhereDefault($model,$parame){
         $model->where('project_id','>=',0);
+
+        $ownerid  = isset($parame['ownerid']) ? $parame['ownerid'] : -1;
+        $model->where('ownerid','=',$ownerid);
+        
         return $model;
     }
 

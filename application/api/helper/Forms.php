@@ -254,6 +254,27 @@ class Forms extends Base
     	return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['count'=>$delCount]];
     }
 
+    /*api:fc24913147a441bf30df4639154581af*/
+    /**
+     * * 校验表单状态接口
+     * @param  [array] $parame 接口参数
+     * @return [array]         接口输出数据
+     */
+    private function checkStatus($parame)
+    {
+        //主表数据库模型
+        $dbModel                = model($this->mainTable);
+        $mid                    = isset($parame['mid']) ? (int)$parame['mid'] : 0;
+        $status                 = isset($parame['status']) ? (int)$parame['status'] : 0;
+
+        //需要返回的数据体
+        $Data                   = ['isok'=>($status == 1 ? (int)$dbModel->checkFormStatus($mid,0) : 0)];
+
+        return ['Code' => '200', 'Msg'=>lang('200'),'Data'=>$Data];
+    }
+
+    /*api:fc24913147a441bf30df4639154581af*/
+
     /*接口扩展*/
 
     private function initTableAndField($data = [])

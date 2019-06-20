@@ -76,5 +76,20 @@ class Forms extends Base
         return $this->execApi($parame);
     }
 
+    /*api:fc24913147a441bf30df4639154581af*/
+    /**
+     * 校验表单状态接口
+     * @access public
+     * @param  [array] $parame 扩展参数
+     * @return [json]          接口数据输出
+    */
+    public function checkStatus($parame = [])
+    {
+        //执行接口调用
+        return $this->execApi($parame);
+    }
+
+    /*api:fc24913147a441bf30df4639154581af*/
+
     /*接口扩展*/
 }

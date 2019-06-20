@@ -141,8 +141,8 @@ class Forms extends Base
         //数据ID
         $id                         = isset($parame['id']) ? intval($parame['id']) : 0;
 
-        $info   = $dbModel->getRow($id);
-        $this->initTableAndField($info);return ['Code' => '120021', 'Msg'=>lang('120021')];
+       /* $info   = $dbModel->getRow($id);
+        $this->initTableAndField($info);return ['Code' => '120021', 'Msg'=>lang('120021')];*/
 
         //自行定义入库数据 为了防止参数未定义报错，先采用isset()判断一下
         $saveData                   = [];
@@ -180,7 +180,7 @@ class Forms extends Base
     	$info                               = $dbModel->saveData($id,$saveData);
 
         //根据表单数据创建数据表和表字段
-        $this->initTableAndField($info);
+        //$this->initTableAndField($info);
 
         return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '100015', 'Msg'=>lang('100015')];
     }
@@ -286,6 +286,7 @@ class Forms extends Base
 
         //处理表单配置信息
         $form_config    = !empty($form_config) ? json_decode($form_config,true) : [];
+        $field_list
         wr($form_config);
     }
 

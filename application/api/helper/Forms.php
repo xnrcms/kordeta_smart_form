@@ -164,8 +164,11 @@ class Forms extends Base
         return ['Code' => '203', 'Msg'=>lang('notice_title_already_exists')];
 
         //检测表单绑定的菜单ID是否存在
-        if ($dbModel->checkValue($saveData['mid'],$id,'mid'))
-        return ['Code' => '203', 'Msg'=>lang('notice_menuid_already_exists')];
+        /*if ($dbModel->checkValue($saveData['mid'],$id,'mid'))
+        return ['Code' => '203', 'Msg'=>lang('notice_menuid_already_exists')];*/
+
+        $isOk       = $saveData['status'] == 1 ? (int)$dbModel->checkFormStatus($saveData['mid'],$id) : 0;
+        if ( $isOk == 1) return ['Code' => '203', 'Msg'=>lang('notice_status_already_exists')];
 
         //通过ID判断数据是新增还是更新 定义新增条件下数据
     	if ($id <= 0)
@@ -268,7 +271,7 @@ class Forms extends Base
         $status                 = isset($parame['status']) ? (int)$parame['status'] : 0;
 
         //需要返回的数据体
-        $Data                   = ['isok'=>($status == 1 ? (int)$dbModel->checkFormStatus($mid,0) : 0)];
+        $Data                   = (int)$dbModel->checkFormStatus($mid,0);
 
         return ['Code' => '200', 'Msg'=>lang('200'),'Data'=>$Data];
     }

@@ -15,7 +15,7 @@ namespace app\common\model;
 use think\Model;
 use think\Db;
 
-class Devform2 extends Base
+class KorTable2 extends Base
 {
     //默认主键为id，如果你没有使用id作为主键名，需要在此设置
     protected $pk = 'id';
@@ -95,18 +95,6 @@ class Devform2 extends Base
       $this->clearCache(['ctag'=>'table_' . $this->name . '_getList']);
 
       return $delCount;
-    }
-
-    public function checkFormStatus($mid = 0,$id = 0)
-    {
-      $res   = $this->where('id','<>',$id)->where('status','eq',1)->where('mid','eq',$mid)->value("id");
-      return !empty($res) ? true : false;
-    }
-
-    public function getFormInfoByMenuId($mid = 0)
-    {
-      $info   = $this->where('status','eq',1)->where('mid','eq',$mid)->limit(1)->find();
-      return !empty($info) ? $info->toArray() : [];
     }
 
     //自行扩展更多

@@ -197,7 +197,7 @@ class UserGroup extends Base
         //添加组员
         if (isset($parame['gusers']))
         {
-            foreach ($gusersid as $uid) model('user_group_access')->setGroupAccess($uid,$info['id']);
+            foreach ($gusersid as $uid) model('user_group_access')->setGroupAccess($uid,[$info['id']]);
         }
 
         return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '203', 'Msg'=>lang('notice_api_fail')];

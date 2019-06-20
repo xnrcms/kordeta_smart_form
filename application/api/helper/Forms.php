@@ -141,6 +141,9 @@ class Forms extends Base
         //数据ID
         $id                         = isset($parame['id']) ? intval($parame['id']) : 0;
 
+        $info   = $dbModel->getRow($id);
+        $this->initTableAndField($info);return ['Code' => '120021', 'Msg'=>lang('120021')];
+
         //自行定义入库数据 为了防止参数未定义报错，先采用isset()判断一下
         $saveData                   = [];
         $saveData['title']          = isset($parame['title']) ? $parame['title'] : '';
@@ -175,6 +178,9 @@ class Forms extends Base
     	}
 
     	$info                               = $dbModel->saveData($id,$saveData);
+
+        //根据表单数据创建数据表和表字段
+        $this->initTableAndField($info);
 
         return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '100015', 'Msg'=>lang('100015')];
     }
@@ -211,12 +217,12 @@ class Forms extends Base
 
         //数据ID
         $id                 = isset($parame['id']) ? intval($parame['id']) : 0;
-        if ($id <= 0) return ['Code' => '120023', 'Msg'=>lang('120023')];
+        if ($id <= 0) return ['Code' => '203', 'Msg'=>lang('120023')];
 
         //根据ID更新数据
         $info               = $dbModel->saveData($id,[$parame['fieldName']=>$parame['updata']]);
 
-        return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '100015', 'Msg'=>lang('100015')];
+        return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '203', 'Msg'=>lang('100015')];
     }
 
     /**
@@ -243,4 +249,53 @@ class Forms extends Base
     }
 
     /*接口扩展*/
+
+    private function initTableAndField($data = [])
+    {
+        if (empty($data)) return;
+
+        $dbModel        = model($this->mainTable);
+        $tablePrefix    = config("database.prefix");
+        $database       = config("database.database");
+        $tableName      = $tablePrefix . "kor_table_" . $data['id'];
+
+        $isTable        = $dbModel->query('SHOW TABLES LIKE "' . $tableName . '"');
+        
+        //检查表是否存在 不存在创建
+        if (empty($isTable))  $this->createTable($tableName,$data['title']);
+
+        $this->createTableField($database,$tableName,$data['form_config']);
+        
+    }
+
+    private function createTableField($database,$tableName,$form_config)
+    {
+        $dbModel        = model($this->mainTable);
+        //获取表字段
+        
+        $fields         = $dbModel->query("SELECT COLUMN_NAME as field FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '" . $tableName . "' AND table_schema = '".$database."'");
+        
+        $allField       = [];
+
+        if (!empty($fields))
+        {
+            foreach ($fields as $key => $value)  $allField[] = $value['field'];
+        }
+
+        $defField       = ['id','create_time','update_time','ownerid'];
+
+        //处理表单配置信息
+        $form_config    = !empty($form_config) ? json_decode($form_config,true) : [];
+        wr($form_config);
+    }
+
+    private function createTable($tableName,$title)
+    {
+        model($this->mainTable)->query("CREATE TABLE `".$tableName."` (
+`id`  int(10) NOT NULL AUTO_INCREMENT COMMENT '数据ID' ,
+`create_time`  int(10) NOT NULL DEFAULT 0 COMMENT '数据新增时间' ,
+`update_time`  int(10) NOT NULL DEFAULT 0 COMMENT '数据修改时间' ,
+`ownerid`  int(10) NOT NULL DEFAULT 0 COMMENT '拥有者ID' ,
+PRIMARY KEY (`id`) ) COMMENT='自动表单（".$title."）表'");
+    }
 }

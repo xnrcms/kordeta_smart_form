@@ -82,7 +82,7 @@ class Forms extends Base
 		//定义关联查询表信息，默认是空数组，为空时为单表查询,格式必须为一下格式
 		//Rtype :`INNER`、`LEFT`、`RIGHT`、`FULL`，不区分大小写，默认为`INNER`。
 		$RelationTab				= [];
-		//$RelationTab['member']		= array('Ralias'=>'me','Ron'=>'me.uid=main.uid','Rtype'=>'LEFT','Rfield'=>array('nickname'));
+		$RelationTab['devmenu']		= array('Ralias'=>'dm','Ron'=>'dm.id=main.mid','Rtype'=>'LEFT','Rfield'=>array('title as menu_title'));
 
 		$modelParame['RelationTab']	= $RelationTab;
 
@@ -164,7 +164,7 @@ class Forms extends Base
         return ['Code' => '203', 'Msg'=>lang('notice_title_already_exists')];
 
         //检测表单绑定的菜单ID是否存在
-        if ($dbModel->checkValue($saveData['menuid'],$id,'menuid'))
+        if ($dbModel->checkValue($saveData['mid'],$id,'mid'))
         return ['Code' => '203', 'Msg'=>lang('notice_menuid_already_exists')];
 
         //通过ID判断数据是新增还是更新 定义新增条件下数据
@@ -174,7 +174,7 @@ class Forms extends Base
             $saveData['create_time']        = time();
     	}
 
-    	$info                                       = $dbModel->saveData($id,$saveData);
+    	$info                               = $dbModel->saveData($id,$saveData);
 
         return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '100015', 'Msg'=>lang('100015')];
     }

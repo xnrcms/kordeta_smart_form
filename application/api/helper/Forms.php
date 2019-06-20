@@ -144,7 +144,7 @@ class Forms extends Base
         //自行定义入库数据 为了防止参数未定义报错，先采用isset()判断一下
         $saveData                   = [];
         $saveData['title']          = isset($parame['title']) ? $parame['title'] : '';
-        $saveData['menuid']         = isset($parame['mid']) ? (int)$parame['mid'] : 0;
+        $saveData['mid']            = isset($parame['mid']) ? (int)$parame['mid'] : 0;
         $saveData['status']         = isset($parame['status']) ? (int)$parame['status'] : 0;
         $saveData['status']         = $saveData['status'] === 1 ? 1 : 2;
         $saveData['form_config']    = isset($parame['form_config']) ? $parame['form_config'] : '';

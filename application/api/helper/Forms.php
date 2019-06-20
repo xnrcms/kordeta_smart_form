@@ -131,9 +131,9 @@ class Forms extends Base
      */
     private function saveData($parame)
     {
-        //权限校验
+        /*//权限校验
         $menuid  = (isset($parame['menuid']) && (int)$parame['menuid'] > 0) ? (int)$parame['menuid'] : 0;
-        if (!$this->checkUserPower($menuid)) return ['Code' => '202', 'Msg'=>lang('202')];
+        if (!$this->checkUserPower($menuid)) return ['Code' => '202', 'Msg'=>lang('202')];*/
 
         //主表数据库模型
     	$dbModel					= model($this->mainTable);
@@ -175,7 +175,7 @@ class Forms extends Base
     	}
 
     	$info                               = $dbModel->saveData($id,$saveData);
-        
+
         //根据表单数据创建数据表和表字段
         $this->initTableAndField($info);
 
@@ -216,6 +216,15 @@ class Forms extends Base
         $id                 = isset($parame['id']) ? intval($parame['id']) : 0;
         if ($id <= 0) return ['Code' => '203', 'Msg'=>lang('120023')];
 
+        if ($parame['fieldName'] == 'status' && $parame['updata'] == 1)
+        {
+            //需要校验是否还有其他地方被启用
+            $info       = $dbModel->getRow($id);
+            if ($dbModel->checkFormStatus($info['mid'],$id))
+            {
+                return ['Code' => '203', 'Msg'=>lang('notice_status_already_exists')];
+            }
+        }
         //根据ID更新数据
         $info               = $dbModel->saveData($id,[$parame['fieldName']=>$parame['updata']]);
 

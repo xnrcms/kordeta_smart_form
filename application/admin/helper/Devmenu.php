@@ -115,6 +115,7 @@ class Devmenu extends Base
             //自行定义格式化数据输出
     		foreach($data as $k=>$v){
                 $data[$k]['status']     = $status[$v['status']];
+                $data[$k]['status2']    = (int)$v['status'];
     		}
     	}
 
@@ -360,7 +361,7 @@ class Devmenu extends Base
                 'pid'               => $pid,
                 'sort'              => 100 - $value,
                 'url'               => trim($purl,'/') . '/' . (isset($url[$value]) ? $url[$value] : ''),
-                'pos'               => 0,
+                'pos'               => in_array($value, [1]) ? 2 : 3,
                 'status'            => 1,
                 'create_time'       => time(),
                 'update_time'       => time(),

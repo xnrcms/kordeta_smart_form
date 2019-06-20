@@ -97,6 +97,11 @@ class Devform2 extends Base
       return $delCount;
     }
 
+    public function checkFormStatus($mid = 0,$id = 0)
+    {
+      $res   = $this->where('id','<>',$id)->where('status','eq',1)->where('mid','eq',$mid)->value($field);
+      return !empty($res) ? true : false;
+    }
     //自行扩展更多
     //...
 }

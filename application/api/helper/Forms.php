@@ -202,6 +202,15 @@ class Forms extends Base
         //数据详情
         $info               = $dbModel->getRow($id);
 
+        if (!empty($info))
+        {
+            $minfo          = model('devmenu')->getRow($id);
+            $info['mname']  = !empty($minfo) ? $minfo['title'] : '';
+        }else{
+            $info['mname']  = '';
+        }
+
+
         return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '100015', 'Msg'=>lang('100015')];
     }
 

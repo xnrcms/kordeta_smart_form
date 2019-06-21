@@ -51,11 +51,6 @@ class Base extends Controller
 		//当前用户拥有的所有菜单权限
 		$this->menu 			= $this->ininMenu();
         $this->menu             = $this->formatAuthMenu($this->menu,$this->userInfo['rules'],$this->uid,$this->menuid);
-
-        /*$Tree          = new \xnrcms\DataTree($this->menu);
-        $listData      = $Tree->arrayTree();
-        print_r($listData);exit();*/
-
         $this->extends_param    = '';
         $this->isdev            = config('extend.is_dev');
         $this->tpl_name         = config('template.tpl_name');

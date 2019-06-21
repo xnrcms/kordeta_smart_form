@@ -142,7 +142,6 @@ class User extends Base
         $pageData['title2']             = $arr['title2'];
         $pageData['notice']             = $arr['notice'];
 
-        $assignData['testData']         = json_encode(["id"=>1,"name"=>"wangyuanq"]);
         //渲染数据到页面模板上
         $assignData['isTree']           = $isTree;
         $assignData['_page']            = $p;
@@ -160,12 +159,18 @@ class User extends Base
         cookie('__listtag__',$listTag);
 
         //异步请求处理
-        if(request()->isAjax()){
-            if ($total <= 0) {
-                echo json_encode(['code'=>1,'msg'=>'暂无数据','count'=>0,'data'=>[]]);exit();
-            }else{
-                echo json_encode(['code'=>0,'msg'=>'请求成功','count'=>$total,'data'=>$listData]);exit();
+        if(request()->isAjax())
+        {
+            if ($this->tpl_name == 'kordeta')
+            {
+                if ($total <= 0)
+                {
+                    echo json_encode(['code'=>1,'msg'=>'暂无数据','count'=>0,'data'=>[]]);exit();
+                }else{
+                    echo json_encode(['code'=>0,'msg'=>'请求成功','count'=>$total,'data'=>$listData]);exit();
+                }
             }
+
             echo json_encode(['listData'=>$this->fetch('public/list/listData'),'listPage'=>$p]);exit();
         }
 

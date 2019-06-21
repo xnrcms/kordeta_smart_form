@@ -66,7 +66,7 @@ class UserGroup extends Base
       //自定义扩展
       //.......
       
-      if (empty($data))
+      if (empty($data) || !isset($data['lists']) || empty($data['lists']))
       {
           $parame['apiParame']['ownerid']    = $ownerid;
 

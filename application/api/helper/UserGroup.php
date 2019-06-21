@@ -66,8 +66,8 @@ class UserGroup extends Base
     private function listData($parame)
     {
         //权限校验
-        $menuid  = (isset($parame['menuid']) && (int)$parame['menuid'] > 0) ? (int)$parame['menuid'] : 0;
-        if (!$this->checkUserPower($menuid)) return ['Code' => '202', 'Msg'=>lang('202')];
+        /*$menuid  = (isset($parame['menuid']) && (int)$parame['menuid'] > 0) ? (int)$parame['menuid'] : 0;
+        if (!$this->checkUserPower($menuid)) return ['Code' => '202', 'Msg'=>lang('202')];*/
 
         //主表数据库模型
 		$dbModel					= model($this->mainTable);

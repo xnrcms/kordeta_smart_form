@@ -73,9 +73,12 @@ class Menus extends Base
         //主表数据库模型
 		$dbModel					= model($this->mainTable);
         $authMenuIds                = [];
+        $gids                       = $this->getGroupIds();
+        
+        if (empty($gids)) return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>[]];
 
         //有权限的菜单ID
-        if (in_array(2, $this->getGroupIds()))
+        if (in_array(2, $gids))
         {
             $modelParame  = [];
             $parame['ownerid']          = $this->getOwnerId();

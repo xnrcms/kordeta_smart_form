@@ -204,7 +204,7 @@ class Forms extends Base
 
         if (!empty($info))
         {
-            $minfo          = model('devmenu')->getRow($id);
+            $minfo          = model('devmenu')->getRow($info['mid']);
             $info['mname']  = !empty($minfo) ? $minfo['title'] : '';
         }else{
             $info['mname']  = '';

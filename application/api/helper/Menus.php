@@ -67,31 +67,43 @@ class Menus extends Base
     private function listData($parame)
     {
         //权限校验
-        $menuid  = (isset($parame['menuid']) && (int)$parame['menuid'] > 0) ? (int)$parame['menuid'] : 0;
-        if (!$this->checkUserPower($menuid)) return ['Code' => '202', 'Msg'=>lang('202')];
+        /*$menuid  = (isset($parame['menuid']) && (int)$parame['menuid'] > 0) ? (int)$parame['menuid'] : 0;
+        if (!$this->checkUserPower($menuid)) return ['Code' => '202', 'Msg'=>lang('202')];*/
 
         //主表数据库模型
 		$dbModel					= model($this->mainTable);
+        $authMenuIds                = [];
 
         //有权限的菜单ID
-        $authMenuIds                = $this->getUserRulesId();
-
-		//列表数据
-		$lists 						= $dbModel->getMenuAuthList($authMenuIds,$this->getUserId());
-
-		//数据格式化
-        //wr($lists);
-
-    	if (!empty($lists))
+        if (in_array(2, $this->getGroupIds()))
         {
-            //自行定义格式化数据输出
-    		/*foreach($data as $k=>$v)
+            $modelParame  = [];
+            $parame['ownerid']          = $this->getOwnerId();
+            $parame['status']           = 1;
+            $modelParame['apiParame']   = $parame;
+            $modelParame['whereFun']    = 'formatWhereDefault';
+
+            $menus2                     = model('devmenu')->getPageList($modelParame);
+            $menus2                     = isset($menus2['lists']) ? $menus2['lists'] : [];
+
+            foreach ($menus2 as $key => $value)
             {
+                $authMenuIds[]      = [
+                    'id'        => $value['id'],
+                    'title'     => $value['title'],
+                    'url'       => $value['url'],
+                    'pid'       => $value['pid'],
+                    'pos'       => $value['pos'],
+                    'url_type'  => $value['url_type'],
+                    'open_type' => $value['open_type'],
+                ];
+            }
 
-    		}*/
-    	}
-
-    	//$lists['lists'] 			= $lists;
+            $lists                      = $authMenuIds;
+        }else{
+            $authMenuIds                = $this->getUserRulesId();
+            $lists                      = $dbModel->getMenuAuthList($authMenuIds,$this->getUserId());
+        }
 
     	return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$lists];
     }

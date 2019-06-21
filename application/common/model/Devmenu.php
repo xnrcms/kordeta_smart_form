@@ -14,7 +14,8 @@ class Devmenu extends Base
     //默认主键为id，如果你没有使用id作为主键名，需要在此设置
     protected $pk = 'id';
 
-    public function formatWhereDefault($model,$parame){
+    public function formatWhereDefault($model,$parame)
+    {
         $model->where('project_id','>=',0);
 
         $ownerid  = isset($parame['ownerid']) ? $parame['ownerid'] : -1;
@@ -23,21 +24,22 @@ class Devmenu extends Base
         return $model;
     }
 
-    public function formatWhereChildMenu($model,$parame){
-
+    public function formatWhereChildMenu($model,$parame)
+    {
     	$model->where('pid','=',$parame['id']);
 
     	return $model;
     }
 
-    public function checkValue($value,$id,$field){
-
+    public function checkValue($value,$id,$field)
+    {
         $res    = $this->where('id','not in',[$id])->where($field,'eq',$value)->value($field);
 
         return !empty($res) ? true : false;
     }
 
-    public function saveData($id = 0,$parame = []){
+    public function saveData($id = 0,$parame = [])
+    {
         $info           = $id <= 0 ? $this->addData($parame) : $this->updateById($id,$parame);
 
         //设置path
@@ -66,7 +68,8 @@ class Devmenu extends Base
         return $data;
     }
 
-    private function getRulesByUid($parame){
+    private function getRulesByUid($parame)
+    {
         $rules                  = '';
         $gainfo                 = model('auth_group_access')->baseGetPageList(['apiParame'=>$parame,'whereFun'=>'formatWhereAuthGroupAccess']);
 
@@ -97,8 +100,8 @@ class Devmenu extends Base
         return $rules;
     }
 
-    private function getAuthMenuid($rules='',$group_id=0){
-
+    private function getAuthMenuid($rules='',$group_id=0)
+    {
         $rules      = (!empty($rules) && is_string($rules)) ? explode(',',$rules) : [0];
 
         if ($group_id > 0) {

@@ -525,7 +525,7 @@ class Base
       Lang::load(\Env::get('APP_PATH') . 'common/lang/' . $code . '/' . strtolower($cname) . '.php');
     }
 
-    private function getGroupIds()
+    public function getGroupIds()
     {
       return model('user_group_access')->getUserGroupAccessListByUid($this->UserId);
     }

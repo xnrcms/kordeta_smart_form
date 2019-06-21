@@ -211,7 +211,7 @@ class Forms extends Base
         }
 
 
-        return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '100015', 'Msg'=>lang('100015')];
+        return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '203', 'Msg'=>lang('100015')];
     }
 
     /**
@@ -329,7 +329,7 @@ class Forms extends Base
             foreach ($fields as $key => $value) $allField[] = $value['field'];
         }
 
-        $defField       = ['id','create_time','update_time','ownerid'];
+        $defField       = ['id','create_time','update_time','creator_id','modifier_id'];
 
         //处理表单配置信息
         $form_config    = !empty($form_config) ? json_decode($form_config,true) : [];
@@ -427,7 +427,8 @@ class Forms extends Base
 `id`  int(10) NOT NULL AUTO_INCREMENT COMMENT '数据ID' ,
 `create_time`  int(10) NOT NULL DEFAULT 0 COMMENT '数据新增时间' ,
 `update_time`  int(10) NOT NULL DEFAULT 0 COMMENT '数据修改时间' ,
-`ownerid`  int(10) NOT NULL DEFAULT 0 COMMENT '拥有者ID' ,
+`creator_id`  int(10) NOT NULL DEFAULT 0 COMMENT '创建者ID' ,
+`modifier_id`  int(10) NOT NULL DEFAULT 0 COMMENT '修改者ID' ,
 PRIMARY KEY (`id`) ) COMMENT='自动表单（".$title."）表'");
 
         //生成模型文件

@@ -256,7 +256,11 @@ class UserGroup extends Base
         if ($this->getOwnerId() < 0) return ['Code' => '203', 'Msg'=>lang('error_gropu_edit_fail')];
 
         //根据ID更新数据
-        $info               = $dbModel->saveData($id,[$parame['fieldName']=>$parame['updata']]);
+        $saveData                           = [];
+        $saveData['update_time']            = time();
+        $saveData[$parame['fieldName']]     = $parame['updata'] == -1 ? '' : $parame['updata'];
+
+        $info               = $dbModel->saveData($id,$saveData);
 
         //清楚分组权限缓存
         if ($parame['fieldName'] == 'rules') model('user_group_access')->clearMenuAuthListByGid($id);

@@ -472,9 +472,9 @@ if (!function_exists('is_json'))
 	 */
 	function is_json($string)
 	{
-		 json_decode($string);
-		 
-		 return (json_last_error() == JSON_ERROR_NONE);
+		 $arr = json_decode($string,true);
+
+		 return ( is_array($arr) && json_last_error() == JSON_ERROR_NONE);
 	}
 }
 

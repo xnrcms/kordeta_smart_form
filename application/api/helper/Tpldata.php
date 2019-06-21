@@ -18,7 +18,8 @@ use think\facade\Lang;
 class Tpldata extends Base
 {
 	private $dataValidate 		= null;
-    private $mainTable          = 'null';
+    private $mainTable          = '';
+    private $formInfo           = [];
 	
 	public function __construct($parame=[],$className='',$methodName='',$modelName='')
     {
@@ -39,6 +40,10 @@ class Tpldata extends Base
         //加载验证器
         $this->dataValidate = new \app\api\validate\DataValidate;
         
+        //初始化主表名称
+        if (is_array($this->getTplDataTableName($this->postData)))
+        return $this->returnData($this->getTplDataTableName($this->postData));
+
         //规避没有设置主表名称
         if (empty($this->mainTable)) return $this->returnData(['Code' => '120020', 'Msg'=>lang('120020')]);
         
@@ -66,24 +71,9 @@ class Tpldata extends Base
      */
     private function listData($parame)
     {
-        $menuid                     = isset($parame['menuid']) ? (int)$parame['menuid'] : 0;
-        if ($menuid <= 0) return ['Code' => '203', 'Msg'=>lang('notice_menuid_empty')];
-
-        $devform2Model              = model("devform2");
-
-        //获取表单数据
-        $formInfo                   = $devform2Model->getFormInfoByMenuId($menuid);
-        if (empty($formInfo)) return ['Code' => '203', 'Msg'=>lang('notice_formtpl_not_exists')];
-
-        $tablePrefix    = config("database.prefix");
-        $tableName      = "kor_table" . $formInfo['id'];
-        $isTable        = $dbModel->query('SHOW TABLES LIKE "' . $tablePrefix . $tableName . '"');
-
-        if (empty($isTable)) return ['Code' => '203', 'Msg'=>lang('notice_table_not_exists')];
-
         //主表数据库模型
-		$dbModel					= model($tableName);
-
+        $dbModel            = model($this->mainTable);
+ 
 		/*定义数据模型参数*/
 		//主表名称，可以为空，默认当前模型名称
 		$modelParame['MainTab']		= $this->mainTable;
@@ -125,16 +115,10 @@ class Tpldata extends Base
 		//数据格式化
 		$data 						= (isset($lists['lists']) && !empty($lists['lists'])) ? $lists['lists'] : [];
 
-    	if (!empty($data))
-        {
-            //自行定义格式化数据输出
-    		/*foreach($data as $k=>$v)
-            {
+        $tableHead                  = isset($this->formInfo['list_config']) ? $this->formInfo['list_config'] : '';
 
-    		}*/
-    	}
-
-    	$lists['lists'] 			= $data;
+    	$lists['listData'] 			= !empty($data) ? json_encode($data) : '';
+        $lists['tableHead']         = $tableHead;
 
     	return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$lists];
     }
@@ -149,28 +133,43 @@ class Tpldata extends Base
         //主表数据库模型
     	$dbModel					= model($this->mainTable);
 
-        //数据ID
-        $id                         = isset($parame['id']) ? intval($parame['id']) : 0;
+        //处理表单数据
+        $formData                   = isset($parame['formData']) ? ($parame['formData']) : '';
+        
+        if (empty($formData) || !is_json($formData))
+        return ['Code' => '203', 'Msg'=>lang('notice_json_format_error')];
 
-        //自行定义入库数据 为了防止参数未定义报错，先采用isset()判断一下
+        //表单提交的原始数据
+        $formData                   = json_decode($formData,true);
+        $formField                  = $this->getFormTplField();
         $saveData                   = [];
-        //$saveData['parame']         = isset($parame['parame']) ? $parame['parame'] : '';
+        $defField                   = ['id','create_time','update_time','creator_id','modifier_id'];
 
-        //规避遗漏定义入库数据
-        if (empty($saveData)) return ['Code' => '120021', 'Msg'=>lang('120021')];
+        $saveData['update_time']    = time();
+        $saveData['modifier_id']    = $this->getUserId();
 
-        //自行处理数据入库条件
-        //...
+        foreach ($formField as $key => $value)
+        {
+            if (in_array($value, $defField)) continue;
+
+            $saveData[$value]   = isset($formData[$value]) ? $formData[$value] : '';
+        }
+
+        if (empty($saveData)) return ['Code' => '203', 'Msg'=>lang('notice_helper_data_error')];
+
+        //数据ID
+        $id                         = isset($formData['id']) ? intval($formData['id']) : 0;
 		
         //通过ID判断数据是新增还是更新 定义新增条件下数据
     	if ($id <= 0)
         {
-            //$saveData['parame']         = isset($parame['parame']) ? $parame['parame'] : '';
+            $saveData['create_time']    = time();
+            $saveData['creator_id']     = $this->getUserId();
     	}
 
     	$info                                       = $dbModel->saveData($id,$saveData);
 
-        return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '100015', 'Msg'=>lang('100015')];
+        return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '203', 'Msg'=>lang('100015')];
     }
 
     /**
@@ -185,12 +184,16 @@ class Tpldata extends Base
 
         //数据ID
         $id                 = isset($parame['id']) ? intval($parame['id']) : 0;
-        if ($id <= 0) return ['Code' => '120023', 'Msg'=>lang('120023')];
 
         //数据详情
-        $info               = $dbModel->getRow($id);
+        $dataInfo           = $id > 0 ? json_encode($dbModel->getRow($id)) : '';
+        $formInfo           = isset($this->formInfo['form_config']) ? $this->formInfo['form_config'] : '';
 
-        return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '100015', 'Msg'=>lang('100015')];
+        $data               = [];
+        $data['dataInfo']   = $dataInfo;
+        $data['formInfo']   = $formInfo;
+
+        return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$data];
     }
 
     /**
@@ -237,4 +240,45 @@ class Tpldata extends Base
     }
 
     /*接口扩展*/
+
+    private function getTplDataTableName($parame = [])
+    {
+        $menuid                     = isset($parame['menuid']) ? (int)$parame['menuid'] : 0;
+        if ($menuid <= 0) return ['Code' => '203', 'Msg'=>lang('notice_menuid_empty')];
+
+        $devform2Model              = model("devform2");
+
+        //获取表单数据
+        $formInfo                   = $devform2Model->getFormInfoByMenuId($menuid);
+        if (empty($formInfo)) return ['Code' => '203', 'Msg'=>lang('notice_formtpl_not_exists')];
+
+        $tablePrefix    = config("database.prefix");
+        $tableName      = "kor_table" . $formInfo['id'];
+        $isTable        = $devform2Model->query('SHOW TABLES LIKE "' . $tablePrefix . $tableName . '"');
+
+        if (empty($isTable)) return ['Code' => '203', 'Msg'=>lang('notice_table_not_exists')];
+
+        //检测模板文件是否存在
+        $modelName  = formatStringToHump($tableName);
+
+        //检测文件是否存在
+        $file       = \Env::get('APP_PATH') .'common/model/'. $modelName .'.php';
+        if (!file_exists($file)) return ['Code' => '203', 'Msg'=>lang('notice_model_not_exists')];
+
+        $this->mainTable    = $tableName;
+        $this->formInfo     = $formInfo;
+
+        return $this->mainTable;
+    }
+
+    private function getFormTplField()
+    {
+        $formTplData    = (isset($this->formInfo['form_config']) && !empty($this->formInfo['form_config'])) ? json_decode($this->formInfo['form_config'],true) : [];
+        $listsData      = isset($formTplData['list']) ? $formTplData['list'] : [];
+        $formField      = [];
+
+        foreach ($listsData as $value) $formField[$value['model']] = $value['model'];
+
+        return $formField;
+    }
 }

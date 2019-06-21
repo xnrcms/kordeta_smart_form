@@ -53,6 +53,7 @@ return [
     'text_enable'              => '启用',
     'text_prohibit'            => '禁用',
 
+    'notice_helper_data_error' => 'Helper层未未定义入库数据',
     'notice_undefined_data'    => '未定义入库数据',
     'notice_api_fail'          => '接口数据返回失败',
     'notice_data_id'           => '数据ID不能为空或者小于0',

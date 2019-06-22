@@ -232,7 +232,7 @@ class Base extends Model
 
 		if (!empty($tables)) {
 			foreach ($tables as $key => $value) {
-				$model->join ( $value[0],$value[1] ,$value[2]);
+				$model->join ( $value[0],$value[1],$value[2]);
 			}
 		}
 
@@ -348,10 +348,13 @@ class Base extends Model
 	{
 		$tables	  		= [];
 		$fields 		= '';
-		if (!empty($RelationTab)){
+		if (!empty($RelationTab))
+		{
 			$prefix   		= config('database.prefix');
-			foreach ($RelationTab as $key=>$val){
-				$Rtables	= $key;
+			foreach ($RelationTab as $key=>$val)
+			{
+				$tab 		= explode('|', $key);
+				$Rtables	= isset($tab[0]) ? $tab[0] : '';
 				$Ron		= trim($val['Ron']);
 				$Rfield		= $val['Rfield'];
 				$Ralias		= $val['Ralias'];

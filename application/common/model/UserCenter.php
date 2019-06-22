@@ -34,6 +34,9 @@ class UserCenter extends Base
 			}
 		}
 
+        $ownerid  = isset($parame['ownerid']) ? $parame['ownerid'] : -1;
+        $model->where('ownerid','=',$ownerid);
+        
         return $model;
     }
 

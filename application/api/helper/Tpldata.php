@@ -86,8 +86,9 @@ class Tpldata extends Base
 
 		//定义关联查询表信息，默认是空数组，为空时为单表查询,格式必须为一下格式
 		//Rtype :`INNER`、`LEFT`、`RIGHT`、`FULL`，不区分大小写，默认为`INNER`。
-		$RelationTab				= [];
-		//$RelationTab['member']		= array('Ralias'=>'me','Ron'=>'me.uid=main.uid','Rtype'=>'LEFT','Rfield'=>array('nickname'));
+		$RelationTab				      = [];
+		$RelationTab['user_center|1']	= array('Ralias'=>'uc1','Ron'=>'uc1.id=main.creator_id','Rtype'=>'LEFT','Rfield'=>array('username as creator_name'));
+        $RelationTab['user_center|2']   = array('Ralias'=>'uc2','Ron'=>'uc2.id=main.modifier_id','Rtype'=>'LEFT','Rfield'=>array('username as modifier_name'));
 
 		$modelParame['RelationTab']	= $RelationTab;
 
@@ -116,6 +117,12 @@ class Tpldata extends Base
 		$data 						= (isset($lists['lists']) && !empty($lists['lists'])) ? $lists['lists'] : [];
 
         $tableHead                  = isset($this->formInfo['list_config']) ? $this->formInfo['list_config'] : '';
+
+        foreach ($data as $key => $value)
+        {
+            $data[$key]['create_time']  = !empty($value['create_time']) ? date('Y-m-d H:i:s',$value['create_time']) : '/';
+            $data[$key]['update_time']  = !empty($value['create_time']) ? date('Y-m-d H:i:s',$value['create_time']) : '/';
+        }
 
     	$lists['listData'] 			= !empty($data) ? json_encode($data) : '';
         $lists['tableHead']         = $tableHead;

@@ -220,6 +220,7 @@ class Menus extends Base
         $dbModel                = model($this->mainTable);
 
         $authMenuIds                = [];
+        $listData                   = [];
         $modelParame                = [];
         $parame['ownerid']          = 0;
         $parame['status']           = 1;
@@ -250,7 +251,7 @@ class Menus extends Base
             $listData      = $Tree->arrayTree();
         }
 
-        $Data     = json_encode($authMenuIds);
+        $Data     = json_encode($listData);
 
         return ['Code' => '200', 'Msg'=>lang('200'),'Data'=>$Data];
     }

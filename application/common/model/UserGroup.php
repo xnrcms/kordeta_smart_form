@@ -60,7 +60,7 @@ class UserGroup extends Base
     public function getList($parame,$ownerid = 0)
     {
       $ckey       = (isset($parame['cacheKey']) && !empty($parame['cacheKey'])) ? $this->name . json_encode($parame['cacheKey']) : '';
-      $ctag       = 'table_' . $this->name . '_getList_Ownerid' . $ownerid;
+      $ctag       = 'table_' . $this->name . '_getList_Ownerid=' . $ownerid;
       $data       = $this->getCache($ckey);
 
       //自定义扩展
@@ -87,21 +87,27 @@ class UserGroup extends Base
         //.......
         
         $ownerid  = isset($info['ownerid']) ? $info['ownerid'] : 0;
-        $ctag     = 'table_' . $this->name . '_getList_Ownerid'.$ownerid;
+        $ctag     = 'table_' . $this->name . '_getList_Ownerid='.$ownerid;
 
         $this->clearCache(['ctag'=>$ctag]);
 
         return $info;
     }
 
-    public function deleteData($id = 0,$ownerid = 0)
+    public function deleteData($id = 0)
     {
-      $delCount     = $this->delData($id);
+      $info         = $this->getRow($id);
 
-      //自定义扩展
-      //.......
-      
-      $this->clearCache(['ctag'=>'table_' . $this->name . '_getList_Ownerid'.$ownerid]);
+      if (!empty($info))
+      {
+        $ownerid      = isset($info['ownerid']) ? $info['ownerid'] : 0;
+        $ctag         = 'table_' . $this->name . '_getList_Ownerid='.$ownerid;
+        $delCount     = $this->delData($id);
+
+        $this->clearCache(['ctag' => $ctag]);
+      }else{
+        $delCount     = 0;
+      }
 
       return $delCount;
     }

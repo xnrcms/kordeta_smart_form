@@ -289,7 +289,7 @@ class UserGroup extends Base
         //...
         
         //执行删除操作
-        $delCount               = $dbModel->deleteData($id,$this->getOwnerId());
+        $delCount               = $dbModel->deleteData($id);
 
         return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['count'=>$delCount]];
     }

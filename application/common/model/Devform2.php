@@ -40,8 +40,8 @@ class Devform2 extends Base
         }
 
         $ownerid  = isset($parame['ownerid']) ? $parame['ownerid'] : -1;
-        $model->where('ownerid','=',$ownerid);
-        
+        $model->where('main.ownerid','=',$ownerid);
+
         return $model;
     }
 
@@ -59,16 +59,15 @@ class Devform2 extends Base
     public function getList($parame)
     {
       $ckey       = (isset($parame['cacheKey']) && !empty($parame['cacheKey'])) ? $this->name . json_encode($parame['cacheKey']) : '';
-      $ctag       = 'table_' . $this->name . '_getList';
+      $ownerid    = isset($parame['ownerid']) ? $parame['ownerid'] : -1;
+      $ctag       = 'table_' . $this->name . '_getList_Ownerid='.$ownerid;
       $data       = $this->getCache($ckey);
 
       //自定义扩展
       //.......
-      
-     if (empty($data) || !isset($data['lists']) || empty($data['lists']))
+      if (empty($data) || !isset($data['lists']) || empty($data['lists']))
       {
           $data   = $this->getPageList($parame);
-
           $this->setCache($ckey,$data,$ctag);
       }
 
@@ -83,19 +82,28 @@ class Devform2 extends Base
         //自定义扩展
         //.......
         
-        $this->clearCache(['ctag'=>'table_' . $this->name . '_getList']);
+        $ownerid  = isset($info['ownerid']) ? $info['ownerid'] : 0;
+        $ctag     = 'table_' . $this->name . '_getList_Ownerid='.$ownerid;
+
+        $this->clearCache(['ctag'=>$ctag]);
 
         return $info;
     }
 
     public function deleteData($id = 0)
     {
-      $delCount     = $this->delData($id);
+      $info         = $this->getRow($id);
 
-      //自定义扩展
-      //.......
-      
-      $this->clearCache(['ctag'=>'table_' . $this->name . '_getList']);
+      if (!empty($info))
+      {
+        $ownerid      = isset($info['ownerid']) ? $info['ownerid'] : 0;
+        $ctag         = 'table_' . $this->name . '_getList_Ownerid='.$ownerid;
+        $delCount     = $this->delData($id);
+
+        $this->clearCache(['ctag' => $ctag]);
+      }else{
+        $delCount     = 0;
+      }
 
       return $delCount;
     }

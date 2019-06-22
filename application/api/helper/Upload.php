@@ -461,6 +461,27 @@ class Upload extends Base
 
     /*api:51af390161a18f647760fc7e58fbadf7*/
 
+    /*api:ae7ee4e7785682324a198e14887e98f6*/
+    /**
+     * * 图片上传接口
+     * @param  [array] $parame 接口参数
+     * @return [array]         接口输出数据
+     */
+    private function uploadImg($parame)
+    {
+        //主表数据库模型
+        $dbModel                = model($this->mainTable);
+
+        //自行书写业务逻辑代码
+
+        //需要返回的数据体
+        $Data                   = ['TEST'];
+
+        return ['Code' => '200', 'Msg'=>lang('200'),'Data'=>$Data];
+    }
+
+    /*api:ae7ee4e7785682324a198e14887e98f6*/
+
     /*接口扩展*/
 
     private function setError($error=[]){

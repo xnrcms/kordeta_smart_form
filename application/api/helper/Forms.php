@@ -86,6 +86,7 @@ class Forms extends Base
 
 		$modelParame['RelationTab']	= $RelationTab;
 
+        $parame['ownerid']          = $this->getOwnerId();
         //接口数据
         $modelParame['apiParame']   = $parame;
 

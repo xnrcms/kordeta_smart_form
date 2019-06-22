@@ -208,5 +208,54 @@ class Menus extends Base
     	return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['count'=>$delCount]];
     }
 
+    /*api:90d42ef36be1d53d3d6e1a6275ef4ddf*/
+    /**
+     * * 获取树状结构菜单数据接口
+     * @param  [array] $parame 接口参数
+     * @return [array]         接口输出数据
+     */
+    private function listDataTree($parame)
+    {
+        //主表数据库模型
+        $dbModel                = model($this->mainTable);
+
+        $authMenuIds                = [];
+        $modelParame                = [];
+        $parame['ownerid']          = 0;
+        $parame['status']           = 1;
+        $modelParame['limit']       = 1000;
+        $modelParame['apiParame']   = $parame;
+        $modelParame['whereFun']    = 'formatWhereDefault';
+
+        $menus2                     = model('devmenu')->getPageList($modelParame);
+        $menus2                     = isset($menus2['lists']) ? $menus2['lists'] : [];
+
+        foreach ($menus2 as $key => $value)
+        {
+            $authMenuIds[]      = [
+                'id'        => $value['id'],
+                'title'     => $value['title'],
+                'pid'       => $value['pid'],
+            ];
+        }
+
+        if (!empty($authMenuIds))
+        {
+            $Tree          = new \xnrcms\DataTree($authMenuIds);
+            
+            $Tree->setConfig('changeField',['id'=>'key']);
+            $Tree->setConfig('deleteField',['id','pid']);
+            $Tree->setConfig('childName','children');
+
+            $listData      = $Tree->arrayTree();
+        }
+
+        $Data     = json_encode($authMenuIds);
+
+        return ['Code' => '200', 'Msg'=>lang('200'),'Data'=>$Data];
+    }
+
+    /*api:90d42ef36be1d53d3d6e1a6275ef4ddf*/
+
     /*接口扩展*/
 }

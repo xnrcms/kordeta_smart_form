@@ -76,5 +76,20 @@ class Menus extends Base
         return $this->execApi($parame);
     }
 
+    /*api:90d42ef36be1d53d3d6e1a6275ef4ddf*/
+    /**
+     * 获取树状结构菜单数据接口
+     * @access public
+     * @param  [array] $parame 扩展参数
+     * @return [json]          接口数据输出
+    */
+    public function listDataTree($parame = [])
+    {
+        //执行接口调用
+        return $this->execApi($parame);
+    }
+
+    /*api:90d42ef36be1d53d3d6e1a6275ef4ddf*/
+
     /*接口扩展*/
 }

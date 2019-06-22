@@ -55,6 +55,11 @@ class Devmenu extends Base
 
         $info   = $this->updateById($info['id'],$updata);
 
+        $ownerid  = isset($info['ownerid']) ? $info['ownerid'] : 0;
+        $ctag     = 'table_' . $this->name . '_getList_Ownerid='.$ownerid;
+
+        $this->clearCache(['ctag'=>$ctag]);
+
         return $info;
     }
 
@@ -142,7 +147,9 @@ class Devmenu extends Base
     public function getList($parame)
     {
       $ckey       = (isset($parame['cacheKey']) && !empty($parame['cacheKey'])) ? $this->name . json_encode($parame['cacheKey']) : '';
-      $ctag       = 'table_' . $this->name . '_getList';
+
+      $ownerid    = isset($parame['ownerid']) ? $parame['ownerid'] : -1;
+      $ctag       = 'table_' . $this->name . '_getList_Ownerid='.$ownerid;
       $data       = $this->getCache($ckey);
 
       //自定义扩展
@@ -160,12 +167,18 @@ class Devmenu extends Base
 
     public function deleteData($id = 0)
     {
-      $delCount     = $this->delData($id);
+      $info         = $this->getRow($id);
 
-      //自定义扩展
-      //.......
-      
-      $this->clearCache(['ctag'=>'table_' . $this->name . '_getList']);
+      if (!empty($info))
+      {
+        $ownerid      = isset($info['ownerid']) ? $info['ownerid'] : 0;
+        $ctag         = 'table_' . $this->name . '_getList_Ownerid='.$ownerid;
+        $delCount     = $this->delData($id);
+
+        $this->clearCache(['ctag' => $ctag]);
+      }else{
+        $delCount     = 0;
+      }
 
       return $delCount;
     }

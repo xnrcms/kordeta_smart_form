@@ -26,7 +26,10 @@ class DataTree
       'pid'         => 'pid',
       'cname'       => 'title',
       'showTag'     => '└',
-      'childName'   => '_child'
+      'childName'   => '_child',
+      'appendField' => [],
+      'changeField' => [],
+      'deleteField' => [],
   );
 
   /**
@@ -113,20 +116,52 @@ class DataTree
       $refer = array();
       foreach ($list as $key => $data)
       {
-        $refer[$data[$this->config['pk']]]  =& $list[$key];
+        $list[$key][$this->config['childName']]   = [];
+        $refer[$data[$this->config['pk']]]        = &$list[$key];
       }
 
       foreach ($list as $key => $data)
       {
         // 判断是否存在parent
         $parentId =  $data[$this->config['pid']];
+
+        //扩展于某个字段相同值的字段
+        if (isset($this->config['appendField']) && !empty($this->config['appendField']))
+        {
+          foreach ($this->config['appendField'] as $akey => $avalue)
+          {
+            if (isset($data[$akey]) && !empty($avalue)) $list[$key][$avalue] = $data[$akey];
+          }
+        }
+
+        //改变某个字段为新的字段，如把id改成key
+        if (isset($this->config['changeField']) && !empty($this->config['changeField']))
+        {
+          foreach ($this->config['changeField'] as $ckey => $cvalue)
+          {
+            if (isset($data[$ckey]) && !empty($cvalue))
+            {
+               $list[$key][$cvalue] = $data[$ckey];
+            }
+          }
+        }
+
+        //删除某个字段
+        if (isset($this->config['deleteField']) && !empty($this->config['deleteField']))
+        {
+          foreach ($this->config['deleteField'] as $dvalue)
+          {
+            if (isset($data[$dvalue])) unset($list[$key][$dvalue]);
+          }
+        }
+
         if ($root == $parentId) {
-          $tree[] =& $list[$key];
+          $tree[] = &$list[$key];
         }else{
           if (isset($refer[$parentId]))
           {
-            $parent                               =& $refer[$parentId];
-            $parent[$this->config['childName']][] =& $list[$key];
+            $parent                               = &$refer[$parentId];
+            $parent[$this->config['childName']][] = &$list[$key];
           }
         }
       }

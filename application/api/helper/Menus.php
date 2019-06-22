@@ -222,7 +222,7 @@ class Menus extends Base
         $authMenuIds                = [];
         $listData                   = [];
         $modelParame                = [];
-        $parame['ownerid']          = 0;
+        $parame['ownerid']          = $this->getOwnerId();
         $parame['status']           = 1;
         $modelParame['limit']       = 1000;
         $modelParame['apiParame']   = $parame;

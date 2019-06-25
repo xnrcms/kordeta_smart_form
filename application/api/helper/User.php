@@ -391,6 +391,7 @@ class User extends Base
 
         if ($groupInfo['is_super'] == 1) {
             $rules                            = 'all';
+            $Data['group_id']                 = 1;
         }
         else{
             $Data['is_super']                 = $groupInfo['is_super'];

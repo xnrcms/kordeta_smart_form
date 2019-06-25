@@ -82,7 +82,7 @@ class UserCenter extends Base
 
     public function resetPwd($uid = 0)
     {
-        $defPwd         = '123456';
+        $defPwd         = 'kds123456';
         $this->updateById($uid,['password'=>data_md5($defPwd, config('extend.uc_auth_key'))]);
     }
 
@@ -243,7 +243,7 @@ class UserCenter extends Base
 
     private function checkUsername($username='')
     {
-        if (empty($username) || preg_match_all("/^[a-zA-Z0-9_]{6,18}$/",$username,$data) < 1)
+        if (empty($username) || preg_match_all("/^[a-zA-Z0-9_]{2,10}$/",$username,$data) < 1)
         return -13;
 
         return 0;

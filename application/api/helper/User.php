@@ -170,7 +170,8 @@ class User extends Base
 
             //更新详细信息
             $detailData                 = [];
-            $detailData['id']           = $data['id'];
+            $detailData['id']           = $id;
+            $detailData['uid']          = $uid;
             $detailData['mark']         = isset($parame['mark']) ? trim($parame['mark']) : '';
             
             model('user_detail')->saveData($detailData);

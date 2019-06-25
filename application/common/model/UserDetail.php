@@ -76,7 +76,9 @@ class UserDetail extends Base
         
         $updata                         = [];
         $updata['update_time']          = time();
-
+        
+        if ($id <= 0)                               $updata['id']               = $parame['uid'];
+        if ($id <= 0)                               $updata['uid']              = $parame['uid'];
         if (isset($parame['faceid']))               $updata['face']             = $parame['faceid'];
         if (isset($parame['nickname']))             $updata['nickname']         = $parame['nickname'];
         if (isset($parame['mark']))                 $updata['mark']             = $parame['mark'];

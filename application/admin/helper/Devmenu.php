@@ -295,7 +295,7 @@ class Devmenu extends Base
 
         if ($childMenuCount > 0) {
 
-            return ['Code' => '203', 'Msg'=>lang('500004')];
+            return ['Code' => '203', 'Msg'=>lang('notice_have_children')];
         }
 
         //执行删除操作

@@ -6,5 +6,6 @@
 
 return [
     // 系统错误提示
-    'notice_operation_type'                   => '数据操作类型错误',
+    'notice_operation_type'                   	=> '数据操作类型错误',
+    'notice_have_children' 						=> '该菜单下有子菜单，请先删除子菜单'
 ];

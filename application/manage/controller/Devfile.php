@@ -208,7 +208,6 @@ class Devfile extends Base
 			$htmls .= trim($value);
 		}
 		//$content 		= '1111';
-		wr([$htmls]);
 	}
 }
 ?>

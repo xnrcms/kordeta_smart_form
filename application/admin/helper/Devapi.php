@@ -490,7 +490,7 @@ class Devapi extends Base
                 }else{
                     $data_id        = $dbModel->saveBaseapi($saveData);
                     if ($data_id > 0){
-                        $info       = $dbModel->getOneById($data_id);wr($info);
+                        $info       = $dbModel->getOneById($data_id);
                         $this->addFixedParame($info,$api_type);
                     }
                 }

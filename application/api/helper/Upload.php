@@ -394,9 +394,9 @@ class Upload extends Base
         //获取表单上传的文件
         $files              = request()->file($parame['fileName']) ;
         $re                 = [];
-        wr([lang('200001')]);
+
         if(empty($files)) return ['Code'=>'200001' , 'Msg' => lang('200001')] ;
-        wr(['sss2']);
+
         foreach ($files as $file)
         {
             //上传文件验证

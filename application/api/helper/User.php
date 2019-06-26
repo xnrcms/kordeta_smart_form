@@ -114,8 +114,10 @@ class User extends Base
 		//数据格式化
 		$data 						= (isset($lists['lists']) && !empty($lists['lists'])) ? $lists['lists'] : [];
 
-        if (!empty($data)) {
-            foreach ($data as $key => $value) {
+        if (!empty($data))
+        {
+            foreach ($data as $key => $value)
+            {
                 $data[$key]['gtitle']   = $this->getUserGroupTitle($value['id']);
                 $data[$key]['oname']    = !empty($value['oname']) ? $value['oname'] : '系统用户';
             }
@@ -164,7 +166,7 @@ class User extends Base
         //更新成功
         if ($uid >0)
         {
-            if ($gid > 0 && $gid != 3) model('user_group_access')->setGroupAccess($uid,[$gid]);
+            if ($gid > 0 /*&& $gid != 3*/) model('user_group_access')->setGroupAccess($uid,[$gid]);
             //if ($gid == 3) model('user_group_access')->delGroupAccess($uid);
 
             $data['id']                 = intval($uid);
@@ -911,18 +913,16 @@ class User extends Base
         $gaccess                = model('user_group_access')->getUserGroupAccessListByUid($uid);
         $gtitle                 = [];
 
-        if ($uid === 1) {
-            $gtitle[]           = '超级管理员';
-        }
+        if ($uid === 1) $gtitle[]           = '超级管理员';
 
-        if (!empty($lists)) {
-            foreach ($lists as $key => $value) {
-                if (in_array($value['id'], $gaccess)) {
-                    $gtitle[]       = $value['title'];
-                }
+        if (!empty($lists))
+        {
+            foreach ($lists as $key => $value)
+            {
+                if (in_array($value['id'], $gaccess)) $gtitle[]       = $value['title'];
             }
         }
 
-        return !empty($gtitle) ? implode(',', $gtitle) : '未分组';
+        return !empty($gtitle) ? implode(',', $gtitle) : '普通用户';
     }
 }

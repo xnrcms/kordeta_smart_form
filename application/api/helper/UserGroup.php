@@ -168,7 +168,8 @@ class UserGroup extends Base
             foreach ($gusers as $key => $value)
             {
                 $gid            = model('user_group_access')->getUserGroupAccessListByUid($value);
-                if (!empty($gid)) return ['Code' => '203', 'Msg'=>lang('notice_user_already_bind_group')];
+                if (!empty($gid) && !(in_array(3, $gid) || in_array($id, $gid)))
+                return ['Code' => '203', 'Msg'=>lang('notice_user_already_bind_group')];
 
                 $gusersid[]     = $value;
             }
@@ -349,7 +350,9 @@ class UserGroup extends Base
 
         //用户是否已经加入到其他分组
         $gid            = model('user_group_access')->getUserGroupAccessListByUid($uid);
-        if (!empty($gid)) return ['Code' => '203', 'Msg'=>lang('notice_user_already_bind_group')];
+
+        if (!empty($gid) && !in_array(3, $gid))
+        return ['Code' => '203', 'Msg'=>lang('notice_user_already_bind_group')];
 
         //需要返回的数据体
         $Data['id']                   = $uid;

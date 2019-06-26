@@ -399,15 +399,6 @@ class Forms extends Base
 
             $dbModel->query($sqlStr);
         }
-
-        /*wr([
-            'sqlStr'=>$sqlStr,
-            'sorts'=>$sorts,
-            'sqlArr'=>$sqlArr,
-            'add_field'=>$add_field,
-            'edit_field'=>$edit_field,
-            'del_field'=>$del_field
-        ]);*/
     }
 
     private function getTableFieldType($type = '')

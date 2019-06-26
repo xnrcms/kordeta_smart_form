@@ -165,7 +165,7 @@ class User extends Base
         if ($uid >0)
         {
             if ($gid > 0 && $gid != 3) model('user_group_access')->setGroupAccess($uid,[$gid]);
-            if ($gid == 3) model('user_group_access')->delGroupAccess($uid);
+            //if ($gid == 3) model('user_group_access')->delGroupAccess($uid);
 
             $data['id']                 = intval($uid);
 

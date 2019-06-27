@@ -15,6 +15,6 @@ namespace app\common\model;
 use think\Model;
 use think\Db;
 
-class KorTable9 extends Base
+class KorTable9 extends KorTable
 {
 }

@@ -301,6 +301,9 @@ class Forms extends Base
 
         $isTable        = $dbModel->query('SHOW TABLES LIKE "' . $tableName . '"');
         
+        //创建表模型
+        $this->createTableModel($tableName);
+
         //检查表是否存在 不存在创建
         if (empty($isTable))  $this->createTable($tableName,$data['title'],$tablePrefix);
 
@@ -413,7 +416,7 @@ class Forms extends Base
         return $defType;
     }
 
-    private function createTable($tableName,$title,$prefix = '')
+    private function createTable($tableName,$title)
     {
         model($this->mainTable)->query("CREATE TABLE `".$tableName."` (
 `id`  int(10) NOT NULL AUTO_INCREMENT COMMENT '数据ID' ,
@@ -422,19 +425,19 @@ class Forms extends Base
 `creator_id`  int(10) NOT NULL DEFAULT 0 COMMENT '创建者ID' ,
 `modifier_id`  int(10) NOT NULL DEFAULT 0 COMMENT '修改者ID' ,
 PRIMARY KEY (`id`) ) COMMENT='自动表单（".$title."）表'");
+    }
 
+    private function createTableModel($tname = '')
+    {
+        if (empty($tname)) return;
         //生成模型文件
-        $tname      = str_replace($prefix,'',$tableName);
         $modelName  = formatStringToHump($tname);
 
-        if (!empty($modelName))
-        {
-            //检测文件是否存在
-            $file       = \Env::get('APP_PATH') .'common/model/'. $modelName .'.php';
-            $base       = \Env::get('APP_PATH') .'common/tpl/ApiTPLM.php';
+        //检测文件是否存在
+        $file       = \Env::get('APP_PATH') .'common/model/'. $modelName .'.php';
+        $base       = \Env::get('APP_PATH') .'common/tpl/ApiTPLM.php';
 
-            if (!file_exists($file) && file_exists($base))
-            file_put_contents($file,str_replace('{ModelNameTPL}',$modelName,file_get_contents($base)));
-        }
+        if (!file_exists($file) && file_exists($base))
+        file_put_contents($file,str_replace('{ModelNameTPL}',$modelName,file_get_contents($base)));
     }
 }

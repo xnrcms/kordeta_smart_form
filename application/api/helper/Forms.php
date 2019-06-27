@@ -431,12 +431,13 @@ PRIMARY KEY (`id`) ) COMMENT='自动表单（".$title."）表'");
     private function createTableModel($tname = '')
     {
         if (empty($tname)) return;
+        
         //生成模型文件
         $modelName  = formatStringToHump($tname);
 
         //检测文件是否存在
         $file       = \Env::get('APP_PATH') .'common/model/'. $modelName .'.php';
-        $base       = \Env::get('APP_PATH') .'common/tpl/ApiTPLM.php';
+        $base       = \Env::get('APP_PATH') .'common/tpl/KorTable.php';
 
         if (!file_exists($file) && file_exists($base))
         file_put_contents($file,str_replace('{ModelNameTPL}',$modelName,file_get_contents($base)));

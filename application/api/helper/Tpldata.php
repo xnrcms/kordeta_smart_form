@@ -107,8 +107,13 @@ class Tpldata extends Base
 		//数据分页页数定义
 		$modelParame['page']		= (isset($parame['page']) && $parame['page'] > 0) ? $parame['page'] : 1;
 
-		//数据缓存是时间，默认0 不缓存 ,单位秒
-		$modelParame['cacheKey']	= [];
+		//定义缓存KEY
+        $modelParame['cacheKey']    = [
+            isset($parame['search']) ? $parame['search'] : '',
+            $modelParame['limit'],
+            $modelParame['order'],
+            $modelParame['page'],
+        ];
 
 		//列表数据
 		$lists 						= $dbModel->getList($modelParame);
@@ -122,6 +127,13 @@ class Tpldata extends Base
         {
             $data[$key]['create_time']  = !empty($value['create_time']) ? date('Y-m-d H:i:s',$value['create_time']) : '/';
             $data[$key]['update_time']  = !empty($value['create_time']) ? date('Y-m-d H:i:s',$value['create_time']) : '/';
+            foreach ($value as $kk => $vv)
+            {
+                if ($this->getFieldType($kk) == 'date')
+                {
+                    $data[$key][$kk]     = !empty($vv) && is_numeric($vv) ? date('Y-m-d',$vv) : $vv;
+                }
+            }
         }
 
     	$lists['listData'] 			= !empty($data) ? json_encode($data) : '';
@@ -159,7 +171,11 @@ class Tpldata extends Base
         {
             if (in_array($value, $defField)) continue;
 
-            $saveData[$value]   = isset($formData[$value]) ? $formData[$value] : '';
+            if ($this->getFieldType($value) == 'date') {
+                $saveData[$value]   = isset($formData[$value]) ? strtotime($formData[$value]) : 0;
+            }else{
+                $saveData[$value]   = isset($formData[$value]) ? $formData[$value] : '';
+            }
         }
 
         if (empty($saveData)) return ['Code' => '203', 'Msg'=>lang('notice_helper_data_error')];
@@ -191,9 +207,18 @@ class Tpldata extends Base
 
         //数据ID
         $id                 = isset($parame['id']) ? intval($parame['id']) : 0;
+        $info               = $dbModel->getRow($id);
+
+        foreach ($info as $key => $value)
+        {
+            if ($this->getFieldType($key) == 'date')
+            {
+                $info[$key]     = !empty($value) && is_numeric($value) ? date('Y-m-d',$value) : $value;
+            }
+        }
 
         //数据详情
-        $dataInfo           = $id > 0 ? json_encode($dbModel->getRow($id)) : '';
+        $dataInfo           = $id > 0 ? json_encode($info) : '';
         $formInfo           = isset($this->formInfo['form_config']) ? $this->formInfo['form_config'] : '';
 
         $data               = [];
@@ -270,7 +295,7 @@ class Tpldata extends Base
 
         //检测文件是否存在
         $file       = \Env::get('APP_PATH') .'common/model/'. $modelName .'.php';
-        wr($file);
+
         if (!file_exists($file)) return ['Code' => '203', 'Msg'=>lang('notice_model_not_exists')];
 
         $this->mainTable    = $tableName;
@@ -288,5 +313,14 @@ class Tpldata extends Base
         foreach ($listsData as $value) $formField[$value['model']] = $value['model'];
 
         return $formField;
+    }
+
+    private function getFieldType($fieldName = '')
+    {
+        if (empty($fieldName))  return '';
+
+        $field      = explode('_', $fieldName);
+
+        return isset($field[0]) ? $field[0] : '';
     }
 }

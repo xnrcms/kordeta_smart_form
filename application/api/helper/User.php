@@ -287,7 +287,7 @@ class User extends Base
         //调用登录模型
         $userModel  = model('user_center');
         $uid        = $userModel->login($username, $password, $usernameType);
-
+        
         if ($uid > 0)
         {
             //根据group_id确定用户是否正确登录

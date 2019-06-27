@@ -89,6 +89,7 @@ class UserGroup extends Base
 
 		$modelParame['RelationTab']	= $RelationTab;
 
+        $parame['ownerid']          = $this->getOwnerId();
         //接口数据
         $modelParame['apiParame']   = $parame;
 
@@ -110,10 +111,11 @@ class UserGroup extends Base
             $modelParame['limit'],
             $modelParame['order'],
             $modelParame['page'],
+            $parame['ownerid'],
         ];
 
         //列表数据
-        $lists                      = $dbModel->getList($modelParame,$this->getOwnerId());
+        $lists                      = $dbModel->getList($modelParame);
 
         //数据格式化
         $data                       = (isset($lists['lists']) && !empty($lists['lists'])) ? $lists['lists'] : [];

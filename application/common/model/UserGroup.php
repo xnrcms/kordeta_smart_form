@@ -60,18 +60,17 @@ class UserGroup extends Base
     public function getList($parame,$ownerid = 0)
     {
       $ckey       = (isset($parame['cacheKey']) && !empty($parame['cacheKey'])) ? $this->name . json_encode($parame['cacheKey']) : '';
+
+      $ownerid    = isset($parame['ownerid']) ? $parame['ownerid'] : -1;
       $ctag       = 'table_' . $this->name . '_getList_Ownerid=' . $ownerid;
       $data       = $this->getCache($ckey);
 
       //自定义扩展
       //.......
-      
+
       if (empty($data) || !isset($data['lists']) || empty($data['lists']))
       {
-          $parame['apiParame']['ownerid']    = $ownerid;
-
           $data                 = $this->getPageList($parame);
-
           $this->setCache($ckey,$data,$ctag);
       }
 
@@ -87,7 +86,7 @@ class UserGroup extends Base
         //.......
         
         $ownerid  = isset($info['ownerid']) ? $info['ownerid'] : 0;
-        $ctag     = 'table_' . $this->name . '_getList_Ownerid='.$ownerid;
+        $ctag     = 'table_' . $this->name . '_getList_Ownerid=' . $ownerid;
 
         $this->clearCache(['ctag'=>$ctag]);
 

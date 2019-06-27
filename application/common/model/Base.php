@@ -57,7 +57,7 @@ class Base extends Model
 	public function clearCache($parame)
 	{
 		$id 	= isset($parame['id']) ? intval($parame['id']) : 0;
-		$tag 	= isset($parame['ctag']) ? 'table_' . $this->name . '_' . trim($parame['ctag']) : '';
+		$tag 	= isset($parame['ctag']) ? trim($parame['ctag']) : '';
 		$ckey 	= isset($parame['ckey']) ? trim($parame['ckey']) : '';
 
 		if ($id > 0) Cache::rm('table_' . $this->name . '_' . $id);

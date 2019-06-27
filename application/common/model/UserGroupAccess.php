@@ -134,6 +134,21 @@ class UserGroupAccess extends Base
           foreach ($lists as $value) $this->clearCache(['ckey'=>'getMenuAuthListByUid='.$value['uid']]);
         }
     }
+
+    public function delGroupAccessUser($gid = 0)
+    {
+      $lists  = $this->where("group_id","=",$gid)->select()->toArray();
+      if (!empty($lists))
+      {
+        foreach ($lists as $value)
+        {
+          $this->clearCache(['ckey'=>'getUserGroupAccessListByUid=' . $value['uid']]);
+          $this->clearCache(['ckey'=>'getMenuAuthListByUid=' . $value['uid']]);
+        }
+        
+        $this->where('group_id','=',$gid)->delete();
+      }
+    }
     //自行扩展更多
     //...
 }

@@ -83,6 +83,7 @@ class Menus extends Base
             $modelParame  = [];
             $parame['ownerid']          = $this->getOwnerId();
             $parame['status']           = 1;
+            $modelParame['limit']       = 1000;
             $modelParame['apiParame']   = $parame;
             $modelParame['whereFun']    = 'formatWhereDefault';
 

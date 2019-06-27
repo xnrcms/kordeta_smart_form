@@ -164,7 +164,7 @@ class UserGroup extends Base
 
         //分组成员ID
         $gusersid                   = [];
-        if (isset($parame['gusers']))
+        if (isset($parame['gusers']) && !empty($parame['gusers']))
         {
             $gusers         = explode(',', $parame['gusers']);
             foreach ($gusers as $key => $value)

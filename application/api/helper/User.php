@@ -246,14 +246,17 @@ class User extends Base
     private function delData($parame)
     {
         //主表数据库模型
-    	$dbModel				= model('user_center');
+    	$dbModel				= model($this->mainTable);
 
         //超级管理员ID
         $administrator_id       = config('extend.administrator_id');
         if ($parame['id'] == $administrator_id) return ['Code' => '200028', 'Msg'=>lang('200028')];
 
         //删除用户详细信息
-        model($this->mainTable)->delData($parame['id']);
+        model('user_detail')->delData($parame['id']);
+        
+        //删除分组信息
+        model("user_group_access")->setGroupAccess($parame['id'],[]);
         
         //执行删除操作
     	$delCount				= $dbModel->delData($parame['id']);

@@ -188,8 +188,8 @@ class Devmenu extends Base
 
         $info                                   = $dbModel->saveData($id,$saveData);
 
-    	if (!empty($info)) {
-
+    	if (!empty($info))
+        {
             //处理数据操作
             $this->addDataOperation($operation,$info);
 

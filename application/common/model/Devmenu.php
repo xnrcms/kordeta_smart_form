@@ -207,7 +207,7 @@ class Devmenu extends Base
       $map['ownerid']   = $ownerid;
       $map['pid']       = $pid;
 
-      $this->where($map)->delete();
+      $this->where($map)->where('title','in',['新增','查看','编辑','删除'])->delete();
 
       $this->clearCache(['ctag'=>'table_' . $this->name . '_getList_' . $ownerid]);
     }

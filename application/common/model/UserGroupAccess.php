@@ -79,10 +79,19 @@ class UserGroupAccess extends Base
     {
       if ($uid <= 0)  return false;
 
-      $this->where('uid','=',$uid)->delete();
+      //获取用户原本已经加入的分组信息
+      $gids     = $this->getUserGroupAccessListByUid($uid);
+
+      foreach ($gids as $gval)
+      {
+        $this->clearCache(['ckey'=>md5('getGuserByGroupId='.$gval)]);
+      }
+
       $this->clearCache(['ckey'=>'getUserGroupAccessListByUid='.$uid]);
       $this->clearCache(['ckey'=>'getMenuAuthListByUid='.$uid]);
       
+      $this->where('uid','=',$uid)->delete();
+
       if (!empty($gid))
       {
         $gdata    = [];
@@ -145,7 +154,7 @@ class UserGroupAccess extends Base
           $this->clearCache(['ckey'=>'getUserGroupAccessListByUid=' . $value['uid']]);
           $this->clearCache(['ckey'=>'getMenuAuthListByUid=' . $value['uid']]);
         }
-        
+
         $this->where('group_id','=',$gid)->delete();
       }
     }

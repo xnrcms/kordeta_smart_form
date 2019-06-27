@@ -297,17 +297,18 @@ class Forms extends Base
         $dbModel        = model($this->mainTable);
         $tablePrefix    = config("database.prefix");
         $database       = config("database.database");
-        $tableName      = $tablePrefix . "kor_table" . $data['id'];
+        $tableName1     = "kor_table" . $data['id'];
+        $tableName2     = $tablePrefix . $tableName1;
 
-        $isTable        = $dbModel->query('SHOW TABLES LIKE "' . $tableName . '"');
+        $isTable        = $dbModel->query('SHOW TABLES LIKE "' . $tableName2 . '"');
         
         //创建表模型
-        $this->createTableModel($tableName);
+        $this->createTableModel($tableName1);
 
         //检查表是否存在 不存在创建
-        if (empty($isTable))  $this->createTable($tableName,$data['title'],$tablePrefix);
+        if (empty($isTable))  $this->createTable($tableName2,$data['title']);
 
-        $this->createTableField($database,$tableName,$data['form_config']);
+        $this->createTableField($database,$tableName2,$data['form_config']);
         
     }
 

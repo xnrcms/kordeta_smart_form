@@ -270,6 +270,7 @@ class Tpldata extends Base
 
         //检测文件是否存在
         $file       = \Env::get('APP_PATH') .'common/model/'. $modelName .'.php';
+        wr($file);
         if (!file_exists($file)) return ['Code' => '203', 'Msg'=>lang('notice_model_not_exists')];
 
         $this->mainTable    = $tableName;

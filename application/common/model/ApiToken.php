@@ -97,6 +97,44 @@ class ApiToken extends Base
       return $delCount;
     }
 
+    public function deleteTokenByToken($token = '')
+    {
+      if (!empty($token))
+      {
+        $this->clearCache([
+          'ckey'=>'getTokenInfoByTokenAndUid_'.$token,
+          'ctag'=>'table_' . $this->name . '_getList'
+        ]);
+
+        $this->where("token","=",$token)->delete();
+      }else{
+        $overdue    = $this->where('exp','<',time())->select()->toArray();
+        foreach ($overdue as $key => $value)
+        {
+          $this->clearCache([
+            'ckey'=>'getTokenInfoByTokenAndUid_'.$value['token'],
+            'ctag'=>'table_' . $this->name . '_getList'
+          ]);
+        }
+
+        $this->where('exp','<',time())->delete();
+      }
+    }
+
+    public function getTokenInfoByToken($token)
+    {
+      $ckey       = 'getTokenInfoByTokenAndUid_'.$token;
+      $info       = $this->getCache($ckey);
+      
+      if (empty($info))
+      {
+        $info       = $this->where(['token'=>$token])->find();
+        $cacheData  = serialize($info);
+        $this->setCache($ckey,$cacheData);
+      }
+
+      return $info;
+    }
     //自行扩展更多
     //...
 }

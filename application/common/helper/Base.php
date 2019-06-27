@@ -266,6 +266,9 @@ class Base
 
       $this->UserToken  = isset($parameData['hashid']) ? trim($parameData['hashid']) : '';
 
+      //删除过期Token
+      model('api_token')->deleteTokenByToken();
+
       //校验用户身份ID是否正确
       if (!empty($this->UserToken))
       {
@@ -361,7 +364,7 @@ class Base
         if (is_numeric($JWT) && $JWT === -1) return -1;
         if (is_object($JWT) && !empty($JWT) && (int)$JWT->uid > 0 && $JWT->exp > time())
         {
-          $tokenInfo    = model('api_token')->getRow($JWT->uid);
+          $tokenInfo    = model('api_token')->getTokenInfoByToken($token);
 
           if ( !empty($tokenInfo) && isset($tokenInfo['token']) && $tokenInfo['token'] === $token )
           {
@@ -370,12 +373,15 @@ class Base
           }
         }
 
+        //删除不合法的token
+        model('api_token')->deleteTokenByToken($token);
+
         return 0;
     }
 
     private function clearToken()
     {
-      model('api_token')->saveData($this->UserId,['token'=>'']);
+      model('api_token')->deleteTokenByToken($this->UserToken);
     }
 
     private function checkUserInfo()

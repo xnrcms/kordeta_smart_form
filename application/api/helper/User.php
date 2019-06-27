@@ -257,7 +257,7 @@ class User extends Base
         
         //删除分组信息
         model("user_group_access")->setGroupAccess($parame['id'],[]);
-        
+
         //执行删除操作
     	$delCount				= $dbModel->delData($parame['id']);
 
@@ -303,10 +303,11 @@ class User extends Base
            
             $key                        = config('extend.uc_auth_key');
             $time                       = time();
+            $exp                        = $time + (24 * 3600 * 1);
             $token = [
                 "iat" => $time,
                 "nbf" => $time,
-                "exp" => $time + (24 * 3600 * 1),
+                "exp" => $exp,
                 "uid" => intval($uid)
             ];
 
@@ -321,7 +322,7 @@ class User extends Base
             $userDetailInfo             = $userDetailModel->getOneById($uid);
 
             //维护token
-            model('api_token')->saveData($uid,['id'=>$uid,'token'=>md5($data['hashid'])]);
+            model('api_token')->saveData(0,['uid'=>$uid,'exp'=>$exp,'token'=>md5($data['hashid'])]);
 
             //极光ID
             if (isset($parame['jpushid']) && !empty($parame['jpushid']))
@@ -791,9 +792,9 @@ class User extends Base
         $dbModel                = model($this->mainTable);
 
         //自行书写业务逻辑代码
-        model('api_token')->saveData($this->getUserId(),['token'=>'']);
-        //需要返回的数据体
+        model('api_token')->deleteTokenByToken(md5($parame['hashid']));
 
+        //需要返回的数据体
         return ['Code' => '200', 'Msg'=>lang('logout_success'),'Data'=>''];
     }
 

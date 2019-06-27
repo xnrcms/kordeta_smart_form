@@ -57,11 +57,11 @@ class UserGroup extends Base
       return $info;
     }
 
-    public function getList($parame,$ownerid = 0)
+    public function getList($parame)
     {
       $ckey       = (isset($parame['cacheKey']) && !empty($parame['cacheKey'])) ? $this->name . json_encode($parame['cacheKey']) : '';
 
-      $ownerid    = isset($parame['ownerid']) ? $parame['ownerid'] : -1;
+      $ownerid    = isset($parame['apiParame']['ownerid']) ? $parame['apiParame']['ownerid'] : -1;
       $ctag       = 'table_' . $this->name . '_getList_Ownerid=' . $ownerid;
       $data       = $this->getCache($ckey);
 

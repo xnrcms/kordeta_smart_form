@@ -57,7 +57,7 @@ class Base extends Model
 	public function clearCache($parame)
 	{
 		$id 	= isset($parame['id']) ? intval($parame['id']) : 0;
-		$tag 	= isset($parame['ctag']) ? trim($parame['ctag']) : '';
+		$tag 	= isset($parame['ctag']) ? 'table_' . $this->name . '_' . trim($parame['ctag']) : '';
 		$ckey 	= isset($parame['ckey']) ? trim($parame['ckey']) : '';
 
 		if ($id > 0) Cache::rm('table_' . $this->name . '_' . $id);
@@ -67,10 +67,10 @@ class Base extends Model
 
 	public function setCache($ckey = '',$data = '',$tag = '')
 	{
-		if (!empty($ckey)) {
+		if (!empty($ckey))
+		{
 			$tag 		= !empty($tag) ? 'table_' . $this->name . '_' . $tag : '';
 			$data 		= (is_array($data) && !empty($data)) ? serialize($data) : $data;
-
 			if (empty($tag)) {
 				Cache::set($ckey,$data,config('extend.cache_time'));
 			}else{

@@ -13,5 +13,6 @@ return [
     'notice_user_not_exist'                     	=> '用户不存在',
     'notice_user_already_bind'                		=> '用户已经绑定过当前组',
     'notice_user_already_bind_group'                => '用户已经绑定其他组或当前分组',
+    'notice_user_no_allrow_add'                		=> '该账号无法添加',
     'notice_group_info_not_exists'                  => '分组信息不存在',
 ];

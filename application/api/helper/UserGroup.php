@@ -358,6 +358,9 @@ class UserGroup extends Base
         //用户是否已经加入到其他分组
         $gid            = model('user_group_access')->getUserGroupAccessListByUid($uid);
 
+        if (in_array(1, $gid) || in_array(2, $gid))
+        return ['Code' => '203', 'Msg'=>lang('notice_user_no_allrow_add')];
+
         if (!empty($gid) && !in_array(3, $gid))
         return ['Code' => '203', 'Msg'=>lang('notice_user_already_bind_group')];
 

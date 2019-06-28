@@ -202,7 +202,7 @@ class UserGroup extends Base
         {
             if (!empty($gusersid))
             {
-                foreach ($gusersid as $uid) model('user_group_access')->setGroupAccess($uid,[$info['id']]);
+                model('user_group_access')->setGroupAccess2($gusersid,$info['id']);
             }else{
                 model('user_group_access')->delGroupAccessUser($info['id']);
             }

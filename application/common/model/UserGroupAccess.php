@@ -106,6 +106,27 @@ class UserGroupAccess extends Base
       }
     }
 
+    public function setGroupAccess2($uid = [],$gid = 0)
+    {
+      if ( empty($uid) || $gid <= 0)  return false;
+
+      
+      $gdata    = [];
+      foreach ($uid as $value)
+      {
+        $this->clearCache(['ckey'=>'getMenuAuthListByUid='.$value]);
+        $this->clearCache(['ckey'=>'getUserGroupAccessListByUid='.$value]);
+        $gdata[]  = ['uid'=>$value,'group_id'=>$gid];
+      }
+
+      $this->clearCache(['ckey'=>md5('getGuserByGroupId='.$gid)]);
+      $this->where('group_id','=',$gid)->delete();
+
+      if (!empty($gdata)) $this->saveAll($gdata);
+      
+      return true;
+    }
+
     public function saveData($uid = 0,$gid = 0)
     {
       if ($uid > 0 && $gid > 0)

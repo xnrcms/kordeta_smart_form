@@ -54,7 +54,7 @@ class Devmenu extends Base
             $updata['path']     = '-' . $info['id'] . '-';
           }
 
-          $updata['update_time']  = time();
+          $updata['update_time']  = time() + 2;
           $info                   = $this->updateById($info['id'],$updata);
         }
 

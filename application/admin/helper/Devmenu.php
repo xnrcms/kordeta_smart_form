@@ -245,13 +245,15 @@ class Devmenu extends Base
         $id                 = isset($parame['id']) ? intval($parame['id']) : 0;
         if ($id <= 0) return ['Code' => '120023', 'Msg'=>lang('120023')];
 
-    	$info 				= $dbModel->updateById($id,[$parame['fieldName']=>$parame['updata']]);
+        $updata                          = [];
+        $updata['update_time']           = time();
+        $updata[$parame['fieldName']]    = $parame['updata'];
+    	$info 				             = $dbModel->saveData($id,$updata);
 
-    	if (!empty($info)) {
-
+    	if (!empty($info))
+        {
     		return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['id'=>$id]];
     	}else{
-
     		return ['Code' => '100015', 'Msg'=>lang('100015')];
     	}
     }

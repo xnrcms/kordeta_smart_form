@@ -84,10 +84,18 @@ class Menus extends Base
             $parame['ownerid']          = $this->getOwnerId();
             $parame['status']           = 1;
             $modelParame['limit']       = 1000;
+            $modelParame['order']       = 'main.sort desc';
             $modelParame['apiParame']   = $parame;
             $modelParame['whereFun']    = 'formatWhereDefault';
+            //定义缓存KEY
+            $modelParame['cacheKey']    = [
+                $modelParame['limit'],
+                $modelParame['order'],
+                $parame['ownerid'],
+                'get_auth_menu'
+            ];
 
-            $menus2                     = model('devmenu')->getPageList($modelParame);
+            $menus2                     = model('devmenu')->getList($modelParame);
             $menus2                     = isset($menus2['lists']) ? $menus2['lists'] : [];
 
             foreach ($menus2 as $key => $value)

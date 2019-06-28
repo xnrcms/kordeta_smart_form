@@ -20,7 +20,7 @@ class Devmenu extends Base
 
         $ownerid  = isset($parame['ownerid']) ? $parame['ownerid'] : -1;
         $model->where('ownerid','=',$ownerid);
-        
+        if (isset($parame['status'])) $model->where('status','=',$parame['status']);
         return $model;
     }
 
@@ -44,16 +44,19 @@ class Devmenu extends Base
 
         //设置path
         $updata         = [];
-        if (isset($parame['pid']) && $parame['pid'] > 0) {
+        if (isset($parame['pid']))
+        {
+          if ($parame['pid'] > 0)
+          {
             $pinfo              = $this->getOneById($parame['pid']);
             $updata['path']     = $pinfo['path'] . $info['id'] . '-';
-        }else{
+          }else{
             $updata['path']     = '-' . $info['id'] . '-';
+          }
+
+          $updata['update_time']  = time();
+          $info                   = $this->updateById($info['id'],$updata);
         }
-
-        $updata['update_time']  = time() + 5;
-
-        $info   = $this->updateById($info['id'],$updata);
 
         $ownerid  = isset($info['ownerid']) ? $info['ownerid'] : 0;
         $ctag     = 'table_' . $this->name . '_getList_Ownerid='.$ownerid;
@@ -148,7 +151,7 @@ class Devmenu extends Base
     {
       $ckey       = (isset($parame['cacheKey']) && !empty($parame['cacheKey'])) ? $this->name . json_encode($parame['cacheKey']) : '';
 
-      $ownerid    = isset($parame['ownerid']) ? $parame['ownerid'] : -1;
+      $ownerid    = isset($parame['apiParame']['ownerid']) ? $parame['apiParame']['ownerid'] : -1;
       $ctag       = 'table_' . $this->name . '_getList_Ownerid='.$ownerid;
       $data       = $this->getCache($ckey);
 
@@ -158,7 +161,6 @@ class Devmenu extends Base
       if (empty($data) || !isset($data['lists']) || empty($data['lists']))
       {
           $data   = $this->getPageList($parame);
-
           $this->setCache($ckey,$data,$ctag);
       }
 
@@ -187,14 +189,14 @@ class Devmenu extends Base
     {
       if (empty($menuid) || (int)$uid <= 0 || !is_array($menuid)) return [];
 
-      $ckey       = 'getMenuAuthListByUid=' . $uid;
+      /*$ckey       = 'getMenuAuthListByUid=' . $uid;
       $data       = $this->getCache($ckey);
       if (empty($data))
-      {
-        $data     = $this->where("status","=",1)->where("id","in",$menuid)->select()->toArray();
+      {*/
+        $data     = $this->where("status","=",1)->where("id","in",$menuid)->order("sort desc")->select()->toArray();
 
-        $this->setCache($ckey,$data);
-      }
+        /*$this->setCache($ckey,$data);
+      }*/
 
       return $data;
     }

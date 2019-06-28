@@ -166,7 +166,7 @@ class User extends Base
         //更新成功
         if ($uid >0)
         {
-            if ($gid > 0 /*&& $gid != 3*/) model('user_group_access')->setGroupAccess($uid,[$gid]);
+            if ($gid > 0 && $gid != 3) model('user_group_access')->setGroupAccess($uid,[$gid]);
             //if ($gid == 3) model('user_group_access')->delGroupAccess($uid);
 
             $data['id']                 = intval($uid);
@@ -404,7 +404,7 @@ class User extends Base
             $Data['is_super']                 = $groupInfo['is_super'];
             $Data['grules']                   = $groupInfo['rules'];
             $Data['group_name']               = $groupInfo['group_name'];
-            $Data['group_id']                 = $groupInfo['group_id'];
+            $Data['group_id']                 = in_array($groupInfo['group_id'], [1,2]) ? $groupInfo['group_id'] : 3;
 
             $rules  = !empty($Data['urules']) ? $Data['urules'] .','.$Data['grules'] : $Data['grules'];
             $rules  = trim($rules,',');

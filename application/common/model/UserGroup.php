@@ -103,6 +103,9 @@ class UserGroup extends Base
         $ctag         = 'table_' . $this->name . '_getList_Ownerid='.$ownerid;
         $delCount     = $this->delData($id);
 
+        //删除分组权限
+        model('user_group_access')->delGroupAccessUser($id);
+
         $this->clearCache(['ctag' => $ctag]);
       }else{
         $delCount     = 0;

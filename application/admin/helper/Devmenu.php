@@ -174,6 +174,8 @@ class Devmenu extends Base
         $saveData['pos']            = ($saveData['pos'] >= 10 || $saveData['pos'] <= 0) ? 1 : $saveData['pos'];
         $saveData['posttype']       = !in_array($saveData['posttype'],[1,2,3]) ? 1 : $saveData['posttype'];
 
+        if ($id > 0 && $saveData['pid'] == $id) unset($saveData['pid']);
+
         //规避遗漏定义入库数据
         if (empty($saveData)) return ['Code' => '120021', 'Msg'=>lang('120021')];
 

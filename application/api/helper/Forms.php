@@ -322,7 +322,7 @@ class Forms extends Base
         $sqlArr         = [];
         $fieldInfo      = [];
         $sorts          = [];
-        $afterField     = 'FIRST';
+        $afterField     = "AFTER `modifier_id`";
 
         //获取表字段
         $fields         = $dbModel->query("SELECT COLUMN_NAME as field FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '" . $tableName . "' AND table_schema = '".$database."'");
@@ -352,22 +352,14 @@ class Forms extends Base
 
         //取出要删除的字段
         foreach ($allField as $key1 => $value1)
-        {   
-            $sorts[$value1]     = $afterField;
-            $afterField         = "AFTER `".$value1."`";
-
+        {
             if (in_array($value1, $defField)) continue;
-
-            if (!in_array($value1, $form_field)){
-                $afterField         = $sorts[$value1];
-                $del_field[$value1] = $value1;
-            }
+            if (!in_array($value1, $form_field)) $del_field[$value1] = $value1;
         }
 
         foreach ($form_field as $key2=>$value2)
         {
             if (in_array($value2, $defField)) continue;
-
             if (in_array($value2, $allField)) $edit_field[$value2]  = $value2;
             if (!in_array($value2, $allField)) $add_field[$value2]   = $value2;
         }
@@ -383,8 +375,6 @@ class Forms extends Base
             $type       = isset($fieldInfo[$evalue]['type']) ? $fieldInfo[$evalue]['type'] : '';
             $comment    = isset($fieldInfo[$evalue]['title']) ? $fieldInfo[$evalue]['title'] : '';
             $sqlArr[]   = "MODIFY COLUMN `".$evalue."` ".$this->getTableFieldType($type)." CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '" . $comment . "123' ". $afterField;
-
-            $afterField = "AFTER `".$evalue."`";
         }
 
         foreach ($add_field as $avalue)
@@ -392,8 +382,6 @@ class Forms extends Base
             $type       = isset($fieldInfo[$avalue]['type']) ? $fieldInfo[$avalue]['type'] : '';
             $comment    = isset($fieldInfo[$avalue]['title']) ? $fieldInfo[$avalue]['title'] : '';
             $sqlArr[]   = "ADD COLUMN `" . $avalue ."` ".$this->getTableFieldType($type)." NULL DEFAULT '' COMMENT '" . $comment . "' " . $afterField;
-
-            $afterField = "AFTER `".$avalue."`";
         }
 
         if (!empty($sqlArr))

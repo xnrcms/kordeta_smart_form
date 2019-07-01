@@ -110,7 +110,6 @@ class UserGroupAccess extends Base
     {
       if ( empty($uid) || $gid <= 0)  return false;
 
-      
       $gdata    = [];
       foreach ($uid as $value)
       {

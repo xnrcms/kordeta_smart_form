@@ -395,12 +395,6 @@ class Forms extends Base
     private function getTableFieldType($type = '')
     {
         $defType       = "varchar(255)";
-        /*if (in_array($type, ['input','checkbox'])) {
-           $defType       = "varchar(255)";
-        }elseif (in_array($type, ['date','select'])) {
-            $defType       = "int(10)";
-        }*/
-
         return $defType;
     }
 

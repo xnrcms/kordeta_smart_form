@@ -369,7 +369,6 @@ class Forms extends Base
             $sqlArr[]   = 'DROP COLUMN `' . $dvalue . '`';
         }
 
-    
         foreach ($edit_field as $evalue)
         {
             $type       = isset($fieldInfo[$evalue]['type']) ? $fieldInfo[$evalue]['type'] : '';

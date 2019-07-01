@@ -207,7 +207,9 @@ class Forms extends Base
         {
             $minfo          = model('devmenu')->getRow($info['mid']);
             $info['mname']  = !empty($minfo) ? $minfo['title'] : '';
-        }else{
+        }
+        else
+        {
             $info['mname']  = '';
         }
 
@@ -255,7 +257,7 @@ class Forms extends Base
     	$dbModel				= model($this->mainTable);
 
         //数据ID
-        $id                 = isset($parame['id']) ? intval($parame['id']) : 0;
+        $id                     = isset($parame['id']) ? intval($parame['id']) : 0;
         if ($id <= 0) return ['Code' => '120023', 'Msg'=>lang('120023')];
 
         //自行定义删除条件
@@ -299,7 +301,6 @@ class Forms extends Base
         $database       = config("database.database");
         $tableName1     = "kor_table" . $data['id'];
         $tableName2     = $tablePrefix . $tableName1;
-
         $isTable        = $dbModel->query('SHOW TABLES LIKE "' . $tableName2 . '"');
         
         //创建表模型

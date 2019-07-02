@@ -279,11 +279,12 @@ class Forms extends Base
     {
         //主表数据库模型
         $dbModel                = model($this->mainTable);
+        $id                     = isset($parame['id']) ? (int)$parame['id'] : 0;
         $mid                    = isset($parame['mid']) ? (int)$parame['mid'] : 0;
         $status                 = isset($parame['status']) ? (int)$parame['status'] : 0;
 
         //需要返回的数据体
-        $Data                   = (int)$dbModel->checkFormStatus($mid,0);
+        $Data                   = (int)$dbModel->checkFormStatus($mid,$id);
 
         return ['Code' => '200', 'Msg'=>lang('200'),'Data'=>$Data];
     }

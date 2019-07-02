@@ -203,41 +203,34 @@
 
 <script>
 ;$(function(){
-    $(".c-con-box").on("click",".shou>.c-die",function(){   //展开
-        var parent = $(this).parent();
-        parent.removeClass('shou').addClass('zhan');
-        parent.next().slideDown();
-    })
-    $(".c-con-box").on("click",".zhan>.c-die",function(){   //收起
-        var parent = $(this).parent();
-        parent.removeClass('zhan').addClass('shou');
-        parent.next().slideUp();
-    })
-
     //全选-全取消
     $(".c-con-box").on("change",".all-check",function(){
+
         if($(this).is(":checked")){
             $(this).parent().parent().find("input").prop("checked",true);
         }else{
             $(this).parent().parent().find("input").prop("checked",false);
         }
-        var num = parseInt($(this).parent().parent().attr("data-level"))+1;
+
+        var num = parseInt($(this).parent().parent().data("level"))+1;
+
         doCheck($(this),num);
     })
 
-    //单个选择
-    $(".c-con-box").on("change",".one-check",function(){
-        var num = parseInt($(this).parent().parent().parent().attr("data-level"))+1;
-        doCheck($(this),num);
-    })
-    function doCheck(obj,m){
-        if(obj.is(":checked")){
-            for(var i=1; i<m; i++){
+    function doCheck(obj,m)
+    {
+        if(obj.is(":checked"))
+        {
+            for(var i=1; i<m; i++)
+            {
                 obj.parents(".c-level-"+i).children("h3").find(".all-check").prop("checked",true);
             }
         }else{
-            for(var n = 1; n<m; n++){
-                if(obj.parents(".c-level-"+n).children('.c-menu-list').find(".one-check:checked").length == 0){
+            var tevel = obj.parent().parent().data("level");
+            for(var n = 1; n<m; n++)
+            {
+                if(obj.parents(".c-level-"+n).children('.c-menu-list').find("input:checked").length == 0)
+                {
                     obj.parents(".c-level-"+n).children("h3").find(".all-check").prop("checked",false);
                 }
             }

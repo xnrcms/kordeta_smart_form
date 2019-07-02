@@ -279,7 +279,7 @@ class Forms extends Base
     {
         //主表数据库模型
         $dbModel                = model($this->mainTable);
-        $id                     = isset($parame['id']) ? (int)$parame['id'] : 0;
+        $id                     = isset($parame['dataId']) ? (int)$parame['dataId'] : 0;
         $mid                    = isset($parame['mid']) ? (int)$parame['mid'] : 0;
         $status                 = isset($parame['status']) ? (int)$parame['status'] : 0;
 

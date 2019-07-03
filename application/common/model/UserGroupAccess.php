@@ -164,7 +164,7 @@ class UserGroupAccess extends Base
         }
     }
 
-    public function delGroupAccessUser($gid = 0)
+    public function delGroupAccessByGroupId($gid = 0)
     {
       $lists  = $this->where("group_id","=",$gid)->select()->toArray();
       if (!empty($lists))
@@ -177,6 +177,13 @@ class UserGroupAccess extends Base
 
         $this->where('group_id','=',$gid)->delete();
       }
+    }
+
+    public function delGroupAccessByUid($uid = 0)
+    {
+      $this->clearCache(['ckey'=>'getUserGroupAccessListByUid=' . $uid]);
+      $this->clearCache(['ckey'=>'getMenuAuthListByUid=' . $uid]);
+      $this->where('uid','=',$uid)->delete();
     }
     //自行扩展更多
     //...

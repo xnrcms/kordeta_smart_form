@@ -204,7 +204,7 @@ class UserGroup extends Base
             {
                 model('user_group_access')->setGroupAccess2($gusersid,$info['id']);
             }else{
-                model('user_group_access')->delGroupAccessUser($info['id']);
+                model('user_group_access')->delGroupAccessByGroupId($info['id']);
             }
         }
 

@@ -163,8 +163,6 @@ class UserCenter extends Base
 
         $info                                               = $this->updateById($id,$regData);
 
-        $info                                               = $this->getOneById($id) ;
-
         return !empty($info) ? $info['id'] : 0;
     }
 

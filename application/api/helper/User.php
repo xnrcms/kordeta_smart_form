@@ -164,10 +164,10 @@ class User extends Base
         $uid    = $id > 0 ? model('user_center')->saveData($parame) : model('user_center')->register($parame);
 
         //更新成功
-        if ($uid >0)
+        if ($uid > 0)
         {
             if ($gid > 0 && $gid != 3) model('user_group_access')->setGroupAccess($uid,[$gid]);
-            //if ($gid == 3) model('user_group_access')->delGroupAccess($uid);
+            if ($gid == 3) model('user_group_access')->delGroupAccessByUid($uid);
 
             $data['id']                 = intval($uid);
 
@@ -175,6 +175,7 @@ class User extends Base
             $detailData                 = [];
             $detailData['id']           = $id;
             $detailData['uid']          = $uid;
+            $detailData['update_time']  = time();
             $detailData['mark']         = isset($parame['mark']) ? trim($parame['mark']) : '';
             
             model('user_detail')->saveData($detailData);

@@ -281,11 +281,11 @@ class Devmenu extends Base
             $childMenus     = $dbModel->getChildMenuByPid($menuinfo['id']);
             foreach ($childMenus as $value)
             {
-                $dbModel->delData($value['id']);
+                $dbModel->deleteData($value['id']);
             }
 
             //执行删除操作
-            $delCount               = $dbModel->delData($id);
+            $delCount               = $dbModel->deleteData($id);
 
             return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['count'=>$delCount]];
         }
@@ -297,13 +297,10 @@ class Devmenu extends Base
 
         $childMenuCount             = $dbModel->getDataCount($modelParame);
 
-        if ($childMenuCount > 0) {
-
-            return ['Code' => '203', 'Msg'=>lang('notice_have_children')];
-        }
+        if ($childMenuCount > 0) return ['Code' => '203', 'Msg'=>lang('notice_have_children')];
 
         //执行删除操作
-    	$delCount				= $dbModel->delData($id);
+    	$delCount				= $dbModel->deleteData($id);
 
     	return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['count'=>$delCount]];
     }

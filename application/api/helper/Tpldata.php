@@ -102,7 +102,7 @@ class Tpldata extends Base
 		$modelParame['order']		= 'main.id desc';		
 		
 		//数据分页步长定义
-		$modelParame['limit']		= isset($parame['limit']) ? $parame['limit'] : 10;
+		$modelParame['limit']		= isset($parame['limit']) ? $parame['limit'] : 20;
 
 		//数据分页页数定义
 		$modelParame['page']		= (isset($parame['page']) && $parame['page'] > 0) ? $parame['page'] : 1;

@@ -333,10 +333,10 @@ class Tpldata extends Base
 
             $objActSheet->setCellValue($cr, $tableHeadName);
             $objActSheet->getStyle($cr)->getAlignment()->setWrapText(true);
-            $objActSheet->getStyle($cr)->getFont()->setSize(30);//设置文字大小
-            $objActSheet->getStyle($cr)->getFont()->setBold(true);
+            $objActSheet->getStyle($cr)->getFont()->setSize(10);//设置文字大小
+            //$objActSheet->getStyle($cr)->getFont()->setBold(true);
             //$objActSheet->getStyle($cr)->getFont()->setName('微软雅黑');
-            $objActSheet->getColumnDimension($columns)->setWidth(30);//设置列宽度
+            $objActSheet->getColumnDimension($columns)->setWidth(50);//设置列宽度
         }
         
         //表体
@@ -353,7 +353,7 @@ class Tpldata extends Base
                     $options    = isset($tval['options']['options']) ? $tval['options']['options'] : [];
                     $opts       = [];
                     foreach ($options as $oval) $opts[] = $oval['value'];
-
+wr($opts);
                     $optStr     = !empty($opts) ? implode(',', $opts) : '';
                     $objActSheet->getCell($cr)->getDataValidation()->setFormula1($optStr);
                 }
@@ -370,7 +370,7 @@ class Tpldata extends Base
 
                 //$objActSheet->setCellValue($cr, $tval);
                 $objActSheet->getStyle($cr)->getFont()->setSize(30);//设置文字大小
-                $objActSheet->getStyle($cr)->getFont()->setBold(true);
+                //$objActSheet->getStyle($cr)->getFont()->setBold(true);
                 //$objActSheet->getStyle($cr)->getFont()->setName('微软雅黑');
                 $objActSheet->getColumnDimension($columns)->setWidth(30);//设置列宽度
             }

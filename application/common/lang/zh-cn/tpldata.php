@@ -11,4 +11,7 @@ return [
     'notice_table_not_exists'             	=> '表单模板数据表不存在',
     'notice_model_not_exists'             	=> '表单模板数据模型不存在',
     'notice_json_format_error'             	=> '表单数据JSON格式化错误',
+    'notice_data_type_error' 				=> '导出数据的类型错误',
+    'notice_table_head_error' 				=> '导出数据的表头异常',
+    'notice_table_column_error' 			=> '导出数据的列数异常'
 ];

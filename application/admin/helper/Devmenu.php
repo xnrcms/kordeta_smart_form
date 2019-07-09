@@ -143,7 +143,7 @@ class Devmenu extends Base
         {
             $operation                  = explode(',', $operation);
             foreach ($operation as $val) {
-                if (!in_array($val, [1,2,3,4]))
+                if (!in_array($val, [1,2,3,4,5,6]))
                 return ['Code' => '203', 'Msg'=>lang('notice_operation_type')];
             }
         }

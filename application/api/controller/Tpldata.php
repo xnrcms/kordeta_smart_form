@@ -76,5 +76,20 @@ class Tpldata extends Base
         return $this->execApi($parame);
     }
 
+    /*api:4d753ba634975416b970f2887028e304*/
+    /**
+     * 数据导出（Excel文件）接口
+     * @access public
+     * @param  [array] $parame 扩展参数
+     * @return [json]          接口数据输出
+    */
+    public function export($parame = [])
+    {
+        //执行接口调用
+        return $this->execApi($parame);
+    }
+
+    /*api:4d753ba634975416b970f2887028e304*/
+
     /*接口扩展*/
 }

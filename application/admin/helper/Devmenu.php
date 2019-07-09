@@ -158,6 +158,8 @@ class Devmenu extends Base
         $saveData['posttype']       = isset($parame['posttype']) ? $parame['posttype'] : '';
         $saveData['pos']            = isset($parame['pos']) ? $parame['pos'] : 1;
         $saveData['icon']           = isset($parame['icon']) ? $parame['icon'] : '';
+        $saveData['icon2']          = isset($parame['icon2']) ? $parame['icon2'] : '';
+        $saveData['describe']       = isset($parame['describe']) ? $parame['describe'] : '';
         $saveData['fsize']          = isset($parame['fsize']) ? $parame['fsize'] : '800*550';
         $saveData['project_id']     = isset($parame['project_id']) ? $parame['project_id'] : 1;
         $saveData['update_time']    = time();

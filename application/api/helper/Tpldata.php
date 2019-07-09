@@ -347,15 +347,28 @@ class Tpldata extends Base
                 //设置单元格内容
                 $columns        = $this->getExcelColumnName($tkey);
                 $rows           = 2;
-                
-                if (in_array($tval['type'], ['select','radio']))
+                $tableHeadName  = $tval['name'];
+                $cr             = $columns . $rows;
+
+                if (in_array($tval['type'], ['select','radio','checkbox']))
                 {
                     $options    = isset($tval['options']['options']) ? $tval['options']['options'] : [];
                     $opts       = [];
                     foreach ($options as $oval) $opts[] = $oval['value'];
-wr($opts);
+
                     $optStr     = !empty($opts) ? implode(',', $opts) : '';
-                    $objActSheet->getCell($cr)->getDataValidation()->setFormula1($optStr);
+
+                    $objActSheet->getCell($cr)->getDataValidation()
+                    -> setType(\PHPExcel_Cell_DataValidation::TYPE_LIST)
+                    -> setErrorStyle(\PHPExcel_Cell_DataValidation::STYLE_INFORMATION)
+                    -> setAllowBlank(false)
+                    -> setShowInputMessage(true)
+                    -> setShowErrorMessage(true)
+                    -> setShowDropDown(true)
+                    -> setErrorTitle('输入的值有误')
+                    -> setError('您输入的值不在下拉框列表内.')
+                    -> setPromptTitle($tableHeadName)
+                    -> setFormula1('"'.$optStr.'"');
                 }
 
                 if (in_array($tval['type'], ['date']))
@@ -368,11 +381,10 @@ wr($opts);
                     $objActSheet->getStyle($cr)->getAlignment()->setWrapText(true);
                 }
 
-                //$objActSheet->setCellValue($cr, $tval);
-                $objActSheet->getStyle($cr)->getFont()->setSize(30);//设置文字大小
+                $objActSheet->getStyle($cr)->getFont()->setSize(10);//设置文字大小
                 //$objActSheet->getStyle($cr)->getFont()->setBold(true);
                 //$objActSheet->getStyle($cr)->getFont()->setName('微软雅黑');
-                $objActSheet->getColumnDimension($columns)->setWidth(30);//设置列宽度
+                $objActSheet->getColumnDimension($columns)->setWidth(50);//设置列宽度
             }
         }
 

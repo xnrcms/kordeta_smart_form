@@ -108,6 +108,9 @@ class Menus extends Base
                     'pos'       => $value['pos'],
                     'url_type'  => $value['url_type'],
                     'open_type' => $value['open_type'],
+                    'icon'      => $value['icon'],
+                    'icon2'     => $value['icon2'],
+                    'describe'  => $value['describe'],
                 ];
             }
 

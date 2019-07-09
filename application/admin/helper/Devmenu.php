@@ -351,9 +351,23 @@ class Devmenu extends Base
         //无操作直接返回
         if (empty($operation)) return;
 
-        $title      = [1=>'新增',2=>'查看',3=>'编辑',4=>'删除'];
-        $url        = [1=>'addOperation',2=>'viewOperation',3=>'editOperation',4=>'delOperation'];
         $addData    = [];
+        $title      = [
+            1=>'新增',
+            2=>'查看',
+            3=>'编辑',
+            4=>'删除',
+            5=>'导入',
+            6=>'导出'
+        ];
+        $url        = [
+            1=>'addOperation',
+            2=>'viewOperation',
+            3=>'editOperation',
+            4=>'delOperation',
+            5=>'importOperation',
+            6=>'exportOperation'
+        ];
 
         foreach ($operation as $value)
         {

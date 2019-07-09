@@ -5,3 +5,4 @@
 /public/uploads/*
 /public/apidoc
 /application/common/model/KorTable*
+/application/api/controller/Test.php

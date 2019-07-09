@@ -1,0 +1,6 @@
+KorDS数据库版本记录
+
+[v1.1]
+ALTER TABLE `xnrcms_devmenu`
+MODIFY COLUMN `url`  text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '链接地址/代码片段' AFTER `sort`,
+ADD COLUMN `icon2`  char(20) NOT NULL DEFAULT '' COMMENT '卡片图标' AFTER `icon`;

@@ -23,7 +23,8 @@
         "aliyuncs/oss-sdk-php": "^2.3",
         "riverslei/payment": "^4.1",
         "jpush/jpush": "^3.5",
-        "firebase/php-jwt": "^5.0"
+        "firebase/php-jwt": "^5.0",
+        "phpoffice/phpexcel": "^1.8"
     },
     "autoload": {
         "psr-4": {

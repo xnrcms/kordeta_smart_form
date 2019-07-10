@@ -318,45 +318,91 @@ class Tpldata extends Base
         
         $objActSheet->setTitle( $title . '表');
 
+        //合并单元格
+        $sc         = $this->getExcelColumnName(0) . '1';
+        $ec         = $this->getExcelColumnName(count($tableHead)-1) . '1';
+        $objActSheet->mergeCells($sc . ':' . $ec);
+
+        //设置单元格内容
+        $objActSheet->setCellValue('A1', '填写要求：
+                1：带*号的内容为必填项，请务必填写正确的内容.
+                2：带有下拉框的内容，请选择符合要求的选项即可，请勿手动填写.
+                3：如有多选项的内容，请按照标题栏中的选项进行填写，以英文逗号隔开.
+                4：日期格式为yyyy-mm-dd，如2019-02-03.
+                5：选项类的内容填写了不属于该内容的选项，将会出现无法导入的情况，请务必按照模板给出的选项进行选择或填写.
+                ');
+
+        
+        $objActSheet ->getStyle('A1')->getAlignment()->setWrapText(true);//设置 A1 自动换行
+        $objActSheet->getRowDimension('1')->setRowHeight(120);//设置 A1 行高
+
+        //设置 A1 宽度
+        $objStyleA1 = $objActSheet->getStyle('A1');
+        $objStyleA1->getFont()->setColor(
+                new \PHPExcel_Style_Color(\PHPExcel_Style_Color::COLOR_RED ));
+        $objStyleA1->getFont()->setBold(true);
+
         //表头
         foreach ($tableHead as $tkey => $tval)
         {
             //设置单元格内容
             $columns        = $this->getExcelColumnName($tkey);
-            $rows           = 1;
+            $rows           = 2;
             $tableHeadName  = $tval['name'];
 
             if (empty($columns))
             return ['Code' => '203', 'Msg'=>lang('notice_table_column_error')];//列错误
 
             $cr             = $columns . $rows;
+            $tips           = '';
+            if (in_array($tval['type'], ['select','radio']))
+            {   
+                $optStr         = $this->getTableFieldOptions($tval);
+                $tips           = !empty($optStr) ? "(单选项：".$optStr.")" : '';
+            }
+
+            if (in_array($tval['type'], ['checkbox']))
+            {   
+                $optStr         = $this->getTableFieldOptions($tval);
+                $tips           = !empty($optStr) ? "(多选项：".$optStr.")" : '';
+            }
+
+            if (in_array($tval['type'], ['date']))
+            {
+                $tips           = '(日期格式：yyyy:mm:dd)';
+            }
 
             $objActSheet->setCellValue($cr, $tableHeadName);
             $objActSheet->getStyle($cr)->getAlignment()->setWrapText(true);
             $objActSheet->getStyle($cr)->getFont()->setSize(10);//设置文字大小
-            //$objActSheet->getStyle($cr)->getFont()->setBold(true);
-            //$objActSheet->getStyle($cr)->getFont()->setName('微软雅黑');
             $objActSheet->getColumnDimension($columns)->setWidth(50);//设置列宽度
+
+            if (!empty($tips))
+            {
+                $objRichText = new \PHPExcel_RichText();
+                $objRichText->createText($tableHeadName);
+                $objPayable  = $objRichText->createTextRun(" " . $tips);
+                $objPayable->getFont()->setColor( new \PHPExcel_Style_Color( \PHPExcel_Style_Color::COLOR_RED ) );
+                $objActSheet->setCellValue($cr, $objRichText);
+            }
         }
         
+        $this->listData();
+
         //表体
-        if ($dataType == 2) //列表模板
+        for ($i=0; $i <= 1000; $i++)
         {
             foreach ($tableHead as $tkey => $tval)
             {
                 //设置单元格内容
                 $columns        = $this->getExcelColumnName($tkey);
-                $rows           = 2;
+                $rows           = $i + 3;
                 $tableHeadName  = $tval['name'];
                 $cr             = $columns . $rows;
 
                 if (in_array($tval['type'], ['select','radio','checkbox']))
                 {
-                    $options    = isset($tval['options']['options']) ? $tval['options']['options'] : [];
-                    $opts       = [];
-                    foreach ($options as $oval) $opts[] = $oval['value'];
-
-                    $optStr     = !empty($opts) ? implode(',', $opts) : '';
+                    $optStr     = $this->getTableFieldOptions($tval);
 
                     $objActSheet->getCell($cr)->getDataValidation()
                     -> setType(\PHPExcel_Cell_DataValidation::TYPE_LIST)
@@ -366,14 +412,14 @@ class Tpldata extends Base
                     -> setShowErrorMessage(true)
                     -> setShowDropDown(true)
                     -> setErrorTitle('输入的值有误')
-                    -> setError('您输入的值不在下拉框列表内.')
+                    -> setError('您输入的值不在下拉列表内.')
                     -> setPromptTitle($tableHeadName)
                     -> setFormula1('"'.$optStr.'"');
                 }
 
                 if (in_array($tval['type'], ['date']))
                 {
-                    # code...
+                    $objActSheet->getStyle($cr)->getNumberFormat()->setFormatCode(\PHPExcel_Style_NumberFormat::FORMAT_DATE_YYYYMMDD);
                 }
 
                 if (in_array($tval['type'], ['input','textarea']))
@@ -382,20 +428,20 @@ class Tpldata extends Base
                 }
 
                 $objActSheet->getStyle($cr)->getFont()->setSize(10);//设置文字大小
-                //$objActSheet->getStyle($cr)->getFont()->setBold(true);
-                //$objActSheet->getStyle($cr)->getFont()->setName('微软雅黑');
                 $objActSheet->getColumnDimension($columns)->setWidth(50);//设置列宽度
             }
         }
 
-        $outputFileName = $title . "-" . date('Y-m-d') . '-' . time() . ".xlsx";//生成的文件名
+        $excelType      = 'Excel5';
+        $excelExt       = ['Excel5'=>'.xls','Excel2007'=>'.xlsx'];
+        $outputFileName = $title . "-" . date('Y-m-d') . '-' . time() . $excelExt[$excelType];
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header("Content-Disposition: attachment; filename=\"$outputFileName\"");
+        header("Content-Disposition: attachment; filename=" . $outputFileName);
         header('Cache-Control: max-age=0');
 
         //创建文件格式写入对象实例
-        $objWriter = \PHPExcel_IOFactory::createWriter($objExcel, 'Excel2007');
+        $objWriter = \PHPExcel_IOFactory::createWriter($objExcel, $excelType);
 
         $objWriter->save('php://output'); //文件通过浏览器下载
 
@@ -464,5 +510,15 @@ class Tpldata extends Base
     {
         $column = explode(',', 'A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,AA,AB,AC,AD,AE,AF,AG,AH,AI,AJ,AK,AL,AM,AN,AO,AP,AQ,AR,AS,AT,AU,AV,AW,AX,AY,AZ,BA,BB,BC,BD,BE,BF,BG,BH,BI,BJ,BK,BL,BM,BN,BO,BP,BQ,BR,BS,BT,BU,BV,BW,BX,BY,BZ');
         return isset($column[$index]) ? $column[$index] : '';
+    }
+
+    private function getTableFieldOptions($data = [])
+    {
+        $options    = isset($data['options']['options']) ? $data['options']['options'] : [];
+        $opts       = [];
+
+        foreach ($options as $oval) $opts[] = $oval['value'];
+
+        return !empty($opts) ? implode(',', $opts) : '';
     }
 }

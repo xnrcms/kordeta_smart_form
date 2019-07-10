@@ -283,7 +283,7 @@ class Tpldata extends Base
         $dbModel                = model($this->mainTable);
 
         $dataType               = isset($parame['dataType']) ? intval($parame['dataType']) : 0;
-        $dataType = 2;
+        //$dataType = 2;
         /*if (!in_array($dataType, [1,2]))
         return ['Code' => '203', 'Msg'=>lang('notice_data_type_error')];*/
 
@@ -295,6 +295,20 @@ class Tpldata extends Base
         //表头异常
         if (!isset($formTplData['list']) || empty($formTplData['list']))
         return ['Code' => '203', 'Msg'=>lang('notice_table_head_error')];
+
+        $total          = 2000;
+        $lists          = [];
+
+        //导出数据需要校验是否有数据
+        if ($dataType == 1) 
+        {
+            $parame['limit']    = 2000;
+            $listData  = $this->listData($parame);
+            $total     = isset($listData['Data']['total']) ? (int)$listData['Data']['total'] : 0;
+            if ($total <= 0) return ['Code' => '203', 'Msg'=>lang('notice_table_data_empty')];
+            
+            $lists     = $listData['Data']['lists'];
+        }
 
         //处理表头
         $tableHead      = $formTplData['list'];
@@ -386,12 +400,12 @@ class Tpldata extends Base
                 $objActSheet->setCellValue($cr, $objRichText);
             }
         }
-        
-        $this->listData();
 
         //表体
-        for ($i=0; $i <= 1000; $i++)
+        for ($i=0; $i <= $total; $i++)
         {
+            $exportData     = isset($lists[$i]) ? $lists[$i] : [];
+
             foreach ($tableHead as $tkey => $tval)
             {
                 //设置单元格内容
@@ -424,6 +438,14 @@ class Tpldata extends Base
 
                 if (in_array($tval['type'], ['input','textarea']))
                 {
+                    $objActSheet->getStyle($cr)->getAlignment()->setWrapText(true);
+                }
+
+                $texts    = isset($exportData[$tval['model']]) ? $exportData[$tval['model']] :'';
+                if (!empty($texts))
+                {
+                    $texts  = $tval['type'] == 'date' ? date('Y-m-d',$texts) : $texts;
+                    $objActSheet->setCellValue($cr, $texts);
                     $objActSheet->getStyle($cr)->getAlignment()->setWrapText(true);
                 }
 

@@ -14,5 +14,8 @@ return [
     'notice_data_type_error' 				=> '导出数据的类型错误',
     'notice_table_head_error' 				=> '导出数据的表头异常',
     'notice_table_column_error' 			=> '导出数据的列数异常',
-    'notice_table_data_empty' 				=> '没有检测到需要导出的数据'
+    'notice_table_data_empty' 				=> '没有检测到需要导出的数据',
+    'notice_table_column_error2' 			=> '导入数据的列数异常',
+    'notice_table_column_error3' 			=> '导入数据的表头跟文件列数对应异常',
+    'notice_import_data_empty' 				=> '导入数据的表是空的',
 ];

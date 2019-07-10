@@ -283,9 +283,8 @@ class Tpldata extends Base
         $dbModel                = model($this->mainTable);
 
         $dataType               = isset($parame['dataType']) ? intval($parame['dataType']) : 0;
-        //$dataType = 2;
-        /*if (!in_array($dataType, [1,2]))
-        return ['Code' => '203', 'Msg'=>lang('notice_data_type_error')];*/
+        if (!in_array($dataType, [1,2]))
+        return ['Code' => '203', 'Msg'=>lang('notice_data_type_error')];
 
         //自行书写业务逻辑代码
         $title          = $this->formInfo['title'];
@@ -454,12 +453,18 @@ class Tpldata extends Base
             }
         }
 
-        $excelType      = 'Excel5';
+        $excelType      = 'Excel2007';
         $excelExt       = ['Excel5'=>'.xls','Excel2007'=>'.xlsx'];
         $outputFileName = $title . "-" . date('Y-m-d') . '-' . time() . $excelExt[$excelType];
-
+        $outputFileName = iconv("utf-8", 'gbk', $outputFileName); 
+        
+        /*
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header("Content-Disposition: attachment; filename=" . $outputFileName);
+        header('Cache-Control: max-age=0');
+        */
+        header('Content-Type: application/vnd.ms-excel');
+        header("Content-Disposition: attachment;filename=$outputFileName");  
         header('Cache-Control: max-age=0');
 
         //创建文件格式写入对象实例
@@ -474,6 +479,118 @@ class Tpldata extends Base
     }
 
     /*api:4d753ba634975416b970f2887028e304*/
+
+    /*api:c0a528dae73c02dcdde8fc2d456a5e48*/
+    /**
+     * * 数据导入（Excel文件）接口
+     * @param  [array] $parame 接口参数
+     * @return [array]         接口输出数据
+     */
+    private function import($parame)
+    {
+        //主表数据库模型
+        $dbModel                = model($this->mainTable);
+
+        //自行书写业务逻辑代码
+        $title          = $this->formInfo['title'];
+        $form_config    = $this->formInfo['form_config'];
+        $formTplData    = !empty($form_config) ? json_decode($form_config,true) : [];
+
+        //表头异常
+        if (!isset($formTplData['list']) || empty($formTplData['list']))
+        return ['Code' => '203', 'Msg'=>lang('notice_table_head_error')];
+
+        $tableHead      = $formTplData['list'];
+        $total          = count($tableHead);
+        $sc             = $this->getExcelColumnName(0);
+        $ec             = $this->getExcelColumnName($total-1);
+
+        $filePath       = './aaa.xlsx';
+        $inputFileType  = \PHPExcel_IOFactory::identify($filePath);
+        $PHPReader      = \PHPExcel_IOFactory::createReader($inputFileType);
+        $PHPExcel       = $PHPReader->load($filePath);
+        $currentSheet   = $PHPExcel->getSheet(0);
+        $allColumn      = $currentSheet->getHighestColumn();
+        $allRow         = $currentSheet->getHighestRow();
+        
+        if (!($ec === $allColumn))
+        return ['Code' => '203', 'Msg'=>lang('notice_table_column_error2')];
+
+        //检测是否有数据
+        if ($allRow <= 2) return ['Code' => '203', 'Msg'=>lang('notice_import_data_empty')];
+
+        //处理表头跟列对应
+        $tableHeadAndColumn     = [];
+        for ($c = 0; $c < $total; $c++)
+        {
+            $currentColumn  = $this->getExcelColumnName($c);
+            $address        = $currentColumn . '2';
+            $cell           = $currentSheet->getCell($address)->getValue();
+            if ($cell instanceof \PHPExcel_RichText)
+            {
+                $cell = $cell->__toString();
+            }
+
+            $cell           = explode('(', $cell);
+            $cell           = isset($cell[0]) ? trim($cell[0]) : '';
+
+            foreach ($tableHead as $tkey => $tvalue)
+            {
+                if ($tvalue['name'] === $cell)
+                {
+                    $tableHeadAndColumn[$currentColumn]     = [
+                        $tvalue['type'],$tvalue['model'],$tvalue['name']
+                    ];
+                    break;
+                }
+            }
+        }
+
+        if (!($total === count($tableHeadAndColumn)))
+        return ['Code' => '203', 'Msg'=>lang('notice_table_column_error3')];
+
+        //数据数据源
+        $saveData             = [];
+        for ($currentRow = 3; $currentRow <= $allRow; $currentRow++)
+        {
+            for ($c = 0; $c < $total; $c++)
+            {
+                //数据坐标
+                $currentColumn  = $this->getExcelColumnName($c);
+                $address        = $currentColumn . $currentRow;
+
+                //读取到的数据，保存到数组$data中
+                $cell = $currentSheet->getCell($address)->getValue();
+                $cell = ($cell instanceof \PHPExcel_RichText) ? $cell->__toString() : $cell;
+                
+                if (!isset($tableHeadAndColumn[$currentColumn]))
+                return ['Code' => '203', 'Msg'=>lang('notice_table_column_error3')];
+
+                $fieldInfo     = $tableHeadAndColumn[$currentColumn];
+                if ($fieldInfo[0] == 'date') {
+                    $cell       = !empty($cell) ? strtotime($cell) : 0;
+                }
+
+                $saveData[$currentRow - 1][$fieldInfo[1]] = $cell;
+            }
+
+            $saveData[$currentRow - 1]['create_time']   = time();
+            $saveData[$currentRow - 1]['update_time']   = time();
+            $saveData[$currentRow - 1]['creator_id']    = $this->getUserId();
+            $saveData[$currentRow - 1]['modifier_id']   = $this->getUserId();
+        }
+
+        if (empty($saveData)) return ['Code' => '203', 'Msg'=>lang('notice_import_data_empty')];
+
+        $dbModel->saveDataAll($saveData);
+
+        //需要返回的数据体
+        $Data                   = ['isok'=>1];
+
+        return ['Code' => '200', 'Msg'=>lang('200'),'Data'=>$Data];
+    }
+
+    /*api:c0a528dae73c02dcdde8fc2d456a5e48*/
 
     /*接口扩展*/
 

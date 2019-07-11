@@ -413,7 +413,7 @@ class Tpldata extends Base
                 $tableHeadName  = $tval['name'];
                 $cr             = $columns . $rows;
 
-                if (in_array($tval['type'], ['select','radio','checkbox']))
+                if (in_array($tval['type'], ['select','radio']))
                 {
                     $optStr     = $this->getTableFieldOptions($tval);
 

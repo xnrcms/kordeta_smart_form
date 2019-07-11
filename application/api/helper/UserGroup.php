@@ -350,22 +350,30 @@ class UserGroup extends Base
         $dbModel                = model($this->mainTable);
 
         $user_name              = isset($parame['username']) ? trim($parame['username']) : '';
-        $uid                    = (int)model("user_center")->getUserCenterIdByUserName($user_name);
+        $user_name              = !empty($user_name) ? explode(',', $user_name) : [];
 
-        //用户是否存在
-        if ($uid <= 0) return ['Code' => '203', 'Msg'=>lang('notice_user_not_exist')];
+        $id                     = [];
+        foreach ($user_name as $key => $value)
+        {
+            $uid        = (int)model("user_center")->getUserCenterIdByUserName($value);
 
-        //用户是否已经加入到其他分组
-        $gid            = model('user_group_access')->getUserGroupAccessListByUid($uid);
+            //用户是否存在
+            if ($uid <= 0) return ['Code' => '203','Msg'=>lang('notice_user_not_exist',[$value])];
 
-        if (in_array(1, $gid) || in_array(2, $gid))
-        return ['Code' => '203', 'Msg'=>lang('notice_user_no_allrow_add')];
+            //用户是否已经加入到其他分组
+            $gid            = model('user_group_access')->getUserGroupAccessListByUid($uid);
 
-        if (!empty($gid) && !in_array(3, $gid))
-        return ['Code' => '203', 'Msg'=>lang('notice_user_already_bind_group')];
+            if (in_array(1, $gid) || in_array(2, $gid))
+            return ['Code' => '203', 'Msg'=>lang('notice_user_no_allrow_add',[$value])];
+
+            if (!empty($gid) && !in_array(3, $gid))
+            return ['Code' => '203', 'Msg'=>lang('notice_user_already_bind_group',[$value])];
+
+            $id[]           = $uid;
+        }
 
         //需要返回的数据体
-        $Data['id']                   = $uid;
+        $Data['id']                   = !empty($id) ? implode(',', $id) : '';
 
         return ['Code' => '200', 'Msg'=>lang('200'),'Data'=>$Data];
     }

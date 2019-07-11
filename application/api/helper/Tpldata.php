@@ -505,7 +505,11 @@ class Tpldata extends Base
         $sc             = $this->getExcelColumnName(0);
         $ec             = $this->getExcelColumnName($total-1);
 
-        $filePath       = './aaa.xlsx';
+        //文件上传
+        $uploads        = $this->uploadExcel($parame);
+        if (!(isset($uploads['Code']) && $uploads['Code'] == '200')) return $uploads;
+        
+        $filePath       = $uploads['Data'];
         $inputFileType  = \PHPExcel_IOFactory::identify($filePath);
         $PHPReader      = \PHPExcel_IOFactory::createReader($inputFileType);
         $PHPExcel       = $PHPReader->load($filePath);
@@ -593,6 +597,29 @@ class Tpldata extends Base
     /*api:c0a528dae73c02dcdde8fc2d456a5e48*/
 
     /*接口扩展*/
+
+    private function uploadExcel($parame)
+    {
+        //获取有关图片上传的设置
+        $config             = ['size'=> 10*1024*1024,'ext'=>'xlsx,xls'] ;
+
+        //获取表单上传的文件
+        $files              = request()->file($parame['fileName']) ;
+        $re                 = [];
+
+        if(empty($files)) return ['Code'=>'203', 'Msg' => lang('notice_upload_file_empty')] ;
+
+        //上传文件验证
+        $info               = $files->validate($config)->rule('md5')->move('./uploads/excel/') ;
+
+        if($info === false){
+            return ['Code' =>'203', 'Msg'=>lang('notice_upload_file_fail',[$files->getError()])] ;
+        }else{
+            $path                  = trim($this->imgUploadRoot,'.') . $info->getSaveName();
+        }
+
+        return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$path];
+    }
 
     private function getTplDataTableName($parame = [])
     {

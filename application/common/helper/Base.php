@@ -21,6 +21,7 @@ class Base
     public  $moduleName;
     private $UserToken;
     private $UserId;
+    private $notAllowSignField;
 
     public function __construct($parame=[],$controllerName='',$actionName='',$moduleName='')
     {
@@ -38,6 +39,7 @@ class Base
       $this->UserToken        = "";
       $this->UserId           = 0;
       $this->OwnerId          = 0;
+      $this->notSignField     = ['hash','fileName'];
 
       //加载语言包
       $this->loadLang('zh-cn',$this->controllerName);
@@ -296,8 +298,11 @@ class Base
     {
         if (!empty($data))
         {
-          //hash字段不参与加密
-          if(isset($data['hash'])) unset($data['hash']);
+          //字段不参与加密
+          foreach ($this->notSignField as $value)
+          {
+            if(isset($data[$value])) unset($data[$value]);
+          }
 
           //按字母排序
           ksort($data);

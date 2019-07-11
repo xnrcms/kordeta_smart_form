@@ -518,10 +518,17 @@ class Tpldata extends Base
         $allRow         = $currentSheet->getHighestRow();
         
         if (!($ec === $allColumn))
-        return ['Code' => '203', 'Msg'=>lang('notice_table_column_error2')];
+        {
+            unlink($filePath);
+            return ['Code' => '203', 'Msg'=>lang('notice_table_column_error2')];
+        }
 
         //检测是否有数据
-        if ($allRow <= 2) return ['Code' => '203', 'Msg'=>lang('notice_import_data_empty')];
+        if ($allRow <= 2)
+        {
+            unlink($filePath);
+            return ['Code' => '203', 'Msg'=>lang('notice_import_data_empty')];
+        }
 
         //处理表头跟列对应
         $tableHeadAndColumn     = [];
@@ -551,7 +558,10 @@ class Tpldata extends Base
         }
 
         if (!($total === count($tableHeadAndColumn)))
-        return ['Code' => '203', 'Msg'=>lang('notice_table_column_error3')];
+        {
+            unlink($filePath);
+            return ['Code' => '203', 'Msg'=>lang('notice_table_column_error3')];
+        }
 
         //数据数据源
         $saveData             = [];
@@ -568,7 +578,10 @@ class Tpldata extends Base
                 $cell = ($cell instanceof \PHPExcel_RichText) ? $cell->__toString() : $cell;
                 
                 if (!isset($tableHeadAndColumn[$currentColumn]))
-                return ['Code' => '203', 'Msg'=>lang('notice_table_column_error3')];
+                {
+                    unlink($filePath);
+                    return ['Code' => '203', 'Msg'=>lang('notice_table_column_error3')];
+                }
 
                 $fieldInfo     = $tableHeadAndColumn[$currentColumn];
                 if ($fieldInfo[0] == 'date') {
@@ -584,7 +597,11 @@ class Tpldata extends Base
             $saveData[$currentRow - 1]['modifier_id']   = $this->getUserId();
         }
 
-        if (empty($saveData)) return ['Code' => '203', 'Msg'=>lang('notice_import_data_empty')];
+        if (empty($saveData))
+        {
+            unlink($filePath);
+            return ['Code' => '203', 'Msg'=>lang('notice_import_data_empty')];
+        }
 
         $dbModel->saveDataAll($saveData);
 
@@ -604,18 +621,20 @@ class Tpldata extends Base
         $config             = ['size'=> 10*1024*1024,'ext'=>'xlsx,xls'] ;
 
         //获取表单上传的文件
-        $files              = request()->file($parame['fileName']) ;
+        $files              = request()->file('fileName') ;
         $re                 = [];
 
         if(empty($files)) return ['Code'=>'203', 'Msg' => lang('notice_upload_file_empty')] ;
 
+        $fileUploadRoot     = './uploads/excel/';
+
         //上传文件验证
-        $info               = $files->validate($config)->rule('md5')->move('./uploads/excel/') ;
+        $info               = $files->validate($config)->rule('md5')->move($fileUploadRoot) ;
 
         if($info === false){
             return ['Code' =>'203', 'Msg'=>lang('notice_upload_file_fail',[$files->getError()])] ;
         }else{
-            $path                  = trim($this->imgUploadRoot,'.') . $info->getSaveName();
+            $path                  = $fileUploadRoot . $info->getSaveName();
         }
 
         return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$path];

@@ -39,7 +39,7 @@ class Base
       $this->UserToken        = "";
       $this->UserId           = 0;
       $this->OwnerId          = 0;
-      $this->notSignField     = ['hash','fileName'];
+      $this->notSignField     = ['fileName'];
 
       //加载语言包
       $this->loadLang('zh-cn',$this->controllerName);
@@ -224,6 +224,8 @@ class Base
       //先判断数据传递是否完整合法
       foreach ($checkData as $val)
       {
+        if (in_array($val[0], $this->notSignField)) continue;
+
         //检验接口参数是否存在
         if (!isset($postData[$val[0]]))
         {
@@ -256,7 +258,7 @@ class Base
         //数据处理
         $parameData[$val[0]]  = $val[1] == 'number' ? intval($postData[$val[0]]) : trim($postData[$val[0]]);
       }
-
+      
       //判断签名校验是否通过
       $sign                   = $this->sign($signData);
       if ( empty($sign) || $sign !=  $signData['hash'])
@@ -298,12 +300,8 @@ class Base
     {
         if (!empty($data))
         {
-          //字段不参与加密
-          foreach ($this->notSignField as $value)
-          {
-            if(isset($data[$value])) unset($data[$value]);
-          }
-          
+          if(isset($data['hash'])) unset($data['hash']);
+
           //按字母排序
           ksort($data);
 

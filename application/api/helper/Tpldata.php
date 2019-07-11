@@ -301,6 +301,7 @@ class Tpldata extends Base
         //导出数据需要校验是否有数据
         if ($dataType == 1) 
         {
+            $parame['search']   = $this->formatSearch($parame);
             $parame['limit']    = 2000;
             $listData  = $this->listData($parame);
             $total     = isset($listData['Data']['total']) ? (int)$listData['Data']['total'] : 0;
@@ -705,5 +706,28 @@ class Tpldata extends Base
         foreach ($options as $oval) $opts[] = $oval['value'];
 
         return !empty($opts) ? implode(',', $opts) : '';
+    }
+
+    private function formatSearch($parame = [])
+    {
+        if (!isset($parame['search']) || empty($parame['search'])) return '';
+
+        $search         = explode('kds001', $parame['search']);
+        $sch            = [];
+
+        foreach ($search as $key => $value)
+        {
+            $value      = explode('kds000', $value);
+            $sk         = isset($value[0]) ? $value[0] : '';
+            $sv         = isset($value[1]) ? $value[1] : '';
+            if (!empty($sk) && !empty($sv))
+            {
+                $svArr          = explode(',', $sv);
+                $svCount        = count($svArr);
+                $sch[$sk]       = $svCount === 1 ? $svArr[0] : [$svArr[0],$svArr[1]];
+            }
+        }
+
+        return !empty($sch) ? json_encode($sch) : '';
     }
 }

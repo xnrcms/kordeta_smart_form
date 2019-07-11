@@ -7,4 +7,5 @@
 return [
     // 系统错误提示
     'notice_tag_not_exists'                   => '数据校验标识不存在',
+    'notice_config_name_error'                => '配置名称不合法',
 ];

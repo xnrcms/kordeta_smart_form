@@ -455,7 +455,7 @@ class Devapi extends Base
         $apiName                = $mName . '/' . $cName . '/' . $aName;
         $envs                   = $this->project_info['envs'];
 
-        if (empty($request_fields))  $this->error('未发现接口参数');
+        //if (empty($request_fields))  $this->error('未发现接口参数');
 
         $parame         = [];
         foreach ($request_fields as $val)

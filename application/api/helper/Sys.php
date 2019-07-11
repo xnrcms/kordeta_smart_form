@@ -72,36 +72,6 @@ class Sys extends Base
 
     /*api:50832e1dd757d4c7a43fbed57ee438af*/
 
-    /*api:32f1425373f20c820bf8c97645f5d42e*/
-    /**
-     * * 系统配置接口
-     * @param  [array] $parame 接口参数
-     * @return [array]         接口输出数据
-     */
-    private function config($parame)
-    {
-        $config                         = [];
-        $config['ios_version']          = '1.0.0';
-        $config['android_version']      = '1.0.0';
-        $config['sys_notice']           = 'xxxxxxxxxx';
-
-        $ios_pay                        = config('system_config.ios_pay');
-
-        $config['show_pay']             = $ios_pay == 1 ? 0 : 1;
-        $config['kf_info_one']          = config('system_config.kf_info_one');
-        $config['kf_info_two']          = config('system_config.kf_info_two');
-        $config['share_title']          = config('system_config.share_title');
-        $config['share_desc']           = config('system_config.share_desc');
-
-        $paytype                        = config('system_config.paytype');
-        $paytype                        = !empty($paytype) ? (string)$paytype : '';
-        $config['pay_type']             = $paytype;
-
-        return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$config];
-    }
-
-    /*api:32f1425373f20c820bf8c97645f5d42e*/
-
     /*api:edc438abfae19f530dedb76108d9d370*/
     /**
      * * 通用字段校验是否存在接口
@@ -136,6 +106,61 @@ class Sys extends Base
     }
 
     /*api:edc438abfae19f530dedb76108d9d370*/
+
+    /*api:c3f6e2b71affd441b57b2582b519e446*/
+    /**
+     * * 获取系统配置信息接口
+     * @param  [array] $parame 接口参数
+     * @return [array]         接口输出数据
+     */
+    private function getSysConfig($parame)
+    {
+        //全局配置
+        $config                         = [];
+        $config['version']              = '1.1';
+
+        //用户配置
+        $dbModel                        = model('user_config');
+        $uid                            = $this->getUserId();
+        $ucfg                           = $dbModel->getRow($uid);
+        $ucfg                           = isset($ucfg['config']) && !empty($ucfg['config']) ? json_decode($ucfg['config'],true) : [];
+        
+        $config                         = array_merge($config,$ucfg);
+        $config                         = json_encode($config);
+
+        return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['config'=>$config]];
+    }
+
+    /*api:c3f6e2b71affd441b57b2582b519e446*/
+
+    /*api:49d016f2fbd4d8d2ec68042372cc5d34*/
+    /**
+     * * 设置系统配置信息接口
+     * @param  [array] $parame 接口参数
+     * @return [array]         接口输出数据
+     */
+    private function setSysConfig($parame)
+    {
+        //主表数据库模型
+        $dbModel                = model('user_config');
+        $config_name            = isset($parame['config_name']) ? $parame['config_name'] : '';
+        $config_value           = isset($parame['config_value']) ? $parame['config_value'] : '';
+
+        if (empty($config_name) || preg_match_all("/^[a-zA-Z\d_]{1,20}$/",$config_name,$d) < 1)
+        return ['Code' => '203', 'Msg'=>lang('notice_config_name_error')];
+
+        //自行书写业务逻辑代码
+        $id                         = $this->getUserId();
+        $saveData[$config_name]     = $config_value;
+        $config                     = $dbModel->saveData($id,$saveData);
+
+        //需要返回的数据体
+        $Data                       = ['config'=>json_encode($config)];
+
+        return ['Code' => '200', 'Msg'=>lang('200'),'Data'=>$Data];
+    }
+
+    /*api:49d016f2fbd4d8d2ec68042372cc5d34*/
 
     /*接口扩展*/
 }

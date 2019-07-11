@@ -213,7 +213,7 @@ class Base
     protected function checkData($postData)
     {
       if (isset($postData['is_inside']) && $postData['is_inside'] == 1) return true;
-      if (empty($this->checkData) || !is_array($this->checkData)) return $this->setReturnData();
+      //if (empty($this->checkData) || !is_array($this->checkData)) return $this->setReturnData();
 
       $checkData      = array_merge($this->baseParame,$this->checkData);
       $parameData     = array();
@@ -520,7 +520,7 @@ class Base
       $cName              = formatStringToHump($this->controllerName);
       $apicode            = md5(strtolower($this->moduleName.$cName.$this->actionName));
       $parameContent      = get_release_data($apicode,'api',1);
-      $this->checkData    = isset($parameContent['request_parame']) ? $parameContent['request_parame'] : '';
+      $this->checkData    = isset($parameContent['request_parame']) ? $parameContent['request_parame'] : [];
       $this->backData     = isset($parameContent['back_parame']) ? $parameContent['back_parame'] : '';
     }
 

@@ -146,7 +146,7 @@ class ApiRequest
         if(!empty($body)){
           $url=$url.'?'.str_replace('amp;', '', http_build_query($body));
         }
-    }wr([$url.'?'.str_replace('amp;', '', http_build_query($body))]);
+    }//wr([$url.'?'.str_replace('amp;', '', http_build_query($body))]);
     curl_setopt($ci,CURLOPT_URL,$url);
     curl_setopt($ci,CURLOPT_HTTPHEADER,$headers);
     curl_setopt($ci,CURLINFO_HEADER_OUT,TRUE);

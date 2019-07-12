@@ -194,21 +194,7 @@ class Base extends Controller
         $parame['id']       = $this->uid;
 
         $res 				= $this->apiData($parame,'api/User/userDetail');
-
         $userInfo			= $res  ? $this->getApiData() : [];
-
-        if (is_string($this->getApiError()) && $this->getApiError() == 'Token过期')
-        {
-            session('user_auth', null);
-            session('user_auth_sign', null);
-            session('apidoc_user_auth', null);
-            session('apidoc_user_auth_sign', null);
-            session('api_uid',null);
-            session('api_hashid',null);
-            session('[destroy]');
-            cookie(null);
-            $this->goLogin();
-        }
 
         if (!empty($userInfo))
         {	
@@ -226,8 +212,21 @@ class Base extends Controller
 	 */
 	protected function goLogin()
 	{
-		if (request()->isAjax()) $this->error('您还没有登录!',url('Login/index'));
-        if (isset($_SERVER['HTTP_REFERER'])) exit('<script>top.location.href="'.url('Login/index').'"</script>');
+        session('user_auth', null);
+        session('user_auth_sign', null);
+        session('apidoc_user_auth', null);
+        session('apidoc_user_auth_sign', null);
+        session('api_uid',null);
+        session('api_hashid',null);
+        session('[destroy]');
+        cookie(null);
+
+		if (request()->isAjax())
+        $this->error('您还没有登录!',url('Login/index'));
+        
+        if (isset($_SERVER['HTTP_REFERER']))
+        exit('<script>top.location.href="'.url('Login/index').'"</script>');
+
         header("Location:".url('Login/index'));exit();
     }
 
@@ -240,8 +239,8 @@ class Base extends Controller
 		$cookie_username	= cookie(md5('admin_username' . config('extends.uc_auth_key')));
 		$cookie_password	= cookie(md5('admin_password' . config('extends.uc_auth_key')));
 
-		if($cookie_username && $cookie_password){
-
+		if($cookie_username && $cookie_password)
+        {
 			$username	= string_encryption_decrypt($cookie_username,'DECODE');
 			$password	= string_encryption_decrypt($cookie_password,'DECODE');
 			$username 	= string_safe_filter($username);
@@ -257,11 +256,12 @@ class Base extends Controller
 			$backData 				= $requestRes[0];
 			$errorInfo				= $requestRes[1];
 
-			if(empty($errorInfo)){
+			if(empty($errorInfo))
+            {
+				$backData		     = json_decode($backData,true);
 
-				$backData		= json_decode($backData,true);
-
-				if ($backData['Code'] == '200') {
+				if ($backData['Code'] == '200')
+                {
                     //指定cookie保存30天时间
                     cookie(md5('admin_username'.config('extend.uc_auth_key')),string_encryption_decrypt($username,'ENCODE'),2592000);
                     cookie(md5('admin_password'.config('extend.uc_auth_key')),string_encryption_decrypt($password,'ENCODE'),2592000);
@@ -277,7 +277,6 @@ class Base extends Controller
 
                     return true;
 				}
-
 			}
 		}
 
@@ -315,25 +314,25 @@ class Base extends Controller
     	$backData 				= $requestRes[0];
         $errorInfo				= $requestRes[1];
 
-        if(empty($errorInfo)){
-
+        if(empty($errorInfo))
+        {
             $backData			= is_array($backData) ? $backData : json_decode($backData,true);
             $backData           = is_array($backData) ? $backData : json_decode($backData,true);
 
             if (!isset($backData['Code'])){
-
-        		$this->setApiError('接口报错'); 
-        		return false;
+        		$this->setApiError('接口报错'); return false;
         	}
 
-            if ($backData['Code'] === '200'  && isset($backData['Data'])) {
-            	
-            	$this->setApiData($backData['Data']);
-            	return true;
-            }else{
-
-            	$this->setApiError($backData['Msg']);
-       			return false;
+            if ($backData['Code'] === '200' && isset($backData['Data']))
+            {	
+            	$this->setApiData($backData['Data']); return true;
+            }
+            elseif ($backData['Code'] === '201')
+            {
+                $this->goLogin();
+            }
+            else{
+            	$this->setApiError($backData['Msg']); return false;
             }
         }
 

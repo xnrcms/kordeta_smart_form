@@ -100,8 +100,12 @@ class Sys extends Base
 
         //自行书写业务逻辑代码
 
-        $isOk   = (int)$dbModel->checkValue($fieldValue,$dataId,$fieldName);
-
+        if ($tableName == 'devform2' && $fieldName == 'title') {
+            $isOk   = (int)$dbModel->checkFormTitle($fieldValue,$dataId,$this->getOwnerId(),$fieldName);
+        }else{
+            $isOk   = (int)$dbModel->checkValue($fieldValue,$dataId,$fieldName);
+        }
+        
         return ['Code' => '200', 'Msg'=>lang('200'),'Data'=>$isOk];
     }
 

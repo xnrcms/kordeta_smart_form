@@ -161,7 +161,7 @@ class Forms extends Base
         //...
 		
         //检测表单名称是否存在
-        if ($dbModel->checkValue($saveData['title'],$id,'title'))
+        if ($dbModel->checkFormTitle($saveData['title'],$id,$this->getOwnerId(),'title'))
         return ['Code' => '203', 'Msg'=>lang('notice_title_already_exists')];
 
         //检测表单绑定的菜单ID是否存在

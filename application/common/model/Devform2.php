@@ -120,6 +120,12 @@ class Devform2 extends Base
       return !empty($info) ? $info->toArray() : [];
     }
 
+    public function checkFormTitle($value,$id,$ownerid,$field)
+    {   
+        if ($ownerid <= 0) return false;
+        $res    = $this->where('id','not in',[$id])->where("ownerid","=",$ownerid)->where($field,'eq',$value)->value($field);
+        return !empty($res) ? true : false;
+    }
     //自行扩展更多
     //...
 }

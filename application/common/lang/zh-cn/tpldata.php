@@ -21,4 +21,5 @@ return [
     'notice_import_data_empty' 				=> '导入数据的表是空的',
     'notice_upload_file_empty'              => '上传文件不能为空',
     'notice_upload_file_fail'               => '上传失败[%s]',
+    'notice_table_column_date'              => '【%s列%s行】日期格式有误，应为yyyy-mm-dd格式',
 ];

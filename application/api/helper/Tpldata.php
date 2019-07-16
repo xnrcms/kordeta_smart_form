@@ -295,7 +295,7 @@ class Tpldata extends Base
         if (!isset($formTplData['list']) || empty($formTplData['list']))
         return ['Code' => '203', 'Msg'=>lang('notice_table_head_error')];
 
-        $total          = 2000;
+        $total          = 0;
         $lists          = [];
 
         //导出数据需要校验是否有数据
@@ -570,8 +570,9 @@ class Tpldata extends Base
                 if ($tvalue['name'] === $cell)
                 {
                     $required       = isset($tvalue['options']['required']) ? (int)$tvalue['options']['required'] : 0;
+                    $options        = isset($tvalue['options']['options']) ? $tvalue['options']['options'] : [];
                     $tableHeadAndColumn[$currentColumn]     = [
-                        $tvalue['type'],$tvalue['model'],$tvalue['name'],$required
+                        $tvalue['type'],$tvalue['model'],$tvalue['name'],$required,$options
                     ];
                     break;
                 }
@@ -594,10 +595,6 @@ class Tpldata extends Base
                 $currentColumn  = $this->getExcelColumnName($c);
                 $address        = $currentColumn . $currentRow;
 
-                //读取到的数据，保存到数组$data中
-                $cell = $currentSheet->getCell($address)->getValue();
-                $cell = ($cell instanceof \PHPExcel_RichText) ? $cell->__toString() : $cell;
-                
                 if (!isset($tableHeadAndColumn[$currentColumn]))
                 {
                     unlink($filePath);
@@ -605,14 +602,37 @@ class Tpldata extends Base
                 }
 
                 $fieldInfo     = $tableHeadAndColumn[$currentColumn];
-                if ($fieldInfo[0] == 'date') {
-                    $cell       = !empty($cell) ? strtotime($cell) : 0;
+
+                //读取到的数据，保存到数组$data中
+
+                if (in_array($fieldInfo[0], ['date']))
+                {
+                    $cell       = $currentSheet->getCell($address)->getFormattedValue();
+
+                    //检验日期格式
+                    if ($cell <= 0)
+                    return ['Code' => '203', 'Msg'=>lang('notice_table_column_date',[$currentColumn,$currentRow])];
+                }else{
+                    $cell = $currentSheet->getCell($address)->getValue();
+                    $cell = ($cell instanceof \PHPExcel_RichText) ? $cell->__toString() : $cell;
                 }
 
-                if ($fieldInfo[3] === 1 && empty($cell))
+                if ($fieldInfo[3] == 1 && empty($cell))
                 {
                     unlink($filePath);
                     return ['Code' => '203', 'Msg'=>lang('notice_table_column_required',[$currentColumn,$currentRow])];
+                }
+
+                //单选校验
+                if (in_array($fieldInfo[0], ['select','radio']))
+                {
+                    # code...
+                }
+
+                //单选校验
+                if (in_array($fieldInfo[0], ['checkbox']))
+                {
+                    # code...
                 }
 
                 $saveData[$currentRow - 1][$fieldInfo[1]] = $cell;

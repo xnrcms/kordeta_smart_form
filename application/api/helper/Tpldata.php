@@ -555,8 +555,9 @@ class Tpldata extends Base
             {
                 if ($tvalue['name'] === $cell)
                 {
+                    $required       = isset($tvalue['options']['required']) ? (int)$tvalue['options']['required'] : 0;
                     $tableHeadAndColumn[$currentColumn]     = [
-                        $tvalue['type'],$tvalue['model'],$tvalue['name']
+                        $tvalue['type'],$tvalue['model'],$tvalue['name'],$required
                     ];
                     break;
                 }
@@ -592,6 +593,12 @@ class Tpldata extends Base
                 $fieldInfo     = $tableHeadAndColumn[$currentColumn];
                 if ($fieldInfo[0] == 'date') {
                     $cell       = !empty($cell) ? strtotime($cell) : 0;
+                }
+
+                if ($fieldInfo[3] === 1 && empty($cell))
+                {
+                    unlink($filePath);
+                    return ['Code' => '203', 'Msg'=>lang('notice_table_column_required',[$currentColumn,$currentRow])];
                 }
 
                 $saveData[$currentRow - 1][$fieldInfo[1]] = $cell;

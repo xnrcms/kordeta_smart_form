@@ -461,27 +461,22 @@ class Tpldata extends Base
 
         $excelType      = 'Excel2007';
         $excelExt       = ['Excel5'=>'.xls','Excel2007'=>'.xlsx'];
-        $outputFileName = $title . "-" . date('Y-m-d') . '-' . time() . $excelExt[$excelType];
-        $outputFileName = iconv("utf-8", 'gbk', $outputFileName); 
+        $excelName      = $excelExt[$excelType];
+        $outputFileName = $title . "-" . date('Y-m-d') . '-' . time(); 
         
-        /*
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header("Content-Disposition: attachment; filename=" . $outputFileName);
+        header('Content-Disposition: attachment;filename="'.$outputFileName . $excelName . '"');
         header('Cache-Control: max-age=0');
-        */
-        header('Content-Type: application/vnd.ms-excel');
-        header("Content-Disposition: attachment;filename=$outputFileName");  
-        header('Cache-Control: max-age=0');
+        header('Cache-Control: max-age=1');
+        header ('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+        header ('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'); // always modified
+        header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+        header ('Pragma: public'); // HTTP/1.0
 
         //创建文件格式写入对象实例
         $objWriter = \PHPExcel_IOFactory::createWriter($objExcel, $excelType);
 
-        $objWriter->save('php://output'); //文件通过浏览器下载
-
-        //需要返回的数据体
-        $Data                   = ['id'=>100];
-
-        return ['Code' => '200', 'Msg'=>lang('200'),'Data'=>$Data];
+        $objWriter->save('php://output');exit(0);
     }
 
     /*api:4d753ba634975416b970f2887028e304*/

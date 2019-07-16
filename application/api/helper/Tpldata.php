@@ -339,13 +339,13 @@ class Tpldata extends Base
 
         //设置单元格内容
         $objActSheet->setCellValue('A1', '填写要求：
-                1：带*号的内容为必填项，请务必填写正确的内容.
+                1：红色字体为必填项，请务必输入正确的信息，否则将无法导入成功.
                 2：带有下拉框的内容，请选择符合要求的选项即可，请勿手动填写.
                 3：如有多选项的内容，请按照标题栏中的选项进行填写，以英文逗号隔开.
                 4：日期格式为yyyy-mm-dd，如2019-02-03.
                 5：选项类的内容填写了不属于该内容的选项，将会出现无法导入的情况，请务必按照模板给出的选项进行选择或填写.
-                ');
-
+                '
+        );
         
         $objActSheet ->getStyle('A1')->getAlignment()->setWrapText(true);//设置 A1 自动换行
         $objActSheet->getRowDimension('1')->setRowHeight(120);//设置 A1 行高
@@ -363,6 +363,7 @@ class Tpldata extends Base
             $columns        = $this->getExcelColumnName($tkey);
             $rows           = 2;
             $tableHeadName  = $tval['name'];
+            $required       = isset($tval['options']['required']) ? (int)$tval['options']['required'] : 0;
 
             if (empty($columns))
             return ['Code' => '203', 'Msg'=>lang('notice_table_column_error')];//列错误
@@ -383,20 +384,24 @@ class Tpldata extends Base
 
             if (in_array($tval['type'], ['date']))
             {
-                $tips           = '(日期格式：yyyy:mm:dd)';
+                $tips           = '(日期格式：yyyy-mm-dd)';
             }
 
             $objActSheet->setCellValue($cr, $tableHeadName);
             $objActSheet->getStyle($cr)->getAlignment()->setWrapText(true);
             $objActSheet->getStyle($cr)->getFont()->setSize(10);//设置文字大小
             $objActSheet->getColumnDimension($columns)->setWidth(50);//设置列宽度
+            if ($required === 1) 
+            {
+                $objActSheet->getStyle($cr)->getFont()->setColor( new \PHPExcel_Style_Color( \PHPExcel_Style_Color::COLOR_RED ) );
+            }
 
             if (!empty($tips))
             {
                 $objRichText = new \PHPExcel_RichText();
                 $objRichText->createText($tableHeadName);
                 $objPayable  = $objRichText->createTextRun(" " . $tips);
-                $objPayable->getFont()->setColor( new \PHPExcel_Style_Color( \PHPExcel_Style_Color::COLOR_RED ) );
+                $objPayable->getFont()->setColor( new \PHPExcel_Style_Color( \PHPExcel_Style_Color::COLOR_BLUE ) );
                 $objActSheet->setCellValue($cr, $objRichText);
             }
         }

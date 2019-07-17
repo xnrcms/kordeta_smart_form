@@ -208,7 +208,7 @@ class Tpldata extends Base
             $saveData['creator_id']     = $this->getUserId();
     	}
 
-    	$info                                       = $dbModel->saveData($id,$saveData);
+    	$info               = $dbModel->saveData($id,$saveData);
 
         return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '203', 'Msg'=>lang('100015')];
     }

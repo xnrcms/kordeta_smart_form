@@ -199,7 +199,7 @@ class Tpldata extends Base
         if (empty($saveData)) return ['Code' => '203', 'Msg'=>lang('notice_helper_data_error')];
 
         //数据ID
-        $id                         = isset($formData['id']) ? intval($formData['id']) : 0;
+        $id                 = isset($formData['id']) ? intval($formData['id']) : 0;
 		
         //通过ID判断数据是新增还是更新 定义新增条件下数据
     	if ($id <= 0)

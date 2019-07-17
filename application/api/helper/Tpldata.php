@@ -158,6 +158,17 @@ class Tpldata extends Base
         if (empty($formData) || !is_json($formData))
         return ['Code' => '203', 'Msg'=>lang('notice_json_format_error')];
 
+        //表单模板
+        $form_config    = $this->formInfo['form_config'];
+        $formTplData    = !empty($form_config) ? json_decode($form_config,true) : [];
+        $tableHead      = $formTplData['list'];
+        $fildAtrr       = [];
+        foreach ($tableHead as $tkey => $tval)
+        {
+            $required       = isset($tval['options']['required']) ? (int)$tval['options']['required'] : 0;
+            $fildAtrr[$tval['model']] = [$required,$tval['name']];
+        }
+
         //表单提交的原始数据
         $formData                   = json_decode($formData,true);
         $formField                  = $this->getFormTplField();
@@ -175,6 +186,13 @@ class Tpldata extends Base
                 $saveData[$value]   = isset($formData[$value]) ? strtotime($formData[$value]) : 0;
             }else{
                 $saveData[$value]   = isset($formData[$value]) ? $formData[$value] : '';
+            }
+
+            //数据校验
+            $required       = isset($fildAtrr[$value][0]) ? (int)$fildAtrr[$value][0] : 0;
+            if ($required === 1 && empty($saveData[$value]))
+            {
+                return ['Code' => '203', 'Msg'=>lang('notice_tpldata_field_required',[$fildAtrr[$value][1]])];
             }
         }
 
@@ -303,11 +321,10 @@ class Tpldata extends Base
         {
             $parame['search']   = $this->formatSearch($parame);
             $parame['limit']    = 2000;
-            $listData  = $this->listData($parame);
-            $total     = isset($listData['Data']['total']) ? (int)$listData['Data']['total'] : 0;
-            //if ($total <= 0) return ['Code' => '203', 'Msg'=>lang('notice_table_data_empty')];
-            
-            $lists     = $listData['Data']['lists'];
+            $listData   = $this->listData($parame);
+            $total      = isset($listData['Data']['total']) ? (int)$listData['Data']['total'] : 0;
+            $lists      = $listData['Data']['lists'];
+            $total      = $total - 1;
         }
 
         //处理表头
@@ -468,7 +485,6 @@ class Tpldata extends Base
                 $texts    = isset($exportData[$tval['model']]) ? $exportData[$tval['model']] :'';
                 if (!empty($texts))
                 {
-                    $texts  = $tval['type'] == 'date' ? date('Y-m-d',$texts) : $texts;
                     $objActSheet->setCellValue($cr, $texts);
                     $objActSheet->getStyle($cr)->getAlignment()->setWrapText(true);
                 }
@@ -626,13 +642,27 @@ class Tpldata extends Base
                 //单选校验
                 if (in_array($fieldInfo[0], ['select','radio']))
                 {
-                    # code...
+                    $optionsValue   = [];
+                    foreach ($fieldInfo[4] as $okey => $ovalue)
+                    $optionsValue[] = $ovalue['value'];
+
+                    if (!in_array($cell, $optionsValue))
+                    return ['Code' => '203', 'Msg'=>lang('notice_table_column_option',[$currentColumn,$currentRow,$cell])];
                 }
 
                 //单选校验
                 if (in_array($fieldInfo[0], ['checkbox']))
                 {
-                    # code...
+                    $optionsValue   = [];
+                    foreach ($fieldInfo[4] as $okey => $ovalue)
+                    $optionsValue[] = $ovalue['value'];
+
+                    $inputValue     = !empty($cell) ? explode(',', $cell) : [];
+                    foreach ($inputValue as $ikey => $ivalue)
+                    {
+                        if (!in_array($ivalue, $optionsValue))
+                    return ['Code' => '203', 'Msg'=>lang('notice_table_column_option',[$currentColumn,$currentRow,$ivalue])];
+                    }
                 }
 
                 $saveData[$currentRow - 1][$fieldInfo[1]] = $cell;

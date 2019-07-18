@@ -321,6 +321,8 @@ class Tpldata extends Base
         {
             $parame['search']   = $this->formatSearch($parame);
             $parame['limit']    = 2000;
+            $parame['order']    = 'main.id desc';
+
             $listData   = $this->listData($parame);
             $total      = isset($listData['Data']['total']) ? (int)$listData['Data']['total'] : 0;
             $lists      = $listData['Data']['lists'];
@@ -329,6 +331,7 @@ class Tpldata extends Base
 
         //处理表头
         $tableHead      = $formTplData['list'];
+        array_multisort(array_column($tableHead,'sort'),SORT_DESC,$tableHead);
 
         //创建一个处理对象实例
         $objExcel = new \PHPExcel();

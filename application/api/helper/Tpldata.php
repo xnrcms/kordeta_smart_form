@@ -457,7 +457,8 @@ class Tpldata extends Base
                 $rows           = $i + 3;
                 $tableHeadName  = $tval['name'];
                 $cr             = $columns . $rows;
-
+                $texts          = isset($exportData[$tval['model']])?$exportData[$tval['model']]:'';
+                
                 if (in_array($tval['type'], ['select','radio']))
                 {
                     $optStr     = $this->getTableFieldOptions($tval);
@@ -476,7 +477,8 @@ class Tpldata extends Base
                 }
 
                 if (in_array($tval['type'], ['date']))
-                {
+                {   
+                    $texts      = !empty($texts) ? date('Y-m-d') : '';
                     $objActSheet->getStyle($cr)->getNumberFormat()->setFormatCode(\PHPExcel_Style_NumberFormat::FORMAT_DATE_YYYYMMDD2);
                 }
 
@@ -485,7 +487,6 @@ class Tpldata extends Base
                     $objActSheet->getStyle($cr)->getAlignment()->setWrapText(true);
                 }
 
-                $texts    = isset($exportData[$tval['model']]) ? $exportData[$tval['model']] :'';
                 if (!empty($texts))
                 {
                     $objActSheet->setCellValue($cr, $texts);
@@ -626,10 +627,11 @@ class Tpldata extends Base
 
                 if (in_array($fieldInfo[0], ['date']))
                 {
-                    $cell       = $currentSheet->getCell($address)->getFormattedValue();
+                    $dateValue      = $currentSheet->getCell($address)->getValue();
+                    $cell           = !empty($dateValue) ? \PHPExcel_Shared_Date::ExcelToPHP($dateValue) : '';
 
                     //检验日期格式
-                    if ($cell <= 0)
+                    if (empty($cell) && $fieldInfo[3] == 1)
                     return ['Code' => '203', 'Msg'=>lang('notice_table_column_date',[$currentColumn,$currentRow])];
                 }else{
                     $cell = $currentSheet->getCell($address)->getValue();

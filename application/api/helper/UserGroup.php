@@ -159,7 +159,7 @@ class UserGroup extends Base
         $id                         = isset($parame['id']) ? intval($parame['id']) : 0;
 
         //检测分组名称是否存在
-        if ($dbModel->checkValue($saveData['title'],$id,'title'))
+        if ($dbModel->checkValue($saveData['title'],$id,'title',$this->getOwnerId()))
         return ['Code' => '203', 'Msg'=>lang('error_title_already_exists')];
 
         //分组成员ID

@@ -85,8 +85,10 @@ class Base extends Model
 		return !empty($data) ? unserialize($data) : [];
 	}
 
-	public function checkValue($value,$id,$field)
+	public function checkValue($value,$id,$field,$ownerid = -1)
     {
+    	if ($ownerid >= 0)  $this->where('ownerid','=',$ownerid);
+    	
         $res    = $this->where('id','not in',[$id])->where($field,'eq',$value)->value($field);
         return !empty($res) ? true : false;
     }

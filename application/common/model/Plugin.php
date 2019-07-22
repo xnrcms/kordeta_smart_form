@@ -30,13 +30,6 @@ class Plugin extends Base
         return $model;
     }
 
-    public function checkValue($value,$id,$field){
-
-        $res    = $this->where('id','not in',[$id])->where($field,'eq',$value)->value($field);
-
-        return !empty($res) ? true : false;
-    }
-
     public function checkPluginCode($value,$id,$type){
 
         $res    = $this->where('id','not in',[$id])->where('ptype','eq',$type)->where('code','eq',$value)->value('code');

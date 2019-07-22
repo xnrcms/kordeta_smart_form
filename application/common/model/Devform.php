@@ -47,7 +47,7 @@ class Devform extends Base
         return $info;
     }
 
-    public function checkValue($value,$id,$field)
+    public function checkValue($value,$id,$field,$ownerid = -1)
     {
         $info   = $this->getOneById($id);
         $pid    = empty($info) ? 0 : $info['pid'];

@@ -31,12 +31,12 @@ class Devmenu extends Base
     	return $model;
     }
 
-    public function checkValue($value,$id,$field)
+    /*public function checkValue($value,$id,$field,$ownerid = -1)
     {
         $res    = $this->where('id','not in',[$id])->where($field,'eq',$value)->value($field);
 
         return !empty($res) ? true : false;
-    }
+    }*/
 
     public function saveData($id = 0,$parame = [])
     {

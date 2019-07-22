@@ -87,9 +87,12 @@ class Base extends Model
 
 	public function checkValue($value,$id,$field,$ownerid = -1)
     {
-    	if ($ownerid >= 0)  $this->where('ownerid','=',$ownerid);
+    	$map 				= [];
+    	$map[$field] 		= $value;
+    	if ($ownerid >= 0)  $map['ownerid'] = $ownerid;
     	
-        $res    = $this->where('id','not in',[$id])->where($field,'eq',$value)->value($field);
+        $res    = $this->where('id','not in',[$id])->where($map)->value($field);
+
         return !empty($res) ? true : false;
     }
 

@@ -484,13 +484,12 @@ class Tpldata extends Base
 
                 if (in_array($tval['type'], ['input','textarea']))
                 {
-                    $objActSheet->getStyle($cr)->getAlignment()->setWrapText(true);
+                    $objActSheet->getStyle($cr)->getNumberFormat()->setFormatCode(\PHPExcel_Style_NumberFormat::FORMAT_TEXT);
                 }
 
                 if (!empty($texts))
                 {
                     $objActSheet->setCellValue($cr, $texts);
-                    $objActSheet->getStyle($cr)->getAlignment()->setWrapText(true);
                 }
 
                 $objActSheet->getStyle($cr)->getFont()->setSize(10);//设置文字大小
@@ -627,8 +626,17 @@ class Tpldata extends Base
 
                 if (in_array($fieldInfo[0], ['date']))
                 {
+                    $date           = $currentSheet->getCell($address)->getFormattedValue();
                     $dateValue      = $currentSheet->getCell($address)->getValue();
                     $cell           = !empty($dateValue) ? \PHPExcel_Shared_Date::ExcelToPHP($dateValue) : '';
+
+                    $dateArr        = explode('-', str_replace('/', '-', $date));
+
+                    wr([$dateValue,$cell,$date,$dateArr]);
+                    if (!(count($dateArr) === 3))
+                    {
+                        return ['Code' => '203', 'Msg'=>lang('notice_table_column_date',[$currentColumn,$currentRow])];
+                    }
 
                     //检验日期格式
                     if (empty($cell) && $fieldInfo[3] == 1)
@@ -679,6 +687,8 @@ class Tpldata extends Base
             $saveData[$currentRow - 1]['modifier_id']   = $this->getUserId();
         }
 
+        //return ['Code' => '203', 'Msg'=>'开发调试。。。。'];
+        
         if (empty($saveData))
         {
             unlink($filePath);

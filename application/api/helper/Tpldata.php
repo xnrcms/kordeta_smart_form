@@ -632,7 +632,6 @@ class Tpldata extends Base
 
                     $dateArr        = explode('-', str_replace('/', '-', $date));
 
-                    wr([$dateValue,$cell,$date,$dateArr]);
                     if (!(count($dateArr) === 3))
                     {
                         return ['Code' => '203', 'Msg'=>lang('notice_table_column_date',[$currentColumn,$currentRow])];
@@ -686,8 +685,6 @@ class Tpldata extends Base
             $saveData[$currentRow - 1]['creator_id']    = $this->getUserId();
             $saveData[$currentRow - 1]['modifier_id']   = $this->getUserId();
         }
-
-        //return ['Code' => '203', 'Msg'=>'开发调试。。。。'];
         
         if (empty($saveData))
         {

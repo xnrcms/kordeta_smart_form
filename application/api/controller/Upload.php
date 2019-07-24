@@ -76,21 +76,6 @@ class Upload extends Base
         return $this->execApi($parame);
     }
 
-    /*api:ae7ee4e7785682324a198e14887e98f6*/
-    /**
-     * 图片上传接口
-     * @access public
-     * @param  [array] $parame 扩展参数
-     * @return [json]          接口数据输出
-    */
-    public function uploadImg($parame = [])
-    {
-        //执行接口调用
-        return $this->execApi($parame);
-    }
-
-    /*api:ae7ee4e7785682324a198e14887e98f6*/
-
     /*api:f4a1c26f65b071cd7abb7537fc335e0c*/
     /**
      * H5单图上传

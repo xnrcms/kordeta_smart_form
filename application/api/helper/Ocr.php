@@ -121,7 +121,7 @@ class Ocr extends Base
     private function uploadFile($parame)
     {
         //获取有关图片上传的设置
-        $config             = ['size'=> 10*1024*1024,'ext'=>'png,jpeg'] ;
+        $config             = ['size'=> 10*1024*1024,'ext'=>'jpg,png,jpeg'] ;
 
         //获取表单上传的文件
         $files              = request()->file('fileName') ;

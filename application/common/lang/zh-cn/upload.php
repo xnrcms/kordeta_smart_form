@@ -6,8 +6,8 @@
 
 return [
     // 系统错误提示
-    '200001'                   => '上传文件不能为空',
-    '200002'                   => '上传失败[%s]',
-    '200003'                   => '请定义上传配置信息',
-    '200004'                   => '三方配置[%s]不能为空',
+    'notice_upload_oss_empty'               => '请定义上传配置信息',
+    'notice_upload_oss_error'               => '三方配置[%s]不能为空',
+    'notice_upload_file_empty'              => '上传文件不能为空',
+    'notice_upload_file_fail'               => '上传失败[%s]',
 ];

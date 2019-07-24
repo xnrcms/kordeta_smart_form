@@ -289,24 +289,26 @@ class Upload extends Base
     private function uploadImgForH5($parame)
     {
         if(!empty($this->upload_error)) return $this->upload_error;
+        
         //主表数据库模型
-        $dbModel                = model($this->mainTable);
+        $dbModel          = model($this->mainTable);
 
         //自行书写业务逻辑代码
         //获取有关图片上传的设置
-        $config             = ['size'=> $this->upload_size*1024*1024,'ext'=>$this->upload_itype] ;
+        $config           = ['size'=> $this->upload_size*1024*1024,'ext'=>$this->upload_itype] ;
 
         //获取表单上传的文件
-        $files              = request()->file($parame['fileName']) ;
-        $re                 = [];
+        $files            = request()->file($parame['fileName']) ;
+        $re               = [];
 
-        if(empty($files)) return ['Code'=>'200001' , 'Msg' => lang('200001')] ;
+        if(empty($files)) return ['Code'=>'203' , 'Msg' => lang('notice_upload_file_empty')] ;
 
         //上传文件验证
-        $info               = $files -> validate($config)->rule('formatUploadFileName') -> move('./uploads/picture/') ;
+        $info    = $files->validate($config)->rule('formatUploadFileName')->move('./uploads/picture/');
 
-        if($info === false){
-            return ['Code' =>'200002' , 'Msg' => lang('200002',[$files->getError()])] ;
+        if($info === false)
+        {
+            return ['Code' =>'203','Msg'=>lang('notice_upload_file_fail',[$files->getError()])];
         }else{
 
             $path                  = trim($this->imgUploadRoot,'.') . $info->getSaveName();
@@ -343,144 +345,19 @@ class Upload extends Base
 
             $Picture                    = model($this->mainTable);
             $res                        = $Picture->addData($saveData) ;
-
         }
 
-        if($res){
+        if($res)
+        {
             $data['path']               = request()->domain().$path ;
             $data['id']                 = $res -> getAttr('id') ;
             return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$data];
-        }else{
+        }
 
-        }return ['Code' => '120000', 'Msg'=>'上传失败，请稍后再试'];
+        return ['Code' =>'203','Msg'=>lang('notice_upload_file_fail',[''])];
     }
 
     /*api:f4a1c26f65b071cd7abb7537fc335e0c*/
-
-    /*api:51af390161a18f647760fc7e58fbadf7*/
-    /**
-     * * 图片上传接口
-     * @param  [array] $parame 接口参数
-     * @return [array]         接口输出数据
-     */
-    private function uploadData($parame)
-    {
-        set_time_limit(5 * 60);
-
-        if(!empty($this->upload_error)) return $this->upload_error;
-        //主表数据库模型
-        $dbModel                = model($this->mainTable);
-
-        //读取上传配置，如果有 以传过来的配置为准
-        $config                 = (isset($parame['config']) && !empty($parame['config']) && is_json($parame['config'])) ? json_decode($parame['config'],true) : [];
-
-        $upload_type            = isset($config['type']) ? $config['type'] : '';
-        $upload_size            = isset($config['size']) ? intval($config['size']) : 0;
-        $upload_ext             = isset($config['ext']) ? $config['ext'] : '';
-        
-        if ($upload_type === 'Image')
-        {
-            $upload_ext         = !empty($upload_ext) ? $upload_ext : $this->upload_itype;
-            $upload_size        = $upload_size > 0 ? $upload_size : $this->upload_size;
-        }elseif($upload_type === 'File'){
-            $upload_ext         = !empty($upload_ext) ? $upload_ext : $this->upload_ftype;
-            $upload_size        = $upload_size > 0 ? $upload_size : 2;
-        }
-
-        //自行书写业务逻辑代码
-        //获取有关图片上传的设置
-        $config             = ['size'=> $upload_size * 1024 * 1024,'ext'=>$upload_ext] ;
-
-        //获取表单上传的文件
-        $files              = request()->file($parame['fileName']) ;
-        $re                 = [];
-
-        if(empty($files)) return ['Code'=>'200001' , 'Msg' => lang('200001')] ;
-
-        foreach ($files as $file)
-        {
-            //上传文件验证
-            $info    = $file->validate($config)->rule('formatUploadFileName') -> move($this->imgUploadRoot) ;
-
-            if($info === false){
-                return ['Code' =>'200002' , 'Msg' => lang('200002',[$file->getError()])] ;
-            }else{
-
-                $path                  = trim($this->imgUploadRoot,'.') . $info->getSaveName();
-                $url                   = trim($this->imgUploadRoot,'.') . $info->getSaveName();
-
-                if ($this->upload_method == 2 && !empty($this->upload_manager)) 
-                {
-                    $file_path      = '.'.$path;
-                    $cfile          = file_get_contents($file_path);
-                    $res            = $this->upload_manager->putObject($this->oss_bucket, $file_path, $cfile);
-                }
-                else if ($this->upload_method == 3 && !empty($this->upload_manager))
-                {   
-                    $file_name         = 'admin/'.$info->getSaveName() ;
-                    $file_path         = '.'.$path;
-                    $oss_upload_info   = $this->upload_manager->putFile($this->oss_token,$file_name,$file_path);
-                    $url               = $this->oss_endpoint.'/'.$oss_upload_info[0]['key'];
-                    $path              = $oss_upload_info[0]['key'];
-
-                    if (file_exists($file_path)) unlink($file_path);
-                }
-                
-                $finfo                      = $info->getInfo();
-                unset($finfo['tmp_name']);
-                unset($finfo['error']);
-
-                $saveData                   = array() ;
-                $saveData['path']           = $path;
-                $saveData['imgurl']         = $url;
-                $saveData['tags']           = isset($parame['tags']) ? $parame['tags'] : '';
-                $saveData['img_type']       = $this->upload_method;
-                $saveData['infos']          = json_encode($finfo);
-                $saveData['create_time']    = time();
-
-                $Picture                    = model($this->mainTable);
-                $res                        = $Picture->addData($saveData) ;
-
-                $re[]                       = $Picture -> getOneById($Picture->id) -> toArray() ;
-            }
-        }
-
-        $data                               = [];
-        if (!empty($re)) {
-            
-            foreach ($re as $index => $item) {
-                $url       = $item['img_type'] == 1 ? request()->domain().$item['path'] : $item['path'] ;
-                $data['lists'][$index]  = ['id'=>$item['id'],'path'=>$item['path']];
-            }
-        }
-
-        $data['total'] = count($re) ;
-
-        return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['data'=>json_encode($data)]];
-    }
-
-    /*api:51af390161a18f647760fc7e58fbadf7*/
-
-    /*api:ae7ee4e7785682324a198e14887e98f6*/
-    /**
-     * * 图片上传接口
-     * @param  [array] $parame 接口参数
-     * @return [array]         接口输出数据
-     */
-    private function uploadImg($parame)
-    {
-        //主表数据库模型
-        $dbModel                = model($this->mainTable);
-
-        //自行书写业务逻辑代码
-
-        //需要返回的数据体
-        $Data                   = ['TEST'];
-
-        return ['Code' => '200', 'Msg'=>lang('200'),'Data'=>$Data];
-    }
-
-    /*api:ae7ee4e7785682324a198e14887e98f6*/
 
     /*接口扩展*/
 
@@ -494,7 +371,9 @@ class Upload extends Base
 
         //上传配置
         $config                 = config('upload_config.');
-        if (empty($config))  return $this->setError(['Code' => '200003', 'Msg'=>lang('200003')]);
+        
+        if (empty($config))
+        return $this->setError(['Code' => '203', 'Msg'=>lang('notice_upload_oss_empty')]);
 
         $this->upload_size      = isset($config['file_size']) ? $config['file_size'] : 1;
         $this->upload_itype     = isset($config['upload_imgs_type']) ? $config['upload_imgs_type'] : 'jpg,png';
@@ -505,19 +384,19 @@ class Upload extends Base
         $this->oss_endpoint     = isset($config['oss_endpoint']) ? $config['oss_endpoint'] : '';
         $this->oss_bucket       = isset($config['oss_bucket']) ? $config['oss_bucket'] : '';
 
-        if ( in_array($this->upload_method, [2,3])) {
-
+        if ( in_array($this->upload_method, [2,3]))
+        {
             if (empty($this->oss_key_id))
-            return $this->setError(['Code' => '200004', 'Msg'=>lang('200004',['AccessKeyId'])]);
+            return $this->setError(['Code' => '203', 'Msg'=>lang('notice_upload_oss_error',['AccessKeyId'])]);
 
             if (empty($this->oss_key_secret))
-            return $this->setError(['Code' => '200004', 'Msg'=>lang('200004',['AccessKeySecret'])]);
+            return $this->setError(['Code' => '203', 'Msg'=>lang('notice_upload_oss_error',['AccessKeySecret'])]);
             
             if (empty($this->oss_endpoint))
-            return $this->setError(['Code' => '200004', 'Msg'=>lang('200004',['Endpoint'])]);
+            return $this->setError(['Code' => '203', 'Msg'=>lang('notice_upload_oss_error',['Endpoint'])]);
 
             if (empty($this->oss_bucket))
-            return $this->setError(['Code' => '200004', 'Msg'=>lang('200004',['Bucket'])]);
+            return $this->setError(['Code' => '203', 'Msg'=>lang('notice_upload_oss_error',['Bucket'])]);
 
             if ($this->upload_method == 2)
             {

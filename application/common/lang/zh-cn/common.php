@@ -59,4 +59,5 @@ return [
     'notice_data_id'           => '数据ID不能为空或者小于0',
 
     'message_save_success'     => '更新成功',
+    'message_unknown_error'    => '未知错误',
 ];

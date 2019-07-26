@@ -99,8 +99,12 @@ class Forms extends Base
 		//数据分页步长定义
 		$modelParame['limit']		= isset($parame['limit']) ? $parame['limit'] : 10;
 
+        $page                       = isset($parame['page']) ? (int)$parame['page'] : 1;
+
+        if ($page == -1) $modelParame['limit']  = 1000;
+
 		//数据分页页数定义
-		$modelParame['page']		= (isset($parame['page']) && $parame['page'] > 0) ? $parame['page'] : 1;
+		$modelParame['page']		= $page > 0 ? $parame['page'] : 1;
 
 		//数据缓存是时间，默认0 不缓存 ,单位秒
 		$modelParame['cacheKey']	= [];
@@ -290,6 +294,51 @@ class Forms extends Base
     }
 
     /*api:fc24913147a441bf30df4639154581af*/
+
+    /*api:32adb44af199757ee800c096b072a7c9*/
+    /**
+     * * 获取表单字段信息接口
+     * @param  [array] $parame 接口参数
+     * @return [array]         接口输出数据
+     */
+    private function getFormsField($parame)
+    {
+        //主表数据库模型
+        $dbModel                = model($this->mainTable);
+
+        //自行书写业务逻辑代码
+        $id                     = isset($parame['id']) ? (int)$parame['id'] : 0;
+        $info                   = $dbModel->getRow($id);
+        $ownerid                = $this->getOwnerId();
+        
+        if (empty($info) || !isset($info['id']) || $info['ownerid'] != $ownerid)
+        return ['Code' => '203', 'Msg'=>lang('notice_forms_no_exists')];
+
+        if ((int)$info['status'] !== 1)
+        return ['Code' => '203', 'Msg'=>lang('notice_forms_prohibit')];
+
+        $form_config            = json_decode($info['form_config'],true);
+        $fields                 = [];
+
+        if (!empty($form_config) && isset($form_config['list']) && !empty($form_config['list']))
+        {
+            foreach ($form_config['list'] as $key => $value)
+            {
+                $fields[]         = [
+                    'name'  => $value['name'],
+                    'type'  => $value['type'],
+                    'model' => $value['model']
+                ];
+            }
+        }
+
+        //需要返回的数据体
+        $Data                   = ['options'=>$fields];
+
+        return ['Code' => '200', 'Msg'=>lang('200'),'Data'=>$Data];
+    }
+
+    /*api:32adb44af199757ee800c096b072a7c9*/
 
     /*接口扩展*/
 

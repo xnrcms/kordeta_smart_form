@@ -91,5 +91,20 @@ class Forms extends Base
 
     /*api:fc24913147a441bf30df4639154581af*/
 
+    /*api:32adb44af199757ee800c096b072a7c9*/
+    /**
+     * 获取表单字段信息接口
+     * @access public
+     * @param  [array] $parame 扩展参数
+     * @return [json]          接口数据输出
+    */
+    public function getFormsField($parame = [])
+    {
+        //执行接口调用
+        return $this->execApi($parame);
+    }
+
+    /*api:32adb44af199757ee800c096b072a7c9*/
+
     /*接口扩展*/
 }

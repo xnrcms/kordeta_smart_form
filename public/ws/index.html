@@ -7,9 +7,6 @@
     </head>
     <body onload="connect();">
 测试WS连接
-<script type="text/javascript" src="/ws/GatewayWork/js/swfobject.js"></script>
-<script type="text/javascript" src="/ws/GatewayWork/js/web_socket.js"></script>
-<script type="text/javascript" src="/ws/GatewayWork/js/json2.js"></script>
 <script type="text/javascript">
     
     var ws, name, client_list={};
@@ -17,7 +14,7 @@
     // 连接服务端
     function connect() {
        // 创建websocket
-       ws = new WebSocket("ws://dev.smart_form.com:8080");
+       ws = new WebSocket("ws://127.0.0.1:8080");
        // 当socket连接打开时，输入用户名
        ws.onopen = onopen;
        // 当有消息时根据消息类型显示不同信息

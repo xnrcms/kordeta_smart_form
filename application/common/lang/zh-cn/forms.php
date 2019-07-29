@@ -11,4 +11,5 @@ return [
     'notice_status_already_exists'                  => '当前菜单绑定的表单被占用',
     'notice_forms_no_exists'                  		=> '表单信息不存在',
     'notice_forms_prohibit'                  		=> '此表单被禁用',
+    'notice_linkage_field_err'                  	=> '联动字段错误',
 ];

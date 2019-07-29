@@ -703,27 +703,6 @@ class Tpldata extends Base
 
     /*api:c0a528dae73c02dcdde8fc2d456a5e48*/
 
-    /*api:435e02fedeaa8b26e690120297b546dd*/
-    /**
-     * * 获取联动数据接口
-     * @param  [array] $parame 接口参数
-     * @return [array]         接口输出数据
-     */
-    private function linkage($parame)
-    {
-        //主表数据库模型
-        $dbModel                = model($this->mainTable);
-
-        //自行书写业务逻辑代码
-
-        //需要返回的数据体
-        $Data                   = ['TEST'];
-
-        return ['Code' => '200', 'Msg'=>lang('200'),'Data'=>$Data];
-    }
-
-    /*api:435e02fedeaa8b26e690120297b546dd*/
-
     /*接口扩展*/
 
     private function uploadExcel($parame)

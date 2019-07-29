@@ -106,5 +106,20 @@ class Forms extends Base
 
     /*api:32adb44af199757ee800c096b072a7c9*/
 
+    /*api:f605d09d5ac1a3f293cdb14d093a22eb*/
+    /**
+     * 获取联动数据接口
+     * @access public
+     * @param  [array] $parame 扩展参数
+     * @return [json]          接口数据输出
+    */
+    public function linkage($parame = [])
+    {
+        //执行接口调用
+        return $this->execApi($parame);
+    }
+
+    /*api:f605d09d5ac1a3f293cdb14d093a22eb*/
+
     /*接口扩展*/
 }

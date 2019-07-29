@@ -106,20 +106,5 @@ class Tpldata extends Base
 
     /*api:c0a528dae73c02dcdde8fc2d456a5e48*/
 
-    /*api:435e02fedeaa8b26e690120297b546dd*/
-    /**
-     * 获取联动数据接口
-     * @access public
-     * @param  [array] $parame 扩展参数
-     * @return [json]          接口数据输出
-    */
-    public function linkage($parame = [])
-    {
-        //执行接口调用
-        return $this->execApi($parame);
-    }
-
-    /*api:435e02fedeaa8b26e690120297b546dd*/
-
     /*接口扩展*/
 }

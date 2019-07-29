@@ -341,6 +341,42 @@ class Forms extends Base
 
     /*api:32adb44af199757ee800c096b072a7c9*/
 
+    /*api:f605d09d5ac1a3f293cdb14d093a22eb*/
+    /**
+     * * 获取联动数据接口
+     * @param  [array] $parame 接口参数
+     * @return [array]         接口输出数据
+     */
+    private function linkage($parame)
+    {
+        //主表数据库模型
+        $dbModel        = model($this->mainTable);
+
+        $id             = isset($parame['id']) ? (int)$parame['id'] : 0;
+        $field          = isset($parame['linkage_field']) ? $parame['linkage_field'] : '';
+        $value          = isset($parame['linkage_value']) ? $parame['linkage_value'] : '';
+
+        //自行书写业务逻辑代码
+        $formInfo               = $dbModel->getRow($id);
+        $linkage_config         = isset($formInfo['linkage_config']) ? json_decode($formInfo['linkage_config'],true) : [];
+
+        //联动字段信息是否存在或异常
+        if (!empty($field)&&isset($linkage_config[$field])&&!empty($linkage_config[$field]))
+        {
+            $fieldInfo          = $linkage_config[$field];
+            wr($fieldInfo);
+        }else{
+            return ['Code' => '203', 'Msg'=>lang('notice_linkage_field_err')];
+        }
+
+        //需要返回的数据体
+        $Data                   = ['TEST'];
+
+        return ['Code' => '200', 'Msg'=>lang('200'),'Data'=>$Data];
+    }
+
+    /*api:f605d09d5ac1a3f293cdb14d093a22eb*/
+
     /*接口扩展*/
 
     private function initTableAndField($data = [])

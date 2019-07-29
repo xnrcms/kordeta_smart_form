@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "00f12f8f4289323a9eada97c4c125368",
+    "content-hash": "6c714e8864c9391d231fec4c2893f7a5",
     "packages": [
         {
             "name": "aliyuncs/oss-sdk-php",
@@ -124,13 +124,13 @@
             "authors": [
                 {
                     "name": "Neuman Vong",
-                    "email": "neuman+pear@twilio.com",
-                    "role": "Developer"
+                    "role": "Developer",
+                    "email": "neuman+pear@twilio.com"
                 },
                 {
                     "name": "Anant Narayanan",
-                    "email": "anant@php.net",
-                    "role": "Developer"
+                    "role": "Developer",
+                    "email": "anant@php.net"
                 }
             ],
             "description": "A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec.",
@@ -296,21 +296,21 @@
         },
         {
             "name": "topthink/framework",
-            "version": "v5.1.12",
+            "version": "v5.1.37",
             "source": {
                 "type": "git",
                 "url": "https://github.com/top-think/framework.git",
-                "reference": "f879603ee321af8fde56d8855445cf98bc81b042"
+                "reference": "04cb0b7a4872fb7ebfd2d3af34074ac12bbfa31a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/top-think/framework/zipball/f879603ee321af8fde56d8855445cf98bc81b042",
-                "reference": "f879603ee321af8fde56d8855445cf98bc81b042",
+                "url": "https://api.github.com/repos/top-think/framework/zipball/04cb0b7a4872fb7ebfd2d3af34074ac12bbfa31a",
+                "reference": "04cb0b7a4872fb7ebfd2d3af34074ac12bbfa31a",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.6.0",
-                "topthink/think-installer": "~1.0"
+                "topthink/think-installer": "2.*"
             },
             "require-dev": {
                 "johnkary/phpunit-speedtrap": "^1.0",
@@ -343,7 +343,7 @@
                 "orm",
                 "thinkphp"
             ],
-            "time": "2018-04-26T03:46:41+00:00"
+            "time": "2019-05-26T04:54:04+00:00"
         },
         {
             "name": "topthink/think-captcha",
@@ -386,16 +386,16 @@
         },
         {
             "name": "topthink/think-installer",
-            "version": "v1.0.12",
+            "version": "v2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/top-think/think-installer.git",
-                "reference": "1be326e68f63de4e95977ed50f46ae75f017556d"
+                "reference": "f5400a12c60e513911aef41fe443fa6920952675"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/top-think/think-installer/zipball/1be326e68f63de4e95977ed50f46ae75f017556d",
-                "reference": "1be326e68f63de4e95977ed50f46ae75f017556d",
+                "url": "https://api.github.com/repos/top-think/think-installer/zipball/f5400a12c60e513911aef41fe443fa6920952675",
+                "reference": "f5400a12c60e513911aef41fe443fa6920952675",
                 "shasum": ""
             },
             "require": {
@@ -423,33 +423,43 @@
                     "email": "448901948@qq.com"
                 }
             ],
-            "time": "2017-05-27T06:58:09+00:00"
+            "time": "2018-05-11T06:45:42+00:00"
         },
         {
             "name": "topthink/think-worker",
-            "version": "v2.0.3",
+            "version": "v2.0.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/top-think/think-worker.git",
-                "reference": "7b7a64b2911cc11298b11677508f1a1936a2fb70"
+                "reference": "922d8c95e2f095e0da66d18b9e3fbbfd8de70a3f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/top-think/think-worker/zipball/7b7a64b2911cc11298b11677508f1a1936a2fb70",
-                "reference": "7b7a64b2911cc11298b11677508f1a1936a2fb70",
+                "url": "https://api.github.com/repos/top-think/think-worker/zipball/922d8c95e2f095e0da66d18b9e3fbbfd8de70a3f",
+                "reference": "922d8c95e2f095e0da66d18b9e3fbbfd8de70a3f",
                 "shasum": ""
             },
             "require": {
-                "topthink/framework": "5.1.*",
-                "workerman/workerman": "^3.3.0"
+                "ext-fileinfo": "*",
+                "topthink/framework": "^5.1.18",
+                "topthink/think-installer": "^2.0",
+                "workerman/gateway-worker": "^3.0.0",
+                "workerman/workerman": "^3.5.0"
             },
-            "type": "library",
+            "type": "think-extend",
+            "extra": {
+                "think-config": {
+                    "worker": "src/config/worker.php",
+                    "worker_server": "src/config/server.php",
+                    "gateway_worker": "src/config/gateway.php"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "think\\worker\\": "src"
                 },
                 "files": [
-                    "src/config.php"
+                    "src/command.php"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -462,8 +472,42 @@
                     "email": "liu21st@gmail.com"
                 }
             ],
-            "description": "workerman extend for thinkphp5",
-            "time": "2018-06-28T06:04:53+00:00"
+            "description": "workerman extend for thinkphp5.1",
+            "time": "2019-03-08T11:22:34+00:00"
+        },
+        {
+            "name": "workerman/gateway-worker",
+            "version": "v3.0.13",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/walkor/GatewayWorker.git",
+                "reference": "38b44c95f21cd340b5a9cff3987ddb2abb9a2a38"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/walkor/GatewayWorker/zipball/38b44c95f21cd340b5a9cff3987ddb2abb9a2a38",
+                "reference": "38b44c95f21cd340b5a9cff3987ddb2abb9a2a38",
+                "shasum": ""
+            },
+            "require": {
+                "workerman/workerman": ">=3.1.8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "GatewayWorker\\": "./src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "homepage": "http://www.workerman.net",
+            "keywords": [
+                "communication",
+                "distributed"
+            ],
+            "time": "2019-07-02T11:55:24+00:00"
         },
         {
             "name": "workerman/workerman",
@@ -498,9 +542,9 @@
             "authors": [
                 {
                     "name": "walkor",
+                    "role": "Developer",
                     "email": "walkor@workerman.net",
-                    "homepage": "http://www.workerman.net",
-                    "role": "Developer"
+                    "homepage": "http://www.workerman.net"
                 }
             ],
             "description": "An asynchronous event driven PHP framework for easily building fast, scalable network applications.",

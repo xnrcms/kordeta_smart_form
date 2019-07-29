@@ -498,9 +498,11 @@ class Devapi extends Base
                     }
 
                     //正确数据事例
-                    request()->post(['fieldName'=>'demo_success']);
-                    request()->post(['dataId'=>$info['id']]);
-                    request()->post(['value'=>$backData]);
+                    request()->withPost([
+                        'fieldName'=>'demo_success',
+                        'dataId'=>$info['id'],
+                        'value'=>$backData
+                    ]);
 
                     $this->questBaseEdit($this->apiUrl['quickedit']);
                 }
@@ -582,7 +584,11 @@ class Devapi extends Base
         if ($dataId == -1 && !empty($apiid) && !empty($value))
         {
             $value      = $value.'|@'.$apiid.'|@'.$addType.'|@'.$parentId.'|@'.$user_id;
-            request()->post(['value'=>$value]);
+            request()->withPost([
+                'fieldName'=>trim(input('fieldName')),
+                'dataId'=>$dataId,
+                'value'=>$value
+            ]);
 
             $id          = $this->questBaseEdit($this->apiUrl[request()->action()]);
 

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+  <html lang=zh-cmn-Hans>
+    <head>
+      <meta charset=utf-8>
+      <meta http-equiv=X-UA-Compatible content="IE=edge">
+      <meta name=viewport content="width=device-width,initial-scale=1">
+    </head>
+    <body onload="connect();">
+测试WS连接
+<script type="text/javascript" src="/ws/GatewayWork/js/swfobject.js"></script>
+<script type="text/javascript" src="/ws/GatewayWork/js/web_socket.js"></script>
+<script type="text/javascript" src="/ws/GatewayWork/js/json2.js"></script>
+<script type="text/javascript">
+    
+    var ws, name, client_list={};
+
+    // 连接服务端
+    function connect() {
+       // 创建websocket
+       ws = new WebSocket("ws://dev.smart_form.com:8080");
+       // 当socket连接打开时，输入用户名
+       ws.onopen = onopen;
+       // 当有消息时根据消息类型显示不同信息
+       ws.onmessage = onmessage;
+       ws.onclose = function() {
+          alert("连接关闭，定时重连");
+          connect();
+       };
+       ws.onerror = function() {
+        alert("出现错误");
+       };
+    }
+
+    // 连接建立时发送登录信息
+    function onopen()
+    {
+        var parame              = new Object();
+            parame.type         = "doevent";
+            parame.className    = "login";
+            parame.method       = "login";
+        var login_data          = JSON.stringify(parame);
+        
+        // 登录
+        ws.send(login_data);
+    }
+
+    // 服务端发来消息时
+    function onmessage(e)
+    {
+      console.log(e.data);
+        //var data = eval("("+e.data+")");
+        /*switch(data['type']){
+            // 服务端ping客户端
+            case 'ping':
+                ws.send('{"type":"istong"}');break;
+            // 登录 更新用户列表
+            case 'loginout':
+                window.location.href = "/game.php";
+                break;
+            case 'comein': comein(data); break;
+            case 'gamereadySuccess': gamereadySuccess(data); break;
+            case 'fanpaiSuccess': fanpaiSuccess(data);break;
+            case 'setbankerSuccess' : setbankerSuccess(data);break;
+            case 'setmultipleSuccess' : setmultipleSuccess(data);break;
+            case 'tanpaiSuccess' : tanpaiSuccess(data);break;
+            case 'sendmsgSuccess' : sendmsgSuccess(data);break;
+            case 'gameOneEnd' : gameOneEnd(data);break;
+            case 'errorMsg':
+              if (data.url) {
+                window.location.href = data.url;
+              }
+            break;
+        }*/
+    }
+  </script>
+  </body></html>

@@ -15,3 +15,5 @@ CREATE TABLE `xnrcms_user_config` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='会员详细资料表';
 
 [v1.3]
+ALTER TABLE `xnrcms_devform2`
+ADD COLUMN `linkage_config`  text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '联动数据配置' AFTER `list_config`;

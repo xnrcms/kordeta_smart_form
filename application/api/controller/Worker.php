@@ -57,7 +57,7 @@ class Worker extends Server
             case 'istong': return;
             case 'doevent':
 
-                /*if (!isset($message_data['method']) && empty($message_data['method'])) {
+                if (!isset($message_data['method']) && empty($message_data['method'])) {
                    return;
                 }
 
@@ -74,10 +74,10 @@ class Worker extends Server
                 $className                              = ucfirst($message_data['className']);
 
                 //定义命名空间
-                $namespace                              = '\api\service\helper';
+                $namespace                              = '\app\api\helper';
 
                 //执行操作
-                self::helper($message_data,$namespace,$className,$method);*/
+                self::helper($message_data,$namespace,$className,$method);
                 return;
             default:return;break;
         }

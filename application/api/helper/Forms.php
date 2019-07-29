@@ -154,6 +154,7 @@ class Forms extends Base
         $saveData['status']         = $saveData['status'] === 1 ? 1 : 2;
         $saveData['form_config']    = isset($parame['form_config']) ? $parame['form_config'] : '';
         $saveData['list_config']    = isset($parame['list_config']) ? $parame['list_config'] : '';
+        $saveData['linkage_config'] = isset($parame['linkage_config']) ? $parame['linkage_config'] : '';
         $saveData['sort']           = isset($parame['sort']) ? (int)$parame['sort'] : 0;
         $saveData['update_time']    = time();
         //$saveData['parame']         = isset($parame['parame']) ? $parame['parame'] : '';

@@ -12,4 +12,5 @@ return [
     'notice_forms_no_exists'                  		=> '表单信息不存在',
     'notice_forms_prohibit'                  		=> '此表单被禁用',
     'notice_linkage_field_err'                  	=> '联动字段错误',
+    'notice_linkage_table_err'                  	=> '联动表单错误',
 ];

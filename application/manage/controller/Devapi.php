@@ -597,7 +597,7 @@ class Devapi extends Base
                 $this->success('添加成功','',$id);
             }
         }
-
+        
         $id          = $this->questBaseEdit($this->apiUrl[request()->action()]);
         
         //接口调用

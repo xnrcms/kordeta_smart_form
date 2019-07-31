@@ -355,22 +355,64 @@ class Forms extends Base
         $id             = isset($parame['id']) ? (int)$parame['id'] : 0;
         $field          = isset($parame['linkage_field']) ? $parame['linkage_field'] : '';
         $value          = isset($parame['linkage_value']) ? $parame['linkage_value'] : '';
+        $linkage_data   = [];
 
         //自行书写业务逻辑代码
         $formInfo               = $dbModel->getRow($id);
         $linkage_config         = isset($formInfo['linkage_config']) ? json_decode($formInfo['linkage_config'],true) : [];
 
         //联动字段信息是否存在或异常
-        if (!empty($field)&&isset($linkage_config[$field])&&!empty($linkage_config[$field]))
+        if (!empty($field) && !empty($linkage_config))
         {
-            $fieldInfo          = $linkage_config[$field];
-            wr($fieldInfo);
+            $formid             = 0;
+            $whereField         = '';
+            $showField          = [];
+
+            foreach ($linkage_config as $skey => $svalue)
+            {
+                if ($svalue['field1'] === $field)
+                {
+                    $formid         = $svalue['formid'];
+                    $whereField     = $svalue['field2'];
+                    $showField[$svalue['field3']]    = $svalue['field4'];
+                }
+            }
+            
+            $searchFormInfo     = $dbModel->getRow($formid);
+
+            if (!(!empty($searchFormInfo) && $searchFormInfo['status'] === 1))
+            return ['Code' => '203', 'Msg'=>lang('notice_linkage_table_err')];
+
+            $tableName          = 'kor_table' . $svalue['formid'];
+            $info               = [];
+
+            if (!empty($showField))
+            {
+                $map                = [];
+                $map[$whereField]   = $value;
+                $info               = model('kor_table')->getRowForTpl($tableName,$map);
+
+                if (!empty($info))
+                {
+                    foreach ($showField as $skey => $svalue)
+                    {
+                        $sval               = isset($info[$svalue]) ? $info[$svalue] : '';
+
+                        if ($this->getFieldType($skey) == 'date')
+                        {
+                            $sval     = !empty($sval) && is_numeric($sval) ? date('Y-m-d',$sval) : $sval;
+                        }
+
+                        $linkage_data[]     = ['linkage_field'=>$skey,'linkage_value'=>$sval];
+                    }
+                }
+            }
         }else{
             return ['Code' => '203', 'Msg'=>lang('notice_linkage_field_err')];
         }
 
         //需要返回的数据体
-        $Data                   = ['TEST'];
+        $Data['linkage_data']              = $linkage_data;
 
         return ['Code' => '200', 'Msg'=>lang('200'),'Data'=>$Data];
     }
@@ -510,5 +552,14 @@ PRIMARY KEY (`id`) ) COMMENT='自动表单（".$title."）表'");
 
         if (!file_exists($file) && file_exists($base))
         file_put_contents($file,str_replace('{ModelNameTPL}',$modelName,file_get_contents($base)));
+    }
+
+    private function getFieldType($fieldName = '')
+    {
+        if (empty($fieldName))  return '';
+
+        $field      = explode('_', $fieldName);
+
+        return isset($field[0]) ? $field[0] : '';
     }
 }

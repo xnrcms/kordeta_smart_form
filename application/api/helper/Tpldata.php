@@ -72,7 +72,7 @@ class Tpldata extends Base
     private function listData($parame)
     {
         //主表数据库模型
-        $dbModel            = model($this->mainTable);
+        $dbModel            = model('kor_table');
  
 		/*定义数据模型参数*/
 		//主表名称，可以为空，默认当前模型名称
@@ -116,7 +116,7 @@ class Tpldata extends Base
         ];
 
 		//列表数据
-		$lists 						= $dbModel->getList($modelParame);
+		$lists 						= $dbModel->getList($this->mainTable,$modelParame);
 
 		//数据格式化
 		$data 						= (isset($lists['lists']) && !empty($lists['lists'])) ? $lists['lists'] : [];
@@ -150,7 +150,7 @@ class Tpldata extends Base
     private function saveData($parame)
     {
         //主表数据库模型
-    	$dbModel					= model($this->mainTable);
+    	$dbModel					= model('kor_table');
 
         //处理表单数据
         $formData                   = isset($parame['formData']) ? ($parame['formData']) : '';
@@ -208,7 +208,7 @@ class Tpldata extends Base
             $saveData['creator_id']     = $this->getUserId();
     	}
 
-    	$info               = $dbModel->saveData($id,$saveData);
+    	$info               = $dbModel->saveData($this->mainTable,$id,$saveData);
 
         return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '203', 'Msg'=>lang('100015')];
     }
@@ -221,11 +221,12 @@ class Tpldata extends Base
     private function detailData($parame)
     {
         //主表数据库模型
-    	$dbModel			= model($this->mainTable);
+    	$dbModel			= model('kor_table');
 
         //数据ID
         $id                 = isset($parame['id']) ? intval($parame['id']) : 0;
-        $info               = $dbModel->getRow($id);
+        $info               = $dbModel->getRow($this->mainTable,$id);
+        $info               = !empty($info) ? $info : [];
 
         foreach ($info as $key => $value)
         {
@@ -255,14 +256,18 @@ class Tpldata extends Base
     private function quickEditData($parame)
     {
         //主表数据库模型
-    	$dbModel			= model($this->mainTable);
+    	$dbModel			= model('kor_table');
 
         //数据ID
         $id                 = isset($parame['id']) ? intval($parame['id']) : 0;
         if ($id <= 0) return ['Code' => '120023', 'Msg'=>lang('120023')];
 
         //根据ID更新数据
-        $info               = $dbModel->saveData($id,[$parame['fieldName']=>$parame['updata']]);
+        $updata                         = [];
+        $updata['update_time']          = time();
+        $updata[$parame['fieldName']]   = $parame['updata'];
+
+        $info                           = $dbModel->saveData($this->mainTable,$id,$updata);
 
         return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '100015', 'Msg'=>lang('100015')];
     }
@@ -275,7 +280,7 @@ class Tpldata extends Base
     private function delData($parame)
     {
         //主表数据库模型
-    	$dbModel				= model($this->mainTable);
+    	$dbModel				= model('kor_table');
 
         //数据ID
         $id                 = isset($parame['id']) ? intval($parame['id']) : 0;
@@ -285,7 +290,7 @@ class Tpldata extends Base
         //...
         
         //执行删除操作
-    	$delCount				= $dbModel->deleteData($id);
+    	$delCount				= $dbModel->deleteData($this->mainTable,$id);
 
     	return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>['count'=>$delCount]];
     }
@@ -299,7 +304,7 @@ class Tpldata extends Base
     private function export($parame)
     {
         //主表数据库模型
-        $dbModel                = model($this->mainTable);
+        $dbModel                = model('kor_table');
 
         $dataType               = isset($parame['dataType']) ? intval($parame['dataType']) : 0;
         if (!in_array($dataType, [1,2]))
@@ -529,7 +534,7 @@ class Tpldata extends Base
     private function import($parame)
     {
         //主表数据库模型
-        $dbModel                = model($this->mainTable);
+        $dbModel                = model('kor_table');
 
         //自行书写业务逻辑代码
         $title          = $this->formInfo['title'];
@@ -693,7 +698,7 @@ class Tpldata extends Base
             return ['Code' => '203', 'Msg'=>lang('notice_import_data_empty')];
         }
 
-        $dbModel->saveDataAll($saveData);
+        $dbModel->saveDataAll($this->mainTable,$saveData);
 
         //需要返回的数据体
         $Data                   = ['isok'=>1];
@@ -750,10 +755,10 @@ class Tpldata extends Base
         //检测模板文件是否存在
         $modelName  = formatStringToHump($tableName);
 
-        //检测文件是否存在
+        /*//检测文件是否存在
         $file       = \Env::get('APP_PATH') .'common/model/'. $modelName .'.php';
 
-        if (!file_exists($file)) return ['Code' => '203', 'Msg'=>lang('notice_model_not_exists')];
+        if (!file_exists($file)) return ['Code' => '203', 'Msg'=>lang('notice_model_not_exists')];*/
 
         $this->mainTable    = $tableName;
         $this->formInfo     = $formInfo;

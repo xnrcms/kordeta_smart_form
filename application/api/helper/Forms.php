@@ -161,6 +161,23 @@ class Forms extends Base
 
         //规避遗漏定义入库数据
         if (empty($saveData)) return ['Code' => '120021', 'Msg'=>lang('120021')];
+        
+        /*if (!empty($saveData['form_config']))
+        {
+            $form_config        = json_decode($saveData['form_config'],true);
+
+            if (isset($form_config['list']) && !empty($form_config['list']))
+            {
+                foreach ($form_config['list'] as $key => $value)
+                {
+                    if (isset($value['linkage_config']))
+                    unset($form_config['list'][$key]['linkage_config']);
+                }
+            }
+
+            $saveData['form_config']        = json_encode($form_config);
+            wr($saveData['form_config']);
+        }*/
 
         //自行处理数据入库条件
         //...
@@ -434,7 +451,7 @@ class Forms extends Base
         $isTable        = $dbModel->query('SHOW TABLES LIKE "' . $tableName2 . '"');
         
         //创建表模型
-        $this->createTableModel($tableName1);
+        //$this->createTableModel($tableName1);
 
         //检查表是否存在 不存在创建
         if (empty($isTable))  $this->createTable($tableName2,$data['title']);

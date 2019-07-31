@@ -239,11 +239,13 @@ class Tpldata extends Base
         //数据详情
         $dataInfo           = $id > 0 ? json_encode($info) : '';
         $formInfo           = isset($this->formInfo['form_config']) ? $this->formInfo['form_config'] : '';
+        $linkageInfo        = isset($this->formInfo['linkage_config']) ? $this->formInfo['linkage_config'] : '';
 
         $data               = [];
         $data['dataInfo']   = $dataInfo;
         $data['formId']     = isset($this->formInfo['id']) ? (int)$this->formInfo['id'] : 0;
         $data['formInfo']   = $formInfo;
+        $data['linkageInfo']= $linkageInfo;
 
         return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$data];
     }

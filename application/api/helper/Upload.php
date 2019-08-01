@@ -377,7 +377,7 @@ class Upload extends Base
             }
         }
 
-        return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$data];
+        return ['Code' => '200', 'Msg'=>lang('notice_upload_success'),'Data'=>$data];
     }
 
     /*api:f4a1c26f65b071cd7abb7537fc335e0c*/

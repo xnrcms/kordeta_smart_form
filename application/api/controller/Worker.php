@@ -77,7 +77,7 @@ class Worker extends Server
                 $namespace                              = '\app\api\helper';
 
                 //执行操作
-                self::helper($message_data,$namespace,$className,$method);
+                //self::helper($message_data,$namespace,$className,$method);
                 return;
             default:return;break;
         }

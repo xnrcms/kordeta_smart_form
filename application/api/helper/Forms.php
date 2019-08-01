@@ -176,7 +176,6 @@ class Forms extends Base
             }
 
             $saveData['form_config']        = json_encode($form_config);
-            wr($saveData['form_config']);
         }*/
 
         //自行处理数据入库条件
@@ -398,7 +397,6 @@ class Forms extends Base
             
             $searchFormInfo     = $dbModel->getRow($formid);
 
-            wr([$searchFormInfo,$formid,$linkage_config,$field]);
             if (!(!empty($searchFormInfo) && $searchFormInfo['status'] === 1))
             return ['Code' => '203', 'Msg'=>lang('notice_linkage_table_err')];
 

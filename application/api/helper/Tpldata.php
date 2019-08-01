@@ -113,6 +113,7 @@ class Tpldata extends Base
             $modelParame['limit'],
             $modelParame['order'],
             $modelParame['page'],
+            $this->mainTable
         ];
 
 		//列表数据

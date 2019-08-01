@@ -31,7 +31,7 @@ return [
     // 支持事件回调
     // onWorkerStart
     'onWorkerStart'  => function ($worker) {
-        wr($worker);
+
     },
     // onWorkerReload
     'onWorkerReload' => function ($worker) {

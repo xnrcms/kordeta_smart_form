@@ -78,7 +78,7 @@ class Upload extends Base
 
     /*api:f4a1c26f65b071cd7abb7537fc335e0c*/
     /**
-     * H5单图上传
+     * H5图片上传
      * @access public
      * @param  [array] $parame 扩展参数
      * @return [json]          接口数据输出

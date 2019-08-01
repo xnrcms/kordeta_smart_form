@@ -390,7 +390,6 @@ class Upload extends Base
 
     private function removePath($path = [])
     {
-        wr($path);
         foreach ($path as $key => $value)
         {
             if (file_exists($value)) unlink($value);

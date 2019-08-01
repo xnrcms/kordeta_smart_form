@@ -39,7 +39,7 @@ return [
     'businessWorker'        => [
         'name'         => 'BusinessWorker',
         'count'        => 1,
-        'eventHandler' => '\app\api\controller\Worker',
+        'eventHandler' => '\app\api\controller\Socket',
     ],
 
 ];

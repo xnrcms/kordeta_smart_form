@@ -10,70 +10,89 @@
  */
 namespace app\api\controller;
 
-use app\common\controller\Base;
+use think\facade\Env;
+use think\worker\Server;
+use GatewayWorker\Lib\Gateway;
 
-class Socket extends Base
+class Socket extends Server
 {
-    //接口构造
-    public function __construct(){
-
-        parent::__construct();
-    }
-
     /**
-     * 数据列表接口头
+     * onConnect 事件回调
+     * 当客户端连接上gateway进程时(TCP三次握手完毕时)触发
+     *
      * @access public
-     * @param  [array] $parame [扩展参数]
-     * @return [json]          [接口数据输出]
-    */
-    public function listData($parame = [])
+     * @param  int       $client_id
+     * @return void
+     */
+    public static function onConnect($client_id)
     {
-        //执行接口调用
-        return $this->execApi($parame);
+        Gateway::sendToCurrentClient("Your client_id is $client_id");
     }
 
     /**
-     * 接口数据添加/更新头
-     * @param  [array] $parame 扩展参数
-     * @return [json]          接口数据输出
+     * onWebSocketConnect 事件回调
+     * 当客户端连接上gateway完成websocket握手时触发
+     *
+     * @param  integer  $client_id 断开连接的客户端client_id
+     * @param  mixed    $data
+     * @return void
      */
-    public function saveData($parame=[])
+    public static function onWebSocketConnect($client_id, $data)
     {
-        //执行接口调用
-        return $this->execApi($parame);
+        //var_export($data);
     }
 
     /**
-     * 接口数据详情头
-     * @param  [array] $parame 扩展参数
-     * @return [json]          接口数据输出
+     * onMessage 事件回调
+     * 当客户端发来数据(Gateway进程收到数据)后触发
+     *
+     * @access public
+     * @param  int       $client_id
+     * @param  mixed     $data
+     * @return void
      */
-    public function detailData($parame=[])
+    public static function onMessage($client_id, $parame)
     {
-        //执行接口调用
-        return $this->execApi($parame);
+        $parame            = json_decode($parame, true);
+
+        if(empty($parame) || !is_array($parame))
+        return Gateway::sendToCurrentClient("Socket communication parameter error");
+
+        //解析接口地址
+        $socketUrl         = isset($parame['socketUrl']) ? trim($parame['socketUrl'],'/') : '';
+        $socketUrl         = explode('/', $socketUrl);
+
+        if (!(count($socketUrl) === 3))
+        return Gateway::sendToCurrentClient(self::returnData(['Msg'=>"SocketUrl Error"]));
+
+        unset($parame['socketUrl']);
+
+        return self::execApi($parame,$socketUrl);
+    }
+
+
+
+    /**
+     * onClose 事件回调 当用户断开连接时触发的方法
+     *
+     * @param  integer $client_id 断开连接的客户端client_id
+     * @return void
+     */
+    public static function onClose($client_id)
+    {
+        GateWay::sendToAll("client[$client_id] logout\n");
     }
 
     /**
-     * 接口数据快捷编辑头
-     * @param  [array] $parame 扩展参数
-     * @return [json]          接口数据输出
+     * onWorkerStop 事件回调
+     * 当businessWorker进程退出时触发。每个进程生命周期内都只会触发一次。
+     *
+     * @param  \Workerman\Worker    $businessWorker
+     * @return void
      */
-    public function quickEditData($parame=[])
+    public static function onWorkerStop(Worker $businessWorker)
     {
-        //执行接口调用
-        return $this->execApi($parame);
-    }
-
-    /**
-     * 接口数据删除头
-     * @param  [array] $parame 扩展参数
-     * @return [json]          接口数据输出
-     */
-    public function delData($parame=[])
-    {
-        //执行接口调用
-        return $this->execApi($parame);
+        echo "WorkerStop\n";
     }
 
     /*api:bb11599b1bc689a4180ae58301262de2*/
@@ -92,4 +111,37 @@ class Socket extends Base
     /*api:bb11599b1bc689a4180ae58301262de2*/
 
     /*接口扩展*/
+
+    public static function execApi($parame = [],$socketUrl = [])
+    {
+        //执行模块名 默认当前model
+        $moduleName     = $socketUrl[0];
+        //执行方法名 默认当前action
+        $actionName     = $socketUrl[2];
+        //定义类名
+        $controllerName = $socketUrl[1];
+        //定义类名
+        $namespaceName  = '\app\\'.$moduleName.'\helper';
+        //操作类名称及路径
+        $models         = '\\'. trim($namespaceName,'\\') . '\\' . trim($controllerName,'\\');
+        //数据参数
+        
+        if (!class_exists($models))
+        return Gateway::sendToCurrentClient(self::returnData(['Msg'=>"SocketUrl Not Exists"]));;
+
+        //实例化操作类
+        $className      = new $models($parame,$controllerName,$actionName,$moduleName);
+        
+        //执行操作
+        return $className->apiRun();
+    }
+
+    private static function returnData($data = [])
+    {
+        $domain     = trim(request()->domain(),'/');
+        $apitime    = date('Y-m-d H:i:s',time());
+        $base       = ['Code' =>'203','Msg'=>lang('100000'),'Time'=>$apitime];
+
+        return json_encode(array_merge($base,$data));
+    }
 }

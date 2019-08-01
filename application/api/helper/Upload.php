@@ -298,18 +298,25 @@ class Upload extends Base
         $config           = ['size'=> $this->upload_size*1024*1024,'ext'=>$this->upload_itype] ;
 
         //获取表单上传的文件
-        $files            = request()->file($parame['fileName']) ;
+        $files            = request()->file('fileName') ;
         $re               = [];
-
+       /* wr("=========================1\n");
+        wr($files);
+        wr("=========================2\n");
+        wr("=========================3\n");
+        wr($_FILES);
+        wr("=========================4\n");*/
         if(empty($files)) return ['Code'=>'203' , 'Msg' => lang('notice_upload_file_empty')] ;
 
-        //上传文件验证
-        $info    = $files->validate($config)->rule('formatUploadFileName')->move('./uploads/picture/');
-
-        if($info === false)
+        foreach ($files as $file)
         {
+            //上传文件验证
+            $ruleName   = 'formatUploadFileName';
+            $movePath   = './uploads/picture/';
+            $info       = $files->validate($config)->rule($ruleName)->move($movePath);
+
+            if($info === false)
             return ['Code' =>'203','Msg'=>lang('notice_upload_file_fail',[$files->getError()])];
-        }else{
 
             $path                  = trim($this->imgUploadRoot,'.') . $info->getSaveName();
             $url                   = trim($this->imgUploadRoot,'.') . $info->getSaveName();
@@ -344,13 +351,24 @@ class Upload extends Base
             $saveData['create_time']    = time();
 
             $Picture                    = model($this->mainTable);
-            $res                        = $Picture->addData($saveData) ;
+            $res                        = $Picture->addData($saveData);
+            $re[]                       = $Picture -> getOneById($Picture->id) -> toArray() ;
         }
 
-        if($res)
-        {
-            $data['path']               = request()->domain().$path ;
-            $data['id']                 = $res -> getAttr('id') ;
+        $data                           = [];
+        
+        if (!empty($re))
+        {    
+            $data['total'] = count($re) ;
+
+            foreach ($re as $index => $item)
+            {
+                $itype            = (int)$item['img_type'];
+                $domain           = request()->domain();
+                $url              = $itype == 1 ? $domain . $item['path'] : $item['path'];
+                $data['lists'][]  = ['id'=>$item['id'],'path'=>$url];
+            }
+
             return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$data];
         }
 

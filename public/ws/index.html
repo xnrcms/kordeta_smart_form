@@ -32,13 +32,12 @@
     function onopen()
     {
         var parame              = new Object();
-            parame.type         = "doevent";
-            parame.className    = "login";
-            parame.method       = "login";
-        var login_data          = JSON.stringify(parame);
-        alert(1);
+            parame.socketUrl    = "api/socket/index";
+            parame.uid          = "3";
+            parame.hashid       = "MTJjMFZ4Ri85aGhnWUtiRklzMXl1TmtBdDhUUG1WdXVUdVZyWHczZ21zcVl1L095ckdOY0orMFB5WTZkZkphQjhsYzVBZ1FvbHBkczdvRmNsM1NJNnVEYytyQmpPYStSZDAyVWpnRjVZa0xIUzR0Tkgvb3NLdkdyc0NwR3pXRDc1b1Y0MUtkYTl0T3h0TmhQaW16UXRYMDZFQmtHTEdFNFRUMTQ3YzMranQwaE9DRklQRDBaUDIyS2tXTXFhUkZ0SDhpRElJOTlwcG05L0haTUJMeXloSHloZEora0hSaFAxMlhENGI0YmZrS3ZzNDJxZWY1SUNmNEZ4OWxTRGc";
+
         // 登录
-        ws.send(login_data);
+        ws.send(JSON.stringify(parame));
     }
 
     // 服务端发来消息时

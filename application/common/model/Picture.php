@@ -34,4 +34,15 @@ class Picture extends Base
 
         return $model;
     }
+
+    public function saveAllData($saveData = [])
+    {
+      if (!empty($saveData)) $this->saveAll($saveData);
+    }
+
+    public function getPictureByuMark($umark = '')
+    {
+      $umark    = !empty($umark) ? $umark : time();
+      return $this->where('umark','=',$umark)->field('id,path,img_type')->select()->toArray();
+    }
 }

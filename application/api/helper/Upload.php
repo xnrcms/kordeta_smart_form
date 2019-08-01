@@ -308,15 +308,17 @@ class Upload extends Base
         wr("=========================4\n");*/
         if(empty($files)) return ['Code'=>'203' , 'Msg' => lang('notice_upload_file_empty')] ;
 
+        $thisTime       = time();
+        $umark          = md5($thisTime . randomString(10,7));
         foreach ($files as $file)
         {
             //上传文件验证
             $ruleName   = 'formatUploadFileName';
             $movePath   = './uploads/picture/';
-            $info       = $files->validate($config)->rule($ruleName)->move($movePath);
+            $info       = $file->validate($config)->rule($ruleName)->move($movePath);
 
             if($info === false)
-            return ['Code' =>'203','Msg'=>lang('notice_upload_file_fail',[$files->getError()])];
+            return ['Code' =>'203','Msg'=>lang('notice_upload_file_fail',[$file->getError()])];
 
             $path                  = trim($this->imgUploadRoot,'.') . $info->getSaveName();
             $url                   = trim($this->imgUploadRoot,'.') . $info->getSaveName();
@@ -339,40 +341,43 @@ class Upload extends Base
             }
             
             $finfo                      = $info->getInfo();
+            
             unset($finfo['tmp_name']);
             unset($finfo['error']);
 
-            $saveData                   = array() ;
-            $saveData['path']           = $path;
-            $saveData['imgurl']         = $url;
-            $saveData['tags']           = isset($parame['tags']) ? $parame['tags'] : '';
-            $saveData['img_type']       = $this->upload_method;
-            $saveData['infos']          = json_encode($finfo);
-            $saveData['create_time']    = time();
-
-            $Picture                    = model($this->mainTable);
-            $res                        = $Picture->addData($saveData);
-            $re[]                       = $Picture -> getOneById($Picture->id) -> toArray() ;
+            $saveData                   = [];
+            $saveData[]                 = [
+                'path'          => $path,
+                'imgurl'        => $url,
+                'tags'          => isset($parame['tags']) ? $parame['tags'] : '',
+                'img_type'      => $this->upload_method,
+                'infos'         => json_encode($finfo),
+                'create_time'   => $thisTime,
+                'umark'         => $umark,
+            ];
         }
 
-        $data                           = [];
+        wr($saveData);
+        return ['Code' =>'203','Msg'=>lang('notice_upload_file_fail',[''])];
         
-        if (!empty($re))
-        {    
-            $data['total'] = count($re) ;
+        $dbModel->saveAllData($saveData);
 
-            foreach ($re as $index => $item)
+        $images                 = $dbModel->getPictureByuMark($umark);
+        $data                   = [];
+
+        if (!empty($images))
+        {   
+            $data['total']      = count($images);
+            foreach ($images as $key => $value)
             {
                 $itype            = (int)$item['img_type'];
                 $domain           = request()->domain();
-                $url              = $itype == 1 ? $domain . $item['path'] : $item['path'];
-                $data['lists'][]  = ['id'=>$item['id'],'path'=>$url];
+                $url              = $itype == 1 ? $domain . $value['path'] : $value['path'];
+                $data['lists'][]  = ['id'=>$value['id'],'path'=>$url];
             }
-
-            return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$data];
         }
 
-        return ['Code' =>'203','Msg'=>lang('notice_upload_file_fail',[''])];
+        return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$data];
     }
 
     /*api:f4a1c26f65b071cd7abb7537fc335e0c*/

@@ -300,16 +300,14 @@ class Upload extends Base
         //获取表单上传的文件
         $files            = request()->file('fileName') ;
         $re               = [];
-       /* wr("=========================1\n");
-        wr($files);
-        wr("=========================2\n");
-        wr("=========================3\n");
-        wr($_FILES);
-        wr("=========================4\n");*/
+        
         if(empty($files)) return ['Code'=>'203' , 'Msg' => lang('notice_upload_file_empty')] ;
 
         $thisTime       = time();
         $umark          = md5($thisTime . randomString(10,7));
+        $saveData       = [];
+        $successPath    = [];
+
         foreach ($files as $file)
         {
             //上传文件验证
@@ -318,7 +316,10 @@ class Upload extends Base
             $info       = $file->validate($config)->rule($ruleName)->move($movePath);
 
             if($info === false)
-            return ['Code' =>'203','Msg'=>lang('notice_upload_file_fail',[$file->getError()])];
+            {
+                $this->removePath($successPath);
+                return ['Code' =>'203','Msg'=>lang('notice_upload_file_fail',[$file->getError()])];
+            }
 
             $path                  = trim($this->imgUploadRoot,'.') . $info->getSaveName();
             $url                   = trim($this->imgUploadRoot,'.') . $info->getSaveName();
@@ -338,6 +339,9 @@ class Upload extends Base
                 $path              = $oss_upload_info[0]['key'];
 
                 if (file_exists($file_path)) unlink($file_path);
+            }else{
+
+                $successPath[]          = '.' . $path;
             }
             
             $finfo                      = $info->getInfo();
@@ -345,21 +349,17 @@ class Upload extends Base
             unset($finfo['tmp_name']);
             unset($finfo['error']);
 
-            $saveData                   = [];
-            $saveData[]                 = [
-                'path'          => $path,
-                'imgurl'        => $url,
-                'tags'          => isset($parame['tags']) ? $parame['tags'] : '',
-                'img_type'      => $this->upload_method,
-                'infos'         => json_encode($finfo),
-                'create_time'   => $thisTime,
-                'umark'         => $umark,
+            $saveData[]             = [
+                'path'         => $path,
+                'imgurl'       => $url,
+                'tags'         => isset($parame['tags']) ? $parame['tags'] : '',
+                'img_type'     => $this->upload_method,
+                'infos'        => json_encode($finfo),
+                'create_time'  => $thisTime,
+                'umark'        => $umark,
             ];
         }
 
-        wr($saveData);
-        return ['Code' =>'203','Msg'=>lang('notice_upload_file_fail',[''])];
-        
         $dbModel->saveAllData($saveData);
 
         $images                 = $dbModel->getPictureByuMark($umark);
@@ -370,7 +370,7 @@ class Upload extends Base
             $data['total']      = count($images);
             foreach ($images as $key => $value)
             {
-                $itype            = (int)$item['img_type'];
+                $itype            = (int)$value['img_type'];
                 $domain           = request()->domain();
                 $url              = $itype == 1 ? $domain . $value['path'] : $value['path'];
                 $data['lists'][]  = ['id'=>$value['id'],'path'=>$url];
@@ -386,6 +386,15 @@ class Upload extends Base
 
     private function setError($error=[]){
         $this->upload_error     = $error;
+    }
+
+    private function removePath($path = [])
+    {
+        wr($path);
+        foreach ($path as $key => $value)
+        {
+            if (file_exists($value)) unlink($value);
+        }
     }
 
     private function init_config()

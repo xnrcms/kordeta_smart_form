@@ -130,9 +130,23 @@ class Tpldata extends Base
             $data[$key]['update_time']  = !empty($value['create_time']) ? date('Y-m-d H:i:s',$value['create_time']) : '/';
             foreach ($value as $kk => $vv)
             {
+                //时间处理
                 if ($this->getFieldType($kk) == 'date')
                 {
                     $data[$key][$kk]     = !empty($vv) && is_numeric($vv) ? date('Y-m-d',$vv) : $vv;
+                }
+
+                //图片处理
+                if ($this->getFieldType($kk) == 'imgupload')
+                {
+                    $imageId            = !empty($vv) ? explode(',', $vv) : [];
+                    $imagePath          = [];
+                    foreach ($imageId as $imgId)
+                    {
+                        $imagePath[]    = get_cover($imgId,'path');
+                    }
+
+                    $data[$key][$kk]     = $imagePath;
                 }
             }
         }
@@ -231,9 +245,23 @@ class Tpldata extends Base
 
         foreach ($info as $key => $value)
         {
+            //时间处理
             if ($this->getFieldType($key) == 'date')
             {
                 $info[$key]     = !empty($value) && is_numeric($value) ? date('Y-m-d',$value) : $value;
+            }
+
+            //图片处理
+            if ($this->getFieldType($key) == 'imgupload')
+            {
+                $imageId            = !empty($value) ? explode(',', $value) : [];
+                $imagePath          = [];
+                foreach ($imageId as $imgId)
+                {
+                    $imagePath[]    = ['id'=>$imgId,'path'=>get_cover($imgId,'path')];
+                }
+
+                $info[$key]     = $imagePath;
             }
         }
 

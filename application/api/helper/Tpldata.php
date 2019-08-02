@@ -258,7 +258,7 @@ class Tpldata extends Base
                 $imagePath          = [];
                 foreach ($imageId as $imgId)
                 {
-                    $imagePath[]    = ['id'=>$imgId,'path'=>get_cover($imgId,'path')];
+                    $imagePath[]    = ['id'=>$imgId,'url'=>get_cover($imgId,'path')];
                 }
 
                 $info[$key]     = $imagePath;

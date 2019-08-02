@@ -712,7 +712,7 @@ if (!function_exists('apiReq'))
 			$parame['apiId']	= $api_auth_id;
 			$parame['terminal']	= 1;
 			$parame['hash'] 	= $ApiRequest->getSign($parame);
-
+			
 	      	//构造命名空间
 	        $namespace       	= '\\'. 'app\\'.strtolower($mName).'\\helper';
 	        $models				= '\\'. trim($namespace,'\\') . '\\' . trim($cName,'\\');

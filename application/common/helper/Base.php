@@ -311,7 +311,7 @@ class Base
             $signStr  .= $key . $value;
           }
 
-          $signStr  .= $this->ApiKey;//echo $signStr .'=='.md5($signStr);exit;
+          $signStr  .= $this->ApiKey;
           
           return md5($signStr);
         }

@@ -31,7 +31,7 @@ class Uploadfile extends Base
 
         $this->apiUrl['index']                 = 'api/Upload/listData';
         $this->apiUrl['delfile']               = 'api/Upload/delData';
-        $this->apiUrl['uploaddata']            = 'api/Upload/uploadData';
+        $this->apiUrl['uploaddata']            = 'api/Upload/uploadImgForH5';
     }
 
     public function index()
@@ -81,7 +81,7 @@ class Uploadfile extends Base
 
         $ext            = isset($config[0]) ? $config[0] : 'jpg,png,gif,jpeg';
         $size           = isset($config[1]) ? $config[1] : '2M';
-        $type           = 'Image';
+        $type           = 'fileName';
         $title          = $num <= 1 ? '单个图片' : '多个图片';
 
         $config         = json_encode(['ext'=>$ext,'size'=>$size,'type'=>$type]);
@@ -158,9 +158,7 @@ class Uploadfile extends Base
         $parame             = [];
         $parame['uid']      = $this->uid;
         $parame['hashid']   = $this->hashid;
-        $parame['fileName'] = isset($param['fileName']) ? $param['fileName'] : '';
         $parame['tags']     = isset($param['tags']) ? $param['tags'] : 'tags';
-        $parame['config']   = isset($param['config']) ? $param['config'] : json_encode([]);
 
         //请求数据
         if (!isset($this->apiUrl[request()->action()]) || empty($this->apiUrl[request()->action()])) 
@@ -169,9 +167,9 @@ class Uploadfile extends Base
         $res                = $this->apiData($parame,$this->apiUrl[request()->action()],false);
         $data               = $this->getApiData() ;
 
-        if($res){
-
-            return json(['code'=>1,'msg'=>'上传成功','data'=>json_decode($data['data'],true)]);
+        if($res)
+        {
+            return json(['code'=>1,'msg'=>'上传成功','data'=>$data]);
         }else{
             
             return json(['code'=>0,'msg'=>$this->getApiError()]);

@@ -296,6 +296,12 @@ class Upload extends Base
         //自行书写业务逻辑代码
         //获取有关图片上传的设置
         $config           = ['size'=> $this->upload_size*1024*1024,'ext'=>$this->upload_itype] ;
+        $updataTag        = isset($parame['tags']) ? $parame['tags'] : '';
+        $maxLimit         = [
+            'uploadImg' => 8
+        ];
+
+        $maxNumber      = isset($maxLimit[$updataTag]) ? $maxLimit[$updataTag] : 10;
 
         //获取表单上传的文件
         $files            = request()->file('fileName') ;
@@ -308,8 +314,10 @@ class Upload extends Base
         $saveData       = [];
         $successPath    = [];
 
-        foreach ($files as $file)
+        foreach ($files as $key => $file)
         {
+            if ($key + 1 > $maxNumber) continue;
+
             //上传文件验证
             $ruleName   = 'formatUploadFileName';
             $movePath   = './uploads/picture/';

@@ -162,27 +162,36 @@ class ApiRequest
   * @access private
   * @return string
   */
-  public function getError() {
+  public function getError()
+  {
     return !empty($this->ApiError)?array_merge($this->ApiError,['Data'=>$this->ApiData,'Time'=>date('Y-m-d H:i:s',$this->ApiTime),'ApiUrl'=>$this->ApiUrl]):[];
   }
   /**
-   * 数据签名
+   * [sign 数据签名]
    * @access private
-   * @return string
+   * @param  array  $data [待签名数据]
+   * @return string       [签名串]
    */
-  private function sign($data=array()){
-    if (!empty($data)) {
+  private function sign($data=array())
+  {
+    if (!empty($data))
+    {
+      if(isset($data['hash'])) unset($data['hash']);
+      
       //按字母排序
       ksort($data);
 
       $signStr    = "";
-      foreach ($data as $key => $value) {
+      foreach ($data as $key => $value)
+      {
         $signStr  .= $key . $value;
       }
 
       $signStr  .= $this->ApiKey;
+
       return md5($signStr);
     }
+
     return "";
   }
 
@@ -191,7 +200,8 @@ class ApiRequest
    * @param  [array] $data [待签名数据]
    * @return [string]      [签名字符串]
    */
-  public function getSign($data = []){
+  public function getSign($data = [])
+  {
 
     $data        = array_merge($this->baseParame,$data);
 

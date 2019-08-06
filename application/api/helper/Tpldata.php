@@ -181,14 +181,17 @@ class Tpldata extends Base
         foreach ($tableHead as $tkey => $tval)
         {
             $required       = isset($tval['options']['required']) ? (int)$tval['options']['required'] : 0;
-            $fildAtrr[$tval['model']] = [$required,$tval['name']];
+            $fildAtrr[$tval['model']] = [$required,$tval['name'],$tval['options']];
         }
 
         //表单提交的原始数据
-        $formData                   = json_decode($formData,true);
-        $formField                  = $this->getFormTplField();
-        $saveData                   = [];
-        $defField                   = ['id','create_time','update_time','creator_id','modifier_id'];
+        $formData            = json_decode($formData,true);
+        $formField           = $this->getFormTplField();
+        $saveData            = [];
+        $defField            = ['id','create_time','update_time','creator_id','modifier_id'];
+        
+        //数据ID
+        $id                  = isset($formData['id']) ? intval($formData['id']) : 0;
 
         $saveData['update_time']    = time();
         $saveData['modifier_id']    = $this->getUserId();
@@ -203,6 +206,12 @@ class Tpldata extends Base
                 $saveData[$value]   = isset($formData[$value]) ? $formData[$value] : '';
             }
 
+            if ($this->getFieldType($value) == 'turnover' && $id <= 0)
+            {
+                $options            = isset($fildAtrr[$value][2]) ? $fildAtrr[$value][2] : '';
+                $saveData[$value]   = $this->getTurnOver($formData,$options);
+            }
+
             //数据校验
             $required       = isset($fildAtrr[$value][0]) ? (int)$fildAtrr[$value][0] : 0;
             if ($required === 1 && empty($saveData[$value]))
@@ -212,9 +221,6 @@ class Tpldata extends Base
         }
 
         if (empty($saveData)) return ['Code' => '203', 'Msg'=>lang('notice_helper_data_error')];
-
-        //数据ID
-        $id                 = isset($formData['id']) ? intval($formData['id']) : 0;
 		
         //通过ID判断数据是新增还是更新 定义新增条件下数据
     	if ($id <= 0)
@@ -854,5 +860,109 @@ class Tpldata extends Base
         }
 
         return !empty($sch) ? json_encode($sch) : '';
+    }
+
+    private function getTurnOver($formData = [],$formConfig)
+    {
+        $ruleList       = isset($formConfig['ruleList']) ? $formConfig['ruleList'] : [];
+        $trunover       = [];
+
+        foreach ($ruleList as $key => $value)
+        {
+            switch ($value['type'])
+            {
+                case 'autoCount':
+                    $length      = isset($value['length']) ? (int)$value['length'] : 1;
+                    $cycle       = isset($value['cycle']) ? $value['cycle'] : 'none';
+                    $originalVal = isset($value['originalVal']) ? (int)$value['originalVal'] : 1;
+                    $fixed       = isset($value['fixed']) ? (int)$value['fixed'] : 0;
+                    $strCode     = str_repeat('0',$length);
+                    $maxNum      = $length * 10 - 1;
+                    $ruleCode    = implode('-', [$length,$cycle,$originalVal,$fixed]);
+
+                    $isClear     = false;
+                    $yy          = date('Y');
+                    $mm          = date('m');
+                    $ww          = date('w');
+                    $dd          = date('d');
+
+                    //none/day/week/month/year
+                    //根据规则标识查找计数
+                    $dataCountInfo  = model('data_count')->getRowByRuleCode($ruleCode,$this->mainTable);
+
+                    //以下条件计数需要重置
+                    if (empty($dataCountInfo) ) {
+                        $newNumber  = $originalVal;
+                        $countId    = 0;
+                        $isClear    = true;
+                    }else{
+                        $countId    = (int)$dataCountInfo['id'];
+                        $rule1      = (bool)($dataCountInfo['number'] >= $maxNum);
+                        $rule2      = (bool)($cycle === 'year' && $dataCountInfo['yy'] != $yy);
+                        $rule3      = (bool)($cycle === 'month' && $dataCountInfo['mm'] != $mm);
+                        $rule4      = (bool)($cycle === 'week' && $ww == 1);
+                        $rule5      = (bool)($cycle === 'day' && $dataCountInfo['dd'] != $dd);
+                        if ($rule1 || $rule2 || $rule3 || $rule4 || $rule5)
+                        {
+                            $newNumber  = $originalVal;
+                            $isClear    = true;
+                        }else{
+                            $newNumber  = $dataCountInfo['number'] + 1;
+                        }
+                    }
+
+                    $saveNumber = $newNumber;
+                    
+                    if ($fixed)
+                    {
+                        $newNumber  = substr($strCode . $newNumber, 0 - $length);
+                    }
+
+                    //清除计数
+                    if ($isClear) model('data_count')->deleteDataByTname($this->mainTable);
+
+                    $saveData               = [];
+                    $saveData['yy']         = $yy;
+                    $saveData['mm']         = $mm;
+                    $saveData['dd']         = $dd;
+                    $saveData['tname']      = md5($this->mainTable);
+                    $saveData['rule_code']  = md5($ruleCode);
+                    $saveData['number']     = $saveNumber;
+
+                    model('data_count')->saveData($countId,$saveData);
+                    
+                    $trunover[]             = $newNumber;
+                    break;
+                case 'date':
+                    $ruleValue  = isset($value['dateType']) ? $value['dateType'] : '';
+                    $dateType   = [
+                        'yyyy'          => 'Y',
+                        'yyyyMM'        => 'Ym',
+                        'yyyy-MM'       => 'Y-m',
+                        'yyyy/MM'       => 'Y/m',
+                        'yyyyMMdd'      => 'Ymd',
+                        'yyyy-MM-dd'    => 'Y-m-d',
+                        'yyyy/MM/dd'    => 'Y/m/d',
+                        'MMdd'          => 'md',
+                        'MM-dd'         => 'm-d',
+                        'MM/dd'         => 'm/d'
+                    ];
+
+                    $dateFormat     = isset($dateType[$ruleValue]) ? $dateType[$ruleValue] : '';
+                    $trunover[]     = !empty($dateFormat) ? date($dateFormat) : '';
+                    break;
+                case 'word':
+                    $ruleValue  = isset($value['value']) ? $value['value'] : '';
+                    $trunover[] = $ruleValue;
+                    break;
+                case 'form':
+                    $ruleValue  = isset($value['value']) ? $value['value'] : '';
+                    $trunover[]  = isset($formData[$ruleValue]) ? $formData[$ruleValue] : '';
+                    break;
+                default: break;
+            }
+        }
+
+        return !empty($trunover) ? implode('', $trunover) : '';
     }
 }

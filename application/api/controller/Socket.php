@@ -10,7 +10,6 @@
  */
 namespace app\api\controller;
 
-use think\facade\Env;
 use think\worker\Server;
 use GatewayWorker\Lib\Gateway;
 
@@ -134,19 +133,19 @@ class Socket extends Server
         //执行方法名 默认当前action
         $actionName     = $socketUrl[2];
         //定义类名
-        $controllerName = $socketUrl[1];
+        $controllerName = ucwords(lineToHump($socketUrl[1]));
         //定义类名
         $namespaceName  = '\app\\'.$moduleName.'\helper';
         //操作类名称及路径
         $models         = '\\'. trim($namespaceName,'\\') . '\\' . trim($controllerName,'\\');
         //数据参数
         
-        /*if (!class_exists($models))
-        return Gateway::sendToCurrentClient(self::returnData(['Msg'=>"SocketUrl Not Exists"]));;*/
+        if (!class_exists($models))
+        return Gateway::sendToCurrentClient(self::returnData(['Msg'=>"SocketUrl Not Exists"]));;
 
         //实例化操作类
         $className      = new $models($parame,$controllerName,$actionName,$moduleName);
-        wr([$parame,$socketUrl,$className]);
+        
         //执行操作
         return $className->apiRun();
     }

@@ -32,7 +32,7 @@ class Socket extends Base
      * @param  [string] $methodName 方法名
      * @return [array]              接口输出数据
      */
-	public function apiRun()
+	public static function apiRun()
     {   
         if (!$this->checkData($this->postData)) return json($this->getReturnData());
         

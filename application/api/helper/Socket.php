@@ -71,7 +71,7 @@ class Socket extends Base
         $dbModel                = model($this->mainTable);
 
         //自行书写业务逻辑代码
-
+        wr("sssssssssssssss");
         //需要返回的数据体
         $Data                   = ['TEST'];
 

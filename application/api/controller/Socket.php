@@ -141,12 +141,12 @@ class Socket extends Server
         $models         = '\\'. trim($namespaceName,'\\') . '\\' . trim($controllerName,'\\');
         //数据参数
         
-        if (!class_exists($models))
-        return Gateway::sendToCurrentClient(self::returnData(['Msg'=>"SocketUrl Not Exists"]));;
+        /*if (!class_exists($models))
+        return Gateway::sendToCurrentClient(self::returnData(['Msg'=>"SocketUrl Not Exists"]));;*/
 
         //实例化操作类
         $className      = new $models($parame,$controllerName,$actionName,$moduleName);
-        
+        wr([$parame,$socketUrl,$className]);
         //执行操作
         return $className->apiRun();
     }

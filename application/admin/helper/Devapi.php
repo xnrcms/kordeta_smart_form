@@ -1092,9 +1092,11 @@ class Devapi extends Base
 
         $modelNameFile      = [];
 
-        if (!empty($tabList)) {
-
-            foreach ($tabList as $key => $value) {
+        if (!empty($tabList))
+        {
+            foreach ($tabList as $key => $value)
+            {
+                if (strpos($value['Name'], 'kor_table') === 7) continue;
 
                 //去除表前缀
                 $tname      = str_replace($prefix,'',$value['Name']);

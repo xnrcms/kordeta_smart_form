@@ -59,16 +59,16 @@ class Socket extends Base
         return $this->$aName($parame);
     }
 
-    /*api:bb11599b1bc689a4180ae58301262de2*/
+    /*api:e9a7f5ae41b8a1ed58f8e7d69366f9c8*/
     /**
-     * * Socket通信接口
+     * * 手签-Socket通信接口
      * @param  [array] $parame 接口参数
      * @return [array]         接口输出数据
      */
-    private function index($parame)
+    private function handSign($parame)
     {
         //主表数据库模型
-        //$dbModel                = model($this->mainTable);
+        $dbModel                = model($this->mainTable);
 
         //自行书写业务逻辑代码
 
@@ -78,7 +78,7 @@ class Socket extends Base
         return ['Code' => '200', 'Msg'=>lang('200'),'Data'=>$Data];
     }
 
-    /*api:bb11599b1bc689a4180ae58301262de2*/
+    /*api:e9a7f5ae41b8a1ed58f8e7d69366f9c8*/
 
     /*接口扩展*/
 }

@@ -66,7 +66,7 @@ class Socket extends Server
         return Gateway::sendToCurrentClient(self::returnData(['Msg'=>"SocketUrl Error"]));
 
         unset($parame['socketUrl']);
-
+        
         return self::execApi($parame,$socketUrl);
     }
 
@@ -109,6 +109,21 @@ class Socket extends Server
     }
 
     /*api:bb11599b1bc689a4180ae58301262de2*/
+
+    /*api:e9a7f5ae41b8a1ed58f8e7d69366f9c8*/
+    /**
+     * 手签-Socket通信接口
+     * @access public
+     * @param  [array] $parame 扩展参数
+     * @return [json]          接口数据输出
+    */
+    public function handSign($parame = [])
+    {
+        //执行接口调用
+        return $this->execApi($parame);
+    }
+
+    /*api:e9a7f5ae41b8a1ed58f8e7d69366f9c8*/
 
     /*接口扩展*/
 

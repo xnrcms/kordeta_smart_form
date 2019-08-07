@@ -32,9 +32,9 @@ class Socket extends Base
      * @param  [string] $methodName 方法名
      * @return [array]              接口输出数据
      */
-	public static function apiRun()
+	public function apiRun()
     {   
-        if (!$this->checkData($this->postData)) return json($this->getReturnData());
+        if (!$this->checkData($this->postData)) return $this->getReturnData();
         
         //加载验证器
         $this->dataValidate = new \app\api\validate\DataValidate;
@@ -50,7 +50,7 @@ class Socket extends Base
         $this->setReturnData($data);
 
         //接口数据返回
-        return json($this->getReturnData());
+        return $this->getReturnData();
     }
 
     //支持内部调用

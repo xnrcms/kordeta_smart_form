@@ -141,13 +141,18 @@ class Socket extends Server
         //数据参数
         
         if (!class_exists($models))
-        return Gateway::sendToCurrentClient(self::returnData(['Msg'=>"SocketUrl Not Exists"]));;
+        return Gateway::sendToCurrentClient(self::returnData(['Msg'=>"SocketUrl Not Exists"]));
+
+        request()->setModule($moduleName);
+        request()->setController($controllerName);
+        request()->setAction($actionName);
 
         //实例化操作类
         $className      = new $models($parame,$controllerName,$actionName,$moduleName);
-        
+        $apiRes         = $className->apiRun();
+
         //执行操作
-        return $className->apiRun();
+        return Gateway::sendToCurrentClient(self::returnData($className->apiRun()));;
     }
 
     private static function returnData($data = [])

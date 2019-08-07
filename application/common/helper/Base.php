@@ -88,7 +88,7 @@ class Base
     {
       if (empty($this->backData))
       {
-        $this->setReturnData(['Code' => '100016', 'Msg'=>lang('100016')]);
+        $this->setReturnData(['Code' => '203', 'Msg'=>lang('100016')]);
         return $this->returnData;
       }
 
@@ -97,7 +97,7 @@ class Base
       {
         //接口返回参数结构格式模板
         $dataTpl    = toLevel($this->backData);
-        if (empty($dataTpl)) return ['Code' => '120022', 'Msg'=>lang('120022')];
+        if (empty($dataTpl)) return ['Code' => '203', 'Msg'=>lang('120022')];
 
         //生成测试数据
         if (isset($this->returnData['Data'][0]) && $this->returnData['Data'][0] == 'TEST')
@@ -230,7 +230,7 @@ class Base
         if (!isset($postData[$val[0]]))
         {
           //漏传必须参数
-          return $this->setReturnData(['Code' => '100007', 'Msg'=>lang('100007',[$val[0],$val[0]])]);
+          return $this->setReturnData(['Code' => '203', 'Msg'=>lang('100007',[$val[0],$val[0]])]);
         }
 
         //接口参数非空检查
@@ -242,14 +242,14 @@ class Base
             ($val[1] == 'json' && empty($postData[$val[0]]))
           )
           {
-            return $this->setReturnData(['Code' => '100008', 'Msg'=>lang('100008',[$val[0],$val[0]])]);
+            return $this->setReturnData(['Code' => '203', 'Msg'=>lang('100008',[$val[0],$val[0]])]);
           }
         }
 
         //如果是Json数据，并且非空，需要判断Json数据格式是否合法
         if ($val[1] == 'json' && !empty($postData[$val[0]]) && !is_json($postData[$val[0]]))
         {
-          return $this->setReturnData(['Code' => '100017', 'Msg'=>lang('100017',[$val[0],$val[0]])]);
+          return $this->setReturnData(['Code' => '203', 'Msg'=>lang('100017',[$val[0],$val[0]])]);
         }
 
         //原始待签名数据
@@ -262,11 +262,11 @@ class Base
       //判断签名校验是否通过
       $sign                   = $this->sign($signData);
       if ( empty($sign) || $sign !=  $signData['hash'])
-      return $this->setReturnData(array('Code' => '100006', 'Msg'=>lang('100006')));
+      return $this->setReturnData(array('Code' => '203','Msg'=>lang('100006')));
 
       //校验是否有权调用接口
       $isApiId  = $this->checkApiId($signData['apiId']);
-      if (!$isApiId) return $this->setReturnData(array('Code' => '120024', 'Msg'=>lang('120024')));
+      if (!$isApiId) return $this->setReturnData(['Code' => '203','Msg'=>lang('120024')]);
 
       $this->UserToken  = isset($parameData['hashid']) ? trim($parameData['hashid']) : '';
 
@@ -277,7 +277,8 @@ class Base
       if (!empty($this->UserToken))
       {
         //检验UserToken是否合法
-        if ( $this->checkHashid() <= 0 ) return $this->setReturnData(['Code'=>'201','Msg'=>lang('201')]);
+        if ( $this->checkHashid() <= 0 )
+        return $this->setReturnData(['Code'=>'201','Msg'=>lang('201')]);
 
         //检验用户是否异常
         $userStatus     = $this->checkUserInfo();

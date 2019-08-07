@@ -4,6 +4,14 @@
       <meta charset=utf-8>
       <meta http-equiv=X-UA-Compatible content="IE=edge">
       <meta name=viewport content="width=device-width,initial-scale=1">
+      <script type="text/javascript" src="/3.0/package/jquery/jquery.js"></script>
+      <script type="text/javascript" src="/3.0/package/jquery-ui/jquery-ui.min.js"></script>
+      <script type="text/javascript" src="/3.0/package/dialog/dialog.js" id="dialog_js"></script>
+      <script type="text/javascript" src="/3.0/package/jquery/jquery.cookie.js"></script>
+      <script type="text/javascript" src="/3.0/package/jquery/jquery.validation.min.js"></script>
+      <script type="text/javascript" src="/3.0/package/layer/layer-min.js"></script>
+      <script type="text/javascript" src="/3.0/js/admincp.js"></script>
+      <script type="text/javascript" src="/3.0/js/upgrade.js"></script>
     </head>
     <body onload="connect();">
 测试WS连接
@@ -35,10 +43,12 @@
             parame.socketUrl    = "api/socket/handSign";
             parame.uid          = "3";
             parame.hashid       = "MTJjMFZ4Ri85aGhnWUtiRklzMXl1TmtBdDhUUG1WdXVUdVZyWHczZ21zcVl1L095ckdOY0orMFB5WTZkZkphQjhsYzVBZ1FvbHBkczdvRmNsM1NJNnVEYytyQmpPYStSZDAyVWpnRjVZa0xIUzR0Tkgvb3NLdkdyc0NwR3pXRDc1b1Y0MUtkYTl0T3h0TmhQaW16UXRYMDZFQmtHTEdFNFRUMTQ3YzMranQwaE9DRklQRDBaUDIyS2tXTXFhUkZ0SDhpRElJOTlwcG05L0haTUJMeXloSHloZEora0hSaFAxMlhENGI0YmZrS3ZzNDJxZWY1SUNmNEZ4OWxTRGc";
-
+            getSign(parame);
         // 登录
         ws.send(JSON.stringify(parame));
     }
+
+    pub
 
     // 服务端发来消息时
     function onmessage(e)
@@ -67,6 +77,15 @@
               }
             break;
         }*/
+    }
+
+    function getSign(param)
+    {
+      param.time      = ((new Date()).valueOf()) / 1000;
+      param.apiId     = 'b542da5132138477af8ab448c6ddd38c';
+      param.terminal  = 5;
+
+      console.log(param.sort());
     }
   </script>
   </body></html>

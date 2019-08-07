@@ -26,3 +26,14 @@ MODIFY COLUMN `linkage_config`  longtext CHARACTER SET utf8 COLLATE utf8_general
 ALTER TABLE `xnrcms_picture`
 DROP COLUMN `umark`,
 ADD COLUMN `umark`  char(32) NOT NULL DEFAULT '' COMMENT '上传记号' AFTER `infos`;
+
+CREATE TABLE `xnrcms_data_count` (
+  `id` int(10) NOT NULL AUTO_INCREMENT COMMENT '数据ID',
+  `yy` smallint(5) NOT NULL DEFAULT '0' COMMENT '年',
+  `mm` tinyint(1) NOT NULL DEFAULT '0' COMMENT '月',
+  `dd` tinyint(1) NOT NULL DEFAULT '0' COMMENT '天',
+  `number` int(10) NOT NULL DEFAULT '0' COMMENT '编号',
+  `tname` char(32) NOT NULL DEFAULT '' COMMENT '表名标识',
+  `rule_code` char(32) NOT NULL DEFAULT '' COMMENT '计数规则标识',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='自动表单（测试表单12）表';

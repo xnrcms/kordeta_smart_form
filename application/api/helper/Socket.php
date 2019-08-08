@@ -69,7 +69,6 @@ class Socket extends Base
      */
     private function handSign($parame)
     {
-        wr('ssssssss');
         //文件上传
         $uploads        = $this->uploadFile($parame);
 

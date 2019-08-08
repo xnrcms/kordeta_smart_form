@@ -26,7 +26,7 @@ class Socket extends Base
      */
     public static function onConnect($client_id)
     {
-        Gateway::sendToCurrentClient("Your client_id is $client_id");
+        //Gateway::sendToCurrentClient("Your client_id is $client_id");
     }
 
     /**

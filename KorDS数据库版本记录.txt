@@ -37,3 +37,9 @@ CREATE TABLE `xnrcms_data_count` (
   `rule_code` char(32) NOT NULL DEFAULT '' COMMENT '计数规则标识',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='自动表单（测试表单12）表';
+
+ALTER TABLE `xnrcms_api_token`
+ADD COLUMN `hashid`  varchar(255) NULL DEFAULT '' COMMENT '接口调用凭证' AFTER `exp`;
+
+ALTER TABLE `xnrcms_api_token`
+MODIFY COLUMN `hashid`  text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '接口调用凭证' AFTER `exp`;

@@ -14,11 +14,13 @@ namespace app\api\helper;
 
 use app\common\helper\Base;
 use think\facade\Lang;
+use GatewayWorker\Lib\Gateway;
 
 class Socket extends Base
 {
 	private $dataValidate 		= null;
     private $mainTable          = 'empty';
+    private $clientId           = 0;
 	
 	public function __construct($parame=[],$className='',$methodName='',$modelName='')
     {
@@ -70,6 +72,10 @@ class Socket extends Base
         //主表数据库模型
         $dbModel                = model($this->mainTable);
 
+        wr(['$this->clientId'=>$this->clientId]);
+        //绑定UID
+        //Gateway::bindUid($parame['client_id'],$parame['userid']);
+
         //自行书写业务逻辑代码
         wr("sssssssssssssss");
         //需要返回的数据体
@@ -81,4 +87,9 @@ class Socket extends Base
     /*api:e9a7f5ae41b8a1ed58f8e7d69366f9c8*/
 
     /*接口扩展*/
+
+    public function setClientId($client_id = 0)
+    {
+        $this->clientId     = $client_id;
+    }
 }

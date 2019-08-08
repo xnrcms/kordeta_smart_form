@@ -66,7 +66,7 @@ class Socket extends Server
 
         unset($parame['socketUrl']);
         
-        return self::execApi($parame,$socketUrl);
+        return self::execApi($parame,$socketUrl,$client_id);
     }
 
 
@@ -126,7 +126,7 @@ class Socket extends Server
 
     /*接口扩展*/
 
-    public static function execApi($parame = [],$socketUrl = [])
+    public static function execApi($parame = [],$socketUrl = [],$client_id = '')
     {
         //执行模块名 默认当前model
         $moduleName     = $socketUrl[0];
@@ -149,6 +149,9 @@ class Socket extends Server
 
         //实例化操作类
         $className      = new $models($parame,$controllerName,$actionName,$moduleName);
+
+        $className->setClientId($client_id);
+        
         $apiRes         = $className->apiRun();
 
         //执行操作

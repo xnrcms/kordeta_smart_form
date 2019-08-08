@@ -312,18 +312,24 @@ class User extends Base
                 "uid" => intval($uid)
             ];
 
-            $token                      = \Firebase\JWT\JWT::encode($token,$key,"HS256");
+            $token              = \Firebase\JWT\JWT::encode($token,$key,"HS256");
+            $hashid             = base64_encode(string_encryption_decrypt($token,'ENCODE'));
 
             //数据返回
-            $data                       = [];
-            $data['uid']                = intval($uid);
-            $data['hashid']             = base64_encode(string_encryption_decrypt($token,'ENCODE'));
+            $data               = [];
+            $data['uid']        = intval($uid);
+            $data['hashid']     = $hashid;
 
-            $userDetailModel            = model('user_detail');
-            $userDetailInfo             = $userDetailModel->getOneById($uid);
+            $userDetailModel    = model('user_detail');
+            $userDetailInfo     = $userDetailModel->getOneById($uid);
 
             //维护token
-            model('api_token')->saveData(0,['uid'=>$uid,'exp'=>$exp,'token'=>md5($data['hashid'])]);
+            model('api_token')->saveData(0,[
+                'uid'       => $uid,
+                'exp'       => $exp,
+                'token'     => md5($hashid),
+                'hashid'    => $hashid
+            ]);
 
             //极光ID
             if (isset($parame['jpushid']) && !empty($parame['jpushid']))

@@ -362,6 +362,21 @@ class Base
      */
     private function checkHashid()
     {
+        if (strlen($this->UserToken) === 32)
+        {
+          $tokenInfo    = model('api_token')->getTokenInfoByToken($this->UserToken);
+          if (!empty($tokenInfo) && isset($tokenInfo['token']) && $tokenInfo['token'] === $this->UserToken && (int)$tokenInfo['uid'] > 0 )
+          {
+            $this->UserId     = (int)$tokenInfo['uid'];
+            return 1;
+          }
+
+          //删除不合法的token
+          model('api_token')->deleteTokenByToken($token);
+
+          return 0;
+        }
+
         $JWT    = $this->getJwtInfo($this->UserToken);
         $token  = md5($this->UserToken);
 

@@ -64,7 +64,7 @@ class Socket extends Server
         if (!(count($socketUrl) === 3))
         return Gateway::sendToCurrentClient(self::returnData(['Msg'=>"SocketUrl Error"]));
 
-        unset($parame['socketUrl']);
+        //unset($parame['socketUrl']);
         
         return self::execApi($parame,$socketUrl,$client_id);
     }

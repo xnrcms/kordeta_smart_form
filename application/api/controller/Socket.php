@@ -96,7 +96,7 @@ class Socket extends Server
 
     /*api:bb11599b1bc689a4180ae58301262de2*/
     /**
-     * Socket通信接口
+     * 建立Socket通信接口
      * @access public
      * @param  [array] $parame 扩展参数
      * @return [json]          接口数据输出

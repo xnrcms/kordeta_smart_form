@@ -86,6 +86,27 @@ class Socket extends Base
 
     /*api:e9a7f5ae41b8a1ed58f8e7d69366f9c8*/
 
+    /*api:bb11599b1bc689a4180ae58301262de2*/
+    /**
+     * * 建立Socket通信接口
+     * @param  [array] $parame 接口参数
+     * @return [array]         接口输出数据
+     */
+    private function index($parame)
+    {
+        //主表数据库模型
+        $dbModel                = model($this->mainTable);
+
+        //自行书写业务逻辑代码
+
+        //需要返回的数据体
+        $Data                   = ['TEST'];
+
+        return ['Code' => '200', 'Msg'=>lang('200'),'Data'=>$Data];
+    }
+
+    /*api:bb11599b1bc689a4180ae58301262de2*/
+
     /*接口扩展*/
 
     public function setClientId($client_id = 0)

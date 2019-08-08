@@ -10,10 +10,11 @@
  */
 namespace app\api\controller;
 
+use app\common\controller\Base;
 use think\worker\Server;
 use GatewayWorker\Lib\Gateway;
 
-class Socket extends Server
+class Socket extends Base
 {
     /**
      * onConnect 事件回调
@@ -52,7 +53,12 @@ class Socket extends Server
      */
     public static function onMessage($client_id, $parame)
     {
-        $parame            = json_decode($parame, true);
+        if (strpos($parame,'time=') && strpos($parame,'apiId='))
+        {
+            parse_str(trim($parame,'"'),$parame);
+        }else{
+            $parame            = json_decode($parame, true);
+        }
 
         if(empty($parame) || !is_array($parame))
         return Gateway::sendToCurrentClient("Socket communication parameter error");
@@ -66,10 +72,8 @@ class Socket extends Server
 
         //unset($parame['socketUrl']);
         
-        return self::execApi($parame,$socketUrl,$client_id);
+        return self::execSocketApi($parame,$socketUrl,$client_id);
     }
-
-
 
     /**
      * onClose 事件回调 当用户断开连接时触发的方法
@@ -111,7 +115,7 @@ class Socket extends Server
 
     /*api:e9a7f5ae41b8a1ed58f8e7d69366f9c8*/
     /**
-     * 手签-Socket通信接口
+     * 根据二维码发送手签请求-Socket通信接口
      * @access public
      * @param  [array] $parame 扩展参数
      * @return [json]          接口数据输出
@@ -126,7 +130,7 @@ class Socket extends Server
 
     /*接口扩展*/
 
-    public static function execApi($parame = [],$socketUrl = [],$client_id = '')
+    public static function execSocketApi($parame = [],$socketUrl = [],$client_id = '')
     {
         //执行模块名 默认当前model
         $moduleName     = $socketUrl[0];
@@ -151,7 +155,7 @@ class Socket extends Server
         $className      = new $models($parame,$controllerName,$actionName,$moduleName);
 
         $className->setClientId($client_id);
-        
+
         $apiRes         = $className->apiRun();
 
         //执行操作

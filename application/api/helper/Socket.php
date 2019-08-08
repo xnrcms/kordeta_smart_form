@@ -35,7 +35,7 @@ class Socket extends Base
      * @return [array]              接口输出数据
      */
 	public function apiRun()
-    {   
+    {
         if (!$this->checkData($this->postData)) return $this->getReturnData();
         
         //加载验证器
@@ -69,17 +69,10 @@ class Socket extends Base
      */
     private function handSign($parame)
     {
-        //主表数据库模型
-        $dbModel                = model($this->mainTable);
-
-        wr(['$this->clientId'=>$this->clientId]);
-        //绑定UID
-        //Gateway::bindUid($parame['client_id'],$parame['userid']);
-
-        //自行书写业务逻辑代码
-        wr("sssssssssssssss");
-        //需要返回的数据体
-        $Data                   = ['TEST'];
+        wr($parame);
+        //文件上传
+        $uploads        = $this->uploadFile($parame);
+        if (!(isset($uploads['Code']) && $uploads['Code'] == '200')) return $uploads;
 
         return ['Code' => '200', 'Msg'=>lang('200'),'Data'=>$Data];
     }
@@ -94,15 +87,10 @@ class Socket extends Base
      */
     private function index($parame)
     {
-        //主表数据库模型
-        $dbModel                = model($this->mainTable);
+        //绑定UID
+        Gateway::bindUid($this->clientId,$this->getUserId());
 
-        //自行书写业务逻辑代码
-
-        //需要返回的数据体
-        $Data                   = ['TEST'];
-
-        return ['Code' => '200', 'Msg'=>lang('200'),'Data'=>$Data];
+        return ['Code' => '200', 'Msg'=>lang('200')];
     }
 
     /*api:bb11599b1bc689a4180ae58301262de2*/
@@ -112,5 +100,30 @@ class Socket extends Base
     public function setClientId($client_id = 0)
     {
         $this->clientId     = $client_id;
+    }
+
+    private function uploadFile($parame)
+    {
+        //获取有关图片上传的设置
+        $config             = ['size'=> 10*1024*1024,'ext'=>'jpg,png,jpeg'] ;
+
+        //获取表单上传的文件
+        $files              = request()->file('fileName') ;
+        $re                 = [];
+
+        if(empty($files)) return ['Code'=>'203', 'Msg' => lang('notice_upload_file_empty')] ;
+
+        $fileUploadRoot     = './uploads/ocr/';
+
+        //上传文件验证
+        $info               = $files->validate($config)->rule('md5')->move($fileUploadRoot) ;
+
+        if($info === false){
+            return ['Code' =>'203', 'Msg'=>lang('notice_upload_file_fail',[$files->getError()])] ;
+        }else{
+            $path                  = $fileUploadRoot . $info->getSaveName();
+        }
+
+        return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$path];
     }
 }

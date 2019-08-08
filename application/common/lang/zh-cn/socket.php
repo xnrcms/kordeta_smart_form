@@ -6,5 +6,6 @@
 
 return [
     // 系统错误提示
-    '200'                   => '请求OK',
+    'notice_upload_file_empty'              => '上传文件不能为空',
+    'notice_upload_file_fail'               => '上传失败[%s]',
 ];

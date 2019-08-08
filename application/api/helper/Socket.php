@@ -69,12 +69,25 @@ class Socket extends Base
      */
     private function handSign($parame)
     {
-        wr($parame);
+        wr('ssssssss');
         //文件上传
         $uploads        = $this->uploadFile($parame);
+
         if (!(isset($uploads['Code']) && $uploads['Code'] == '200')) return $uploads;
 
-        return ['Code' => '200', 'Msg'=>lang('200'),'Data'=>$Data];
+        $socketData             = [
+            'id'    => $uploads['Data']['id'],
+            'url'   => get_cover($uploads['Data']['id'],'path'),
+            'field' => $parame['fieldName']
+        ];
+
+        $data                   = [];
+        $data['socketType']     = 'signature';
+        $data['socketData']     = $socketData;
+
+        Gateway::sendToUid($this->getUserId(), json_encode($data));
+
+        return ['Code' => '200', 'Msg'=>lang('200')];
     }
 
     /*api:e9a7f5ae41b8a1ed58f8e7d69366f9c8*/
@@ -105,25 +118,48 @@ class Socket extends Base
     private function uploadFile($parame)
     {
         //获取有关图片上传的设置
-        $config             = ['size'=> 10*1024*1024,'ext'=>'jpg,png,jpeg'] ;
+        $config             = ['size'=> 10*1024*1024,'ext'=>''] ;
+        $tags               = 'signature';
 
         //获取表单上传的文件
-        $files              = request()->file('fileName') ;
+        $files              = request()->file('fileName');
         $re                 = [];
 
         if(empty($files)) return ['Code'=>'203', 'Msg' => lang('notice_upload_file_empty')] ;
 
-        $fileUploadRoot     = './uploads/ocr/';
+        $fileUploadRoot     = './uploads/' . $tags . '/';
 
         //上传文件验证
         $info               = $files->validate($config)->rule('md5')->move($fileUploadRoot) ;
-
-        if($info === false){
-            return ['Code' =>'203', 'Msg'=>lang('notice_upload_file_fail',[$files->getError()])] ;
+        
+        if($info === false)
+        {
+            return ['Code' =>'203','Msg'=>lang('notice_upload_file_fail',[$files->getError()])] ;
         }else{
             $path                  = $fileUploadRoot . $info->getSaveName();
+            rename($path, $path.'png');
+
+            $path                  = $path.'png';
+            $url                   = $path;
         }
 
-        return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$path];
+        $finfo                      = $info->getInfo();
+        $thisTime                   = time();
+        $umark                      = md5($thisTime . randomString(10,7));
+
+        $saveData          = [
+                'path'         => $path,
+                'imgurl'       => $url,
+                'tags'         => $tags,
+                'img_type'     => 1,
+                'infos'        => json_encode($finfo),
+                'create_time'  => $thisTime,
+                'umark'        => $umark,
+        ];
+
+        $data       = model('picture')->addData($saveData);
+        $data       = !empty($data) ? $data->toArray() : [];
+
+        return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$data];
     }
 }

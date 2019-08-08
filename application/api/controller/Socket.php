@@ -123,7 +123,7 @@ class Socket extends Base
     public function handSign($parame = [])
     {
         //执行接口调用
-        return $this->execApi($parame);
+        return json($this->execApi($parame));
     }
 
     /*api:e9a7f5ae41b8a1ed58f8e7d69366f9c8*/

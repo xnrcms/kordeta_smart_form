@@ -128,6 +128,21 @@ class Socket extends Base
 
     /*api:e9a7f5ae41b8a1ed58f8e7d69366f9c8*/
 
+    /*api:70eb04c66f6101bdf948b6c046e69311*/
+    /**
+     * Socket通信测试接口
+     * @access public
+     * @param  [array] $parame 扩展参数
+     * @return [json]          接口数据输出
+    */
+    public function test($parame = [])
+    {
+        //执行接口调用
+        return $this->execApi($parame);
+    }
+
+    /*api:70eb04c66f6101bdf948b6c046e69311*/
+
     /*接口扩展*/
 
     public static function execSocketApi($parame = [],$socketUrl = [],$client_id = '')

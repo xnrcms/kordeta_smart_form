@@ -4,17 +4,21 @@
       <meta charset=utf-8>
       <meta http-equiv=X-UA-Compatible content="IE=edge">
       <meta name=viewport content="width=device-width,initial-scale=1">
+      <script type="text/javascript" src="/3.0/package/jquery/jquery.js"></script>
+      <script type="text/javascript" src="/3.0/js/md5.js"></script>
     </head>
     <body onload="connect();">
 测试WS连接
 <script type="text/javascript">
-    
-    var ws, name, client_list={};
+    var APIURL                = '10.5.151.185:8080';
+    var APIID                 = 'b542da5132138477af8ab448c6ddd38c';
+    var APIKEY                = '9b12d0f61a382e19ffa87ed306ff3c3b';
+    var ws, name, client_list = {};
 
     // 连接服务端
     function connect() {
        // 创建websocket
-       ws = new WebSocket("ws://10.5.151.185:8080");
+       ws = new WebSocket("ws://" + APIURL);
        // 当socket连接打开时，输入用户名
        ws.onopen = onopen;
        // 当有消息时根据消息类型显示不同信息
@@ -31,13 +35,12 @@
     // 连接建立时发送登录信息
     function onopen()
     {
-        var parame              = new Array();
-            parame.socketUrl    = "api/socket/handSign";
+        var parame              = new Object();
+            parame.socketUrl    = "api/socket/index";
             parame.uid          = "3";
-            parame.hashid       = "MTJjMFZ4Ri85aGhnWUtiRklzMXl1TmtBdDhUUG1WdXVUdVZyWHczZ21zcVl1L095ckdOY0orMFB5WTZkZkphQjhsYzVBZ1FvbHBkczdvRmNsM1NJNnVEYytyQmpPYStSZDAyVWpnRjVZa0xIUzR0Tkgvb3NLdkdyc0NwR3pXRDc1b1Y0MUtkYTl0T3h0TmhQaW16UXRYMDZFQmtHTEdFNFRUMTQ3YzMranQwaE9DRklQRDBaUDIyS2tXTXFhUkZ0SDhpRElJOTlwcG05L0haTUJMeXloSHloZEora0hSaFAxMlhENGI0YmZrS3ZzNDJxZWY1SUNmNEZ4OWxTRGc";
-            getSign(parame);
+            parame.hashid       = "M2Y0MnVCd0dHZ2NXL25jSy9pd1NXV0lyLzVlVk5KdzduZ2FtZXZjNnNCRFhQK0Z5cm05YkVZL2NXMlZRZ2VYQlNmVmVTZjl4ZEtIaHQ3d1IrYWpCaHJWeHBHRDdFU0tOUUdiWWZCVmNXNmJDbGZiSW02TVNmZWl4bFd2RE1hU3hobkpvWVJPVDNCbU8xZHdSeUlCKzRBbXRQcmcxMnpBS0VDcUl4ZnFHOXRUaXZxalRkdlE1OVNETW5FVE1sRUdJcDlGOFZ2L21GZWtjZVQyR1pYZGVYOVNrRHdXU09BOXM0U1hvQXYrQVN4Q1EyakdXUi93cTJHYVZXbms1SlE=";
         // 登录
-        ws.send(JSON.stringify(parame));
+        ws.send(JSON.stringify(getSign(parame)));
     }
 
     // 服务端发来消息时
@@ -71,13 +74,18 @@
 
     function getSign(param)
     {
-      param.time      = ((new Date()).valueOf()) / 1000;
-      param.apiId     = 'b542da5132138477af8ab448c6ddd38c';
-      param.terminal  = 5;
+      var signStr         = '';
+          param.time      = ((new Date()).valueOf()) / 1000;
+          param.apiId     = APIID;
+          param.terminal  = 5;
 
-      param           = param.sort();
-      
-      console.log(param);
+      var pp              = Object.keys(param).sort();
+
+        $.each(pp,function(i,n){ signStr += n+param[n]; });
+ 
+          param.hash      = md5(signStr + APIKEY);
+
+      return param;
     }
   </script>
   </body></html>

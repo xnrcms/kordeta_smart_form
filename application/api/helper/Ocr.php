@@ -133,8 +133,9 @@ class Ocr extends Base
 
         //上传文件验证
         $info               = $files->validate($config)->rule('md5')->move($fileUploadRoot) ;
-
-        if($info === false){
+        
+        if($info === false)
+        {
             return ['Code' =>'203', 'Msg'=>lang('notice_upload_file_fail',[$files->getError()])] ;
         }else{
             $path                  = $fileUploadRoot . $info->getSaveName();

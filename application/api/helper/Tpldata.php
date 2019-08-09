@@ -124,7 +124,7 @@ class Tpldata extends Base
 		$data 						= (isset($lists['lists']) && !empty($lists['lists'])) ? $lists['lists'] : [];
 
         $tableHead                  = isset($this->formInfo['list_config']) ? $this->formInfo['list_config'] : '';
-        wr($data);
+
         foreach ($data as $key => $value)
         {
             $data[$key]['create_time']  = !empty($value['create_time']) ? date('Y-m-d H:i:s',$value['create_time']) : '/';

@@ -43,3 +43,7 @@ ADD COLUMN `hashid`  varchar(255) NULL DEFAULT '' COMMENT '接口调用凭证' A
 
 ALTER TABLE `xnrcms_api_token`
 MODIFY COLUMN `hashid`  text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '接口调用凭证' AFTER `exp`;
+
+ALTER TABLE `xnrcms_picture`
+ADD COLUMN `md5`  char(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '文件md5' AFTER `umark`,
+ADD COLUMN `sha1`  char(40) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '文件 sha1编码' AFTER `md5`;

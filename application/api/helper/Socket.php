@@ -147,18 +147,23 @@ class Socket extends Base
         $files              = request()->file('fileName');
         $re                 = [];
 
-        if(empty($files)) return ['Code'=>'203', 'Msg' => lang('notice_upload_file_empty')] ;
+        if(empty($files))
+        return ['Code'=>'203', 'Msg' => lang('notice_upload_file_empty')];
 
         $fileUploadRoot     = './uploads/' . $tags . '/';
 
         //上传文件验证
-        $info               = $files->validate($config)->rule('md5')->move($fileUploadRoot) ;
+        $info     = $files->validate($config)->rule('md5')->move($fileUploadRoot);
         
         if($info === false)
         {
             return ['Code' =>'203','Msg'=>lang('notice_upload_file_fail',[$files->getError()])] ;
         }else{
             $path                  = $fileUploadRoot . $info->getSaveName();
+
+            $sha1                  = $info->hash('sha1');
+            $md5                   = $info->hash('md5');
+
             rename($path, $path.'png');
 
             $path                  = $path.'png';
@@ -177,6 +182,8 @@ class Socket extends Base
                 'infos'        => json_encode($finfo),
                 'create_time'  => $thisTime,
                 'umark'        => $umark,
+                'sha1'         => $sha1,
+                'md5'          => $md5,
         ];
 
         $data       = model('picture')->addData($saveData);

@@ -321,6 +321,7 @@ class Upload extends Base
             //上传文件验证
             $ruleName   = 'formatUploadFileName';
             $movePath   = './uploads/picture/';
+            
             $info       = $file->validate($config)->rule($ruleName)->move($movePath);
 
             if($info === false)

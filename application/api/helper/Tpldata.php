@@ -45,7 +45,8 @@ class Tpldata extends Base
         return $this->returnData($this->getTplDataTableName($this->postData));
 
         //规避没有设置主表名称
-        if (empty($this->mainTable)) return $this->returnData(['Code' => '120020', 'Msg'=>lang('120020')]);
+        if (empty($this->mainTable))
+        return $this->returnData(['Code' => '120020', 'Msg'=>lang('120020')]);
         
         //接口执行分发
         $methodName     = $this->actionName;
@@ -123,7 +124,7 @@ class Tpldata extends Base
 		$data 						= (isset($lists['lists']) && !empty($lists['lists'])) ? $lists['lists'] : [];
 
         $tableHead                  = isset($this->formInfo['list_config']) ? $this->formInfo['list_config'] : '';
-
+        wr($data);
         foreach ($data as $key => $value)
         {
             $data[$key]['create_time']  = !empty($value['create_time']) ? date('Y-m-d H:i:s',$value['create_time']) : '/';
@@ -137,7 +138,7 @@ class Tpldata extends Base
                 }
 
                 //图片处理
-                if ($this->getFieldType($kk) == 'imgupload')
+                if ( in_array($this->getFieldType($kk), ['imgupload','signature']))
                 {
                     $imageId            = !empty($vv) ? explode(',', $vv) : [];
                     $imagePath          = [];
@@ -178,6 +179,7 @@ class Tpldata extends Base
         $formTplData    = !empty($form_config) ? json_decode($form_config,true) : [];
         $tableHead      = $formTplData['list'];
         $fildAtrr       = [];
+
         foreach ($tableHead as $tkey => $tval)
         {
             $required       = isset($tval['options']['required']) ? (int)$tval['options']['required'] : 0;
@@ -196,31 +198,39 @@ class Tpldata extends Base
         $saveData['update_time']    = time();
         $saveData['modifier_id']    = $this->getUserId();
 
-        foreach ($formField as $key => $value)
+        foreach ($formField as $key => $fval)
         {
-            if (in_array($value, $defField)) continue;
+            if (in_array($fval, $defField)) continue;
 
-            if ($this->getFieldType($value) == 'date') {
-                $saveData[$value]   = isset($formData[$value]) ? strtotime($formData[$value]) : 0;
-            }else{
-                $saveData[$value]   = isset($formData[$value]) ? $formData[$value] : '';
+            $saveData[$fval]       = isset($formData[$fval]) ? $formData[$fval] : '';
+            
+            if ($this->getFieldType($fval) == 'date')
+            {
+                $saveData[$fval]   = isset($formData[$fval]) ? strtotime($formData[$fval]) : 0;
             }
 
-            if ($this->getFieldType($value) == 'turnover' && $id <= 0)
+            if ($this->getFieldType($fval) == 'turnover' && $id <= 0)
             {
-                $options            = isset($fildAtrr[$value][2]) ? $fildAtrr[$value][2] : '';
-                $saveData[$value]   = $this->getTurnOver($formData,$options);
+                $options           = isset($fildAtrr[$fval][2]) ? $fildAtrr[$fval][2] : '';
+                $saveData[$fval]   = $this->getTurnOver($formData,$options);
+            }
+
+            if ($this->getFieldType($fval) == 'signature')
+            {
+                $signature          = $saveData[$fval];
+                $saveData[$fval]    = isset($signature[0]['id']) ? $signature[0]['id'] : 0;
             }
 
             //数据校验
-            $required       = isset($fildAtrr[$value][0]) ? (int)$fildAtrr[$value][0] : 0;
-            if ($required === 1 && empty($saveData[$value]))
+            $required       = isset($fildAtrr[$fval][0]) ? (int)$fildAtrr[$fval][0] : 0;
+            if ($required === 1 && empty($saveData[$fval]))
             {
-                return ['Code' => '203', 'Msg'=>lang('notice_tpldata_field_required',[$fildAtrr[$value][1]])];
+                return ['Code' => '203', 'Msg'=>lang('notice_tpldata_field_required',[$fildAtrr[$fval][1]])];
             }
         }
 
-        if (empty($saveData)) return ['Code' => '203', 'Msg'=>lang('notice_helper_data_error')];
+        if (empty($saveData))
+        return ['Code' => '203', 'Msg'=>lang('notice_helper_data_error')];
 		
         //通过ID判断数据是新增还是更新 定义新增条件下数据
     	if ($id <= 0)
@@ -228,7 +238,7 @@ class Tpldata extends Base
             $saveData['create_time']    = time();
             $saveData['creator_id']     = $this->getUserId();
     	}
-
+        
     	$info               = $dbModel->saveData($this->mainTable,$id,$saveData);
 
         return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '203', 'Msg'=>lang('100015')];
@@ -258,7 +268,7 @@ class Tpldata extends Base
             }
 
             //图片处理
-            if ($this->getFieldType($key) == 'imgupload')
+            if (in_array($this->getFieldType($key), ['imgupload','signature']))
             {
                 $imageId            = !empty($value) ? explode(',', $value) : [];
                 $imagePath          = [];

@@ -115,15 +115,17 @@ class Socket extends Base
      */
     private function test($parame)
     {
-        //主表数据库模型
-        $dbModel                = model($this->mainTable);
+        $socketData             = [
+            'id'    => 1
+        ];
 
-        //自行书写业务逻辑代码
+        $data                   = [];
+        $data['socketType']     = 'test';
+        $data['socketData']     = $socketData;
 
-        //需要返回的数据体
-        $Data                   = ['TEST'];
+        Gateway::sendToUid($this->getUserId(), json_encode($data));
 
-        return ['Code' => '200', 'Msg'=>lang('200'),'Data'=>$Data];
+        return ['Code' => '200', 'Msg'=>lang('200')];
     }
 
     /*api:70eb04c66f6101bdf948b6c046e69311*/

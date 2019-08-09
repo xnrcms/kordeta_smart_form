@@ -138,7 +138,7 @@ class Socket extends Base
     public function test($parame = [])
     {
         //执行接口调用
-        return $this->execApi($parame);
+        return json($this->execApi($parame));
     }
 
     /*api:70eb04c66f6101bdf948b6c046e69311*/

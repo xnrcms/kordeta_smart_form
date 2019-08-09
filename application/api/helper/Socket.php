@@ -183,7 +183,7 @@ class Socket extends Base
                 'create_time'  => $thisTime,
                 'umark'        => $umark,
                 'sha1'         => $sha1,
-                'md5'          => $md5,
+                'md5'          => $md5
         ];
 
         $data       = model('picture')->addData($saveData);

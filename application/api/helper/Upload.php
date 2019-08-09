@@ -330,14 +330,17 @@ class Upload extends Base
                 return ['Code' =>'203','Msg'=>lang('notice_upload_file_fail',[$file->getError()])];
             }
 
-            $path                  = trim($this->imgUploadRoot,'.') . $info->getSaveName();
-            $url                   = trim($this->imgUploadRoot,'.') . $info->getSaveName();
+            $sha1                  = $info->hash('sha1');
+            $md5                   = $info->hash('md5');
+
+            $path              = trim($this->imgUploadRoot,'.') . $info->getSaveName();
+            $url               = trim($this->imgUploadRoot,'.') . $info->getSaveName();
 
             if ($this->upload_method == 2 && !empty($this->upload_manager)) 
             {
-                $file_path      = '.'.$path;
-                $cfile          = file_get_contents($file_path);
-                $res            = $this->upload_manager->putObject($this->oss_bucket, $file_path, $cfile);
+                $file_path     = '.'.$path;
+                $cfile         = file_get_contents($file_path);
+                $res           = $this->upload_manager->putObject($this->oss_bucket, $file_path, $cfile);
             }
             else if ($this->upload_method == 3 && !empty($this->upload_manager))
             {   
@@ -366,6 +369,8 @@ class Upload extends Base
                 'infos'        => json_encode($finfo),
                 'create_time'  => $thisTime,
                 'umark'        => $umark,
+                'sha1'         => $sha1,
+                'md5'          => $md5
             ];
         }
 
@@ -379,9 +384,9 @@ class Upload extends Base
             $data['total']      = count($images);
             foreach ($images as $key => $value)
             {
-                $itype            = (int)$value['img_type'];
-                $domain           = request()->domain();
-                $url              = $itype == 1 ? $domain . $value['path'] : $value['path'];
+                $itype          = (int)$value['img_type'];
+                $domain         = request()->domain();
+                $url            = $itype == 1 ? $domain . $value['path'] : $value['path'];
                 $data['lists'][]  = ['id'=>$value['id'],'path'=>$url];
             }
         }

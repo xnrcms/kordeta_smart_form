@@ -132,7 +132,7 @@ class Ocr extends Base
         $fileUploadRoot     = './uploads/ocr/';
 
         //上传文件验证
-        $info               = $files->validate($config)->rule('md5')->move($fileUploadRoot) ;
+        $info  = $files->validate($config)->rule('md5')->move($fileUploadRoot) ;
         
         if($info === false)
         {

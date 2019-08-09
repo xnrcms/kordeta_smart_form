@@ -217,7 +217,7 @@ class Tpldata extends Base
 
             if ($this->getFieldType($fval) == 'signature')
             {
-                $signature          = $saveData[$fval];
+                $signature          = $saveData[$fval];wr($signature);
                 $saveData[$fval]    = isset($signature[0]['id']) ? $signature[0]['id'] : 0;
             }
 
@@ -238,7 +238,7 @@ class Tpldata extends Base
             $saveData['create_time']    = time();
             $saveData['creator_id']     = $this->getUserId();
     	}
-        
+
     	$info               = $dbModel->saveData($this->mainTable,$id,$saveData);
 
         return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '203', 'Msg'=>lang('100015')];

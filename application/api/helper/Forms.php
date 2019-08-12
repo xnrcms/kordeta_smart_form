@@ -406,7 +406,15 @@ class Forms extends Base
             if (!empty($showField))
             {
                 $map                = [];
+
+                if ($this->getFieldType($whereField) == 'date')
+                {
+                    //格式化日期为时间戳
+                    $value          = strtotime($value);
+                }
+
                 $map[$whereField]   = $value;
+                
                 $info               = model('kor_table')->getRowForTpl($tableName,$map);
 
                 if (!empty($info))

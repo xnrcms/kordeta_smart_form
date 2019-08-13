@@ -421,7 +421,7 @@ class Forms extends Base
                 {
                     foreach ($showField as $skey => $svalue)
                     {
-                        $sval               = isset($info[$svalue]) ? $info[$svalue] : '';
+                        $sval      = isset($info[$svalue]) ? $info[$svalue] : '';
 
                         if ($this->getFieldType($skey) == 'date')
                         {

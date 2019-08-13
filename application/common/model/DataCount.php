@@ -107,9 +107,9 @@ class DataCount extends Base
         $map                = [];
         $map['rule_code']   = md5($ruleCode);
         $map['tname']       = md5($tname);
-        $info               = $this->where($map)->order('id DESC')->find();
-
-        return !empty($info) ? $info->toArray() : [];
+        $info               = $this->where($map)->order('id DESC')->findOrEmpty();
+        wr([$this->getLastSql(),$info->toArray()]);
+        return $info->toArray();
     }
     //自行扩展更多
     //...

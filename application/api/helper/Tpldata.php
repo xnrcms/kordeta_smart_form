@@ -217,18 +217,18 @@ class Tpldata extends Base
 
             if ($this->getFieldType($fval) == 'signature')
             {
-                $signature          = $saveData[$fval];wr($signature);
+                $signature          = $saveData[$fval];
                 $saveData[$fval]    = isset($signature[0]['id']) ? $signature[0]['id'] : 0;
             }
 
             //数据校验
             $required       = isset($fildAtrr[$fval][0]) ? (int)$fildAtrr[$fval][0] : 0;
-            if ($required === 1 && empty($saveData[$fval]))
+            if ($required === 1 && strlen(trim($saveData[$fval])) <= 0)
             {
                 return ['Code' => '203', 'Msg'=>lang('notice_tpldata_field_required',[$fildAtrr[$fval][1]])];
             }
         }
-
+        
         if (empty($saveData))
         return ['Code' => '203', 'Msg'=>lang('notice_helper_data_error')];
 		
@@ -887,7 +887,7 @@ class Tpldata extends Base
                     $originalVal = isset($value['originalVal']) ? (int)$value['originalVal'] : 1;
                     $fixed       = isset($value['fixed']) ? (int)$value['fixed'] : 0;
                     $strCode     = str_repeat('0',$length);
-                    $maxNum      = $length * 10 - 1;
+                    $maxNum      = pow(10,$length) - 1;
                     $ruleCode    = implode('-', [$length,$cycle,$originalVal,$fixed]);
 
                     $isClear     = false;
@@ -901,11 +901,14 @@ class Tpldata extends Base
                     $dataCountInfo  = model('data_count')->getRowByRuleCode($ruleCode,$this->mainTable);
 
                     //以下条件计数需要重置
-                    if (empty($dataCountInfo) ) {
+                    if (empty($dataCountInfo) )
+                    {
                         $newNumber  = $originalVal;
                         $countId    = 0;
                         $isClear    = true;
-                    }else{
+                    }
+                    else
+                    {
                         $countId    = (int)$dataCountInfo['id'];
                         $rule1      = (bool)($dataCountInfo['number'] >= $maxNum);
                         $rule2      = (bool)($cycle === 'year' && $dataCountInfo['yy'] != $yy);

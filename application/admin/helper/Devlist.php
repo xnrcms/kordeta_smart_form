@@ -194,26 +194,20 @@ class Devlist extends Base
         //主表数据库模型
     	$dbModel			= model($this->mainTable);
 
-    	if (is_numeric($parame['id'])) {
-            
-            $info               = $dbModel->getOneById($parame['id']);
+    	if (is_numeric($parame['id']))
+        {    
+            $info           = $dbModel->getOneById($parame['id']);
         }else{
-
-            $info               = $dbModel->where('cname','eq',$parame['id'])->find();
+            $info           = $dbModel->where('cname','eq',$parame['id'])->findOrEmpty();
         }
 
-    	if (!empty($info)) {
-    		
-            //格式为数组
-            $info                   = $info->toArray();
-
-            //自行对数据格式化输出
-            //...
-
+        //格式为数组
+        $info               = $info->toArray();
+    	if (!empty($info))
+        {
     		return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info];
     	}else{
-
-    		return ['Code' => '100015', 'Msg'=>lang('100015')];
+    		return ['Code' => '203', 'Msg'=>lang('100015')];
     	}
     }
 

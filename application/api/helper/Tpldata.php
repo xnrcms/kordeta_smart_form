@@ -134,7 +134,7 @@ class Tpldata extends Base
                 //时间处理
                 if ($this->getFieldType($kk) == 'date')
                 {
-                    $data[$key][$kk]     = !empty($vv) && is_numeric($vv) ? date('Y-m-d',$vv) : $vv;
+                    $data[$key][$kk]     = (strlen($vv) == 10 && is_numeric($vv)) ? date('Y-m-d',$vv) : $vv;
                 }
 
                 //图片处理
@@ -679,20 +679,14 @@ class Tpldata extends Base
 
                 if (in_array($fieldInfo[0], ['date']))
                 {
-                    $date           = $currentSheet->getCell($address)->getFormattedValue();
-                    $dateValue      = $currentSheet->getCell($address)->getValue();
-                    $cell           = !empty($dateValue) ? \PHPExcel_Shared_Date::ExcelToPHP($dateValue) : '';
+                    $cell           = $currentSheet->getCell($address)->getFormattedValue();
 
-                    $dateArr        = explode('-', str_replace('/', '-', $date));
-
-                    if (!(count($dateArr) === 3))
+                    if(!empty($cell) && !preg_match('/^(\d{4}-\d{2}-\d{2})?$/',$cell))
                     {
                         return ['Code' => '203', 'Msg'=>lang('notice_table_column_date',[$currentColumn,$currentRow])];
                     }
 
-                    //检验日期格式
-                    if (empty($cell) && $fieldInfo[3] == 1)
-                    return ['Code' => '203', 'Msg'=>lang('notice_table_column_date',[$currentColumn,$currentRow])];
+                    $cell           = !empty($cell) ?  strtotime($cell) : '';
                 }else{
                     $cell = $currentSheet->getCell($address)->getValue();
                     $cell = ($cell instanceof \PHPExcel_RichText) ? $cell->__toString() : $cell;

@@ -304,7 +304,7 @@ class User extends Base
            
             $key                        = config('extend.uc_auth_key');
             $time                       = time();
-            $exp                        = $time + (1 * 3600 * 1);
+            $exp                        = $time + (8 * 3600 * 1);
             $token = [
                 "iat" => $time,
                 "nbf" => $time,

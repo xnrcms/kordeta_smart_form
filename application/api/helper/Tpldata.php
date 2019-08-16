@@ -134,7 +134,7 @@ class Tpldata extends Base
                 //时间处理
                 if ($this->getFieldType($kk) == 'date')
                 {
-                    $data[$key][$kk]     = (strlen($vv) == 10 && is_numeric($vv)) ? date('Y-m-d',$vv) : $vv;
+                    $data[$key][$kk]     = (!empty($vv) && is_numeric($vv)) ? date('Y-m-d',$vv) : $vv;
                 }
 
                 //图片处理

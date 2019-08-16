@@ -14,7 +14,7 @@
 return [
     // 扩展自身需要的配置
     'protocol'              => 'websocket', // 协议 支持 tcp udp unix http websocket text
-    'host'                  => '10.5.151.185', // 监听地址
+    'host'                  => '127.0.0.1', // 监听地址
     'port'                  => 8080, // 监听端口
     'socket'                => '', // 完整监听地址
     'context'               => [], // socket 上下文选项
@@ -41,5 +41,4 @@ return [
         'count'        => 1,
         'eventHandler' => '\app\api\controller\Socket',
     ],
-
 ];

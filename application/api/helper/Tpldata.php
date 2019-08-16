@@ -540,6 +540,31 @@ class Tpldata extends Base
                     $objActSheet->getStyle($cr)->getNumberFormat()->setFormatCode(\PHPExcel_Style_NumberFormat::FORMAT_TEXT);
                 }
 
+                //对图片进行判断
+                if (in_array($tval['type'], ['imgupload','signature']))
+                {
+                    $imageIds       = !empty($texts) ? explode(',', $texts) : [];
+                    
+                    foreach ($imageIds as $imageid)
+                    {
+                        $imagePath  = get_cover($imageid,'imgurl');
+                        $imagePath  = !empty($imagePath) ? '.' . trim($imagePath,'.') : '';
+                        if( @fopen($imagePath , 'r' ) )
+                        {
+                            $objDrawing = new \PHPExcel_Worksheet_Drawing();
+                            $objDrawing->setPath($imagePath);
+
+                            //设置图片的宽度
+                            $objDrawing->setHeight(50);
+                            $objDrawing->setWidth(50);
+                            $objDrawing->setCoordinates($cr);
+                            $objDrawing->setWorksheet($objActSheet);
+                        }
+                    }
+
+                    $texts = '';
+                }
+
                 if (!empty($texts))
                 {
                     $objActSheet->setCellValue($cr, $texts);

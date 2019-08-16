@@ -24,7 +24,6 @@ MODIFY COLUMN `list_config`  longtext CHARACTER SET utf8 COLLATE utf8_general_ci
 MODIFY COLUMN `linkage_config`  longtext CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '联动数据配置' AFTER `list_config`;
 
 ALTER TABLE `xnrcms_picture`
-DROP COLUMN `umark`,
 ADD COLUMN `umark`  char(32) NOT NULL DEFAULT '' COMMENT '上传记号' AFTER `infos`;
 
 CREATE TABLE `xnrcms_data_count` (

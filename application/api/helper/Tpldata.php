@@ -697,7 +697,7 @@ class Tpldata extends Base
                     unlink($filePath);
                     return ['Code' => '203', 'Msg'=>lang('notice_table_column_required',[$currentColumn,$currentRow])];
                 }
-
+                
                 //单选校验
                 if (in_array($fieldInfo[0], ['select','radio']))
                 {

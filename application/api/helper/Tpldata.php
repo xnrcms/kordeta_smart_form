@@ -743,7 +743,7 @@ class Tpldata extends Base
 
         //需要返回的数据体
         $Data                   = ['isok'=>1];
-
+        
         return ['Code' => '200', 'Msg'=>lang('200'),'Data'=>$Data];
     }
 

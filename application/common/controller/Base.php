@@ -73,12 +73,9 @@ class Base extends Controller
         
         if (!class_exists($models))
         {
-    		wr([$models,'1',!class_exists($models)]);
         	return;
         }
-
-    	wr([$models,'2',!class_exists($models)]);
-
+        
         //实例化操作类
         $className      = new $models($parame,$controllerName,$actionName,$moduleName);
         

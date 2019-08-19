@@ -446,14 +446,21 @@ class Tpldata extends Base
         //表头
         foreach ($tableHead as $tkey => $tval)
         {
+            if ($dataType == 2 && in_array($tval['type'], ['imgupload','signature']))
+            {
+                unset($tableHead[$tkey]);
+                continue;
+            }
+
             //设置单元格内容
             $columns        = $this->getExcelColumnName($tkey);
             $rows           = 2;
             $tableHeadName  = $tval['name'];
             $required       = isset($tval['options']['required']) ? (int)$tval['options']['required'] : 0;
-
+            
+            //列错误
             if (empty($columns))
-            return ['Code' => '203', 'Msg'=>lang('notice_table_column_error')];//列错误
+            return ['Code' => '203', 'Msg'=>lang('notice_table_column_error')];
 
             $cr             = $columns . $rows;
             $tips           = '';
@@ -497,6 +504,9 @@ class Tpldata extends Base
                 }
             }
         }
+
+        if (empty($tableHead))
+        return ['Code' => '203', 'Msg'=>lang('notice_table_head_error')];
 
         //表体
         for ($i=0; $i <= $total; $i++)
@@ -544,8 +554,9 @@ class Tpldata extends Base
                 if (in_array($tval['type'], ['imgupload','signature']))
                 {
                     $imageIds       = !empty($texts) ? explode(',', $texts) : [];
-                    
-                    foreach ($imageIds as $imageid)
+                    $offset         = 0;
+
+                    foreach ($imageIds as $imagekey => $imageid)
                     {
                         $imagePath  = get_cover($imageid,'imgurl');
                         $imagePath  = !empty($imagePath) ? '.' . trim($imagePath,'.') : '';
@@ -553,12 +564,18 @@ class Tpldata extends Base
                         {
                             $objDrawing = new \PHPExcel_Worksheet_Drawing();
                             $objDrawing->setPath($imagePath);
-
+                            
                             //设置图片的宽度
-                            $objDrawing->setHeight(50);
-                            $objDrawing->setWidth(50);
+                            $image_width        = 80;
+                            $image_height       = 80;
+                            $zoom_height        = ($objDrawing->getHeight() * $image_width) / $objDrawing->getWidth();
+                            //$objDrawing->setResizeProportional(false);
+                            //$objDrawing->setHeight($image_height);
+                            $objDrawing->setWidth($image_width);
                             $objDrawing->setCoordinates($cr);
+                            $objDrawing->setOffsetX($imagekey * ($image_width + 5));
                             $objDrawing->setWorksheet($objActSheet);
+                            $objActSheet->getRowDimension($rows)->setRowHeight($zoom_height - ($image_height / 2));
                         }
                     }
 

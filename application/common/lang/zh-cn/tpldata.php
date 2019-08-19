@@ -24,4 +24,5 @@ return [
     'notice_upload_file_fail'               => '上传失败[%s]',
     'notice_table_column_date'              => '【%s列%s行】日期格式有误，应为yyyy-mm-dd或yyyy/mm/dd格式',
     'notice_table_column_option'            => '【%s列%s行】所填值【%s】不在规定选项值内',
+    'notice_table_head_error'               => '无数据表头列,不能导出',
 ];

@@ -71,19 +71,19 @@ class Socket extends Base
     {
         //文件上传
         $uploads        = $this->uploadFile($parame);
-        wr(['1']);
+
         if (!(isset($uploads['Code']) && $uploads['Code'] == '200')) return $uploads;
-wr(['2']);
+
         $socketData             = [
             'id'    => $uploads['Data']['id'],
             'url'   => get_cover($uploads['Data']['id'],'path'),
             'field' => $parame['fieldName']
         ];
-wr(['3']);
+
         $data                   = [];
         $data['socketType']     = 'signature';
         $data['socketData']     = $socketData;
-        wr([$this->getUserId(), json_encode($data)]);
+
         Gateway::sendToUid($this->getUserId(), json_encode($data));
 
         return ['Code' => '200', 'Msg'=>lang('200')];

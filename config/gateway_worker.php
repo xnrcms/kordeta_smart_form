@@ -41,5 +41,4 @@ return [
         'count'        => 1,
         'eventHandler' => '\app\api\controller\Socket',
     ],
-
 ];

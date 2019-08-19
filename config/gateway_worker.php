@@ -23,7 +23,7 @@ return [
     'gateway_deploy'        => true, // 是否需要部署gateway
 
     // Register配置
-    'registerAddress'       => '127.0.0.1:5240',
+    'registerAddress'       => '127.0.0.1:1236',
 
     // Gateway配置
     'name'                  => 'KDSGATWAY',

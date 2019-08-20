@@ -222,10 +222,17 @@ class Tpldata extends Base
             }
 
             //数据校验
-            $required       = isset($fildAtrr[$fval][0]) ? (int)$fildAtrr[$fval][0] : 0;
+            $required   = isset($fildAtrr[$fval][0]) ? (int)$fildAtrr[$fval][0] : 0;
+            $fieldName  = isset($fildAtrr[$fval][1]) ? $fildAtrr[$fval][1] : '';
+            
             if ($required === 1 && strlen(trim($saveData[$fval])) <= 0)
             {
                 return ['Code' => '203', 'Msg'=>lang('notice_tpldata_field_required',[$fildAtrr[$fval][1]])];
+            }
+
+            if (in_array($this->getFieldType($fval), ['input','textarea']) && !$this->dataValidate->length($saveData[$fval],'0,250'))
+            {
+                return ['Code' => '203', 'Msg'=>lang('notice_tpldata_length_error',[$fieldName])];
             }
         }
         

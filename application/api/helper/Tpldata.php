@@ -212,7 +212,7 @@ class Tpldata extends Base
             if ($this->getFieldType($fval) == 'turnover' && $id <= 0)
             {
                 $options           = isset($fildAtrr[$fval][2]) ? $fildAtrr[$fval][2] : '';
-                $saveData[$fval]   = $this->getTurnOver($formData,$options);
+                $saveData[$fval]   = $this->getTurnOver($formData,$options,$fval);
             }
 
             if ($this->getFieldType($fval) == 'signature')
@@ -915,7 +915,7 @@ class Tpldata extends Base
         return !empty($sch) ? json_encode($sch) : '';
     }
 
-    private function getTurnOver($formData = [],$formConfig)
+    private function getTurnOver($formData = [],$formConfig,$field)
     {
         $ruleList       = isset($formConfig['ruleList']) ? $formConfig['ruleList'] : [];
         $trunover       = [];
@@ -931,7 +931,7 @@ class Tpldata extends Base
                     $fixed       = isset($value['fixed']) ? (int)$value['fixed'] : 0;
                     $strCode     = str_repeat('0',$length);
                     $maxNum      = pow(10,$length) - 1;
-                    $ruleCode    = implode('-', [$length,$cycle,$originalVal,$fixed]);
+                    $ruleCode    = $field . '-' . implode('-', [$length,$cycle,$originalVal,$fixed]);
 
                     $isClear     = false;
                     $yy          = date('Y');

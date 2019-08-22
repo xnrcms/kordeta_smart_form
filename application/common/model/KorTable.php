@@ -34,7 +34,7 @@ class KorTable extends Base
               $field    = explode('_', $key);
               $type     = isset($field[0]) ? $field[0] : '';
 
-              if (in_array($type, ['input','textarea']) && !empty($value))
+              if (in_array($type, ['input','textarea','turnover']) && !empty($value))
               {
                 $model->where('main.'.$key,'like','%' . trim($value) . '%');
               }

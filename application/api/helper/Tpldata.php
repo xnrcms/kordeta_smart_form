@@ -580,6 +580,10 @@ class Tpldata extends Base
                             //$objDrawing->setHeight($image_height);
                             $objDrawing->setWidth($image_width);
                             $objDrawing->setCoordinates($cr);
+                            
+                            if ($tval['type'] == 'signature')
+                            $objDrawing->setRotation(-90);
+                            
                             $objDrawing->setOffsetX($imagekey * ($image_width + 5));
                             $objDrawing->setWorksheet($objActSheet);
                             $objActSheet->getRowDimension($rows)->setRowHeight($zoom_height - ($image_height / 2));

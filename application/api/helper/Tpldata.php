@@ -247,7 +247,7 @@ class Tpldata extends Base
     	}
 
     	$info               = $dbModel->saveData($this->mainTable,$id,$saveData);
-
+        
         return !empty($info) ? ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>$info] : ['Code' => '203', 'Msg'=>lang('100015')];
     }
 
@@ -965,7 +965,6 @@ class Tpldata extends Base
                         if ($rule1 || $rule2 || $rule3 || $rule4 || $rule5)
                         {
                             $newNumber  = $originalVal;
-                            $isClear    = true;
                         }else{
                             $newNumber  = $dataCountInfo['number'] + 1;
                         }

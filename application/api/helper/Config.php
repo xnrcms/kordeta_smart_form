@@ -142,7 +142,8 @@ class Config extends Base
         if(empty($saveData['config'])) return ['Code' => '100008', 'Msg'=>lang('100008',['config'])];
 
         //规避遗漏定义入库数据
-        if (empty($saveData)) return ['Code' => '120021', 'Msg'=>lang('120021')];
+        if (empty($saveData))
+        return ['Code' => '203', 'Msg'=>lang('notice_helper_data_error')];
 
         //自行处理数据入库条件
         $config                   = json_decode($saveData['config'],true);

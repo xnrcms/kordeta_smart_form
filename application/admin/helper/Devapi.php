@@ -159,7 +159,8 @@ class Devapi extends Base
         if(empty($saveData['project_id'])) return ['Code' => '100008', 'Msg'=>lang('100008',['project_id'])];
 
         //规避遗漏定义入库数据
-        if (empty($saveData)) return ['Code' => '120021', 'Msg'=>lang('120021')];
+        if (empty($saveData))
+        return ['Code' => '203', 'Msg'=>lang('notice_helper_data_error')];
 
         //自行处理数据入库条件
         //判断接口地址是否存在

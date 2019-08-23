@@ -10,15 +10,15 @@
  * Helper只要处理业务逻辑，默认会初始化数据列表接口、数据详情接口、数据更新接口、数据删除接口、数据快捷编辑接口
  * 如需其他接口自行扩展，默认接口如实在无需要可以自行删除
  */
-namespace app\admin\helper;
+namespace app\api\helper;
 
 use app\common\helper\Base;
 use think\facade\Lang;
 
-class Devproject extends Base
+class DataWarning extends Base
 {
 	private $dataValidate 		= null;
-    private $mainTable          = 'devproject';
+    private $mainTable          = 'data_warning';
 	
 	public function __construct($parame=[],$className='',$methodName='',$modelName='')
     {
@@ -139,9 +139,15 @@ class Devproject extends Base
 
         //自行定义入库数据 为了防止参数未定义报错，先采用isset()判断一下
         $saveData                   = [];
-        $saveData['title']          = isset($parame['title']) ? $parame['title'] : '';
-        $saveData['status']         = isset($parame['status']) ? (int)$parame['status'] : 2;
-        $saveData['sorts']          = isset($parame['sorts']) ? (int)$parame['sorts'] : 0;
+        $saveData['dwname']         = isset($parame['dwname']) ? $parame['dwname'] : '';
+        $saveData['dwrules']        = isset($parame['dwrules']) ? $parame['dwrules'] : '';
+        $saveData['dwfields']       = isset($parame['dwfields']) ? $parame['dwfields'] : '';
+        $status                     = isset($parame['status']) ? (int)$parame['status'] : 0;
+        $saveData['status']         = $status === 1 ? 1 : 2;
+        $saveData['dwcontent']      = isset($parame['dwcontent']) ? $parame['dwcontent'] : '';
+        $saveData['dwfrequency']    = isset($parame['dwfrequency']) ? $parame['dwfrequency'] : '';
+        $saveData['dwmode']         = isset($parame['dwmode']) ? $parame['dwmode'] : '';
+        $saveData['sort']           = 1;
         $saveData['update_time']    = time();
         //$saveData['parame']         = isset($parame['parame']) ? $parame['parame'] : '';
 
@@ -155,9 +161,13 @@ class Devproject extends Base
         //通过ID判断数据是新增还是更新 定义新增条件下数据
     	if ($id <= 0)
         {
-            $saveData['uid']         = $parame['uid'];
-            $saveData['tag_code']    = md5('tag_code='.time() . randomString(10,7));
-            $saveData['create_time'] = time();
+            $time                            = time();
+            $saveData['create_time']         = $time;
+            $saveData['yy']                  = date('Y',$time);
+            $saveData['mm']                  = date('m',$time);
+            $saveData['dd']                  = date('d',$time);
+            $saveData['ws']                  = date('W',$time);
+            $saveData['ww']                  = date('w',$time);
     	}
 
     	$info                                       = $dbModel->saveData($id,$saveData);

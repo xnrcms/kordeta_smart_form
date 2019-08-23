@@ -75,7 +75,8 @@ class Menus extends Base
         $authMenuIds                = [];
         $gids                       = $this->getGroupIds();
         
-        if (empty($gids)) return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>[]];
+        if (empty($gids))
+        return ['Code' => '200', 'Msg'=>lang('text_req_success'),'Data'=>[]];
 
         //有权限的菜单ID
         if (in_array(2, $gids))
@@ -95,8 +96,8 @@ class Menus extends Base
                 'get_auth_menu'
             ];
 
-            $menus2                     = model('devmenu')->getList($modelParame);
-            $menus2                     = isset($menus2['lists']) ? $menus2['lists'] : [];
+            $menus2              = model('devmenu')->getList($modelParame);
+            $menus2              = isset($menus2['lists']) ? $menus2['lists'] : [];
 
             foreach ($menus2 as $key => $value)
             {
@@ -141,7 +142,8 @@ class Menus extends Base
         //$saveData['parame']         = isset($parame['parame']) ? $parame['parame'] : '';
 
         //规避遗漏定义入库数据
-        if (empty($saveData)) return ['Code' => '120021', 'Msg'=>lang('120021')];
+        if (empty($saveData))
+        return ['Code' => '203', 'Msg'=>lang('notice_helper_data_error')];
 
         //自行处理数据入库条件
         //...

@@ -142,7 +142,8 @@ class {HelperNameTPL} extends Base
         //$saveData['parame']         = isset($parame['parame']) ? $parame['parame'] : '';
 
         //规避遗漏定义入库数据
-        if (empty($saveData)) return ['Code' => '120021', 'Msg'=>lang('120021')];
+        if (empty($saveData))
+        return ['Code' => '203', 'Msg'=>lang('notice_helper_data_error')];
 
         //自行处理数据入库条件
         //...

@@ -21,33 +21,16 @@ class Crontab extends Base
     }
 
     /**
-     * 数据列表接口头
+     * 告警提醒
      * @access public
      * @param  [array] $parame [扩展参数]
      * @return [json]          [接口数据输出]
     */
-    public function crontab($parame = [])
+    public function warningReminder($parame = [])
     {
         //执行接口调用
         return $this->execInside($parame);
     }
 
-    public function makelottery($parame = [])
-    {
-        //执行接口调用
-        return $this->execInside($parame);
-    }
-
-    /**
-     * 支付回调
-     * @access public
-     * @param  [array] $parame [扩展参数]
-     * @return [json]          [接口数据输出]
-    */
-    public function paySuccess($parame = [])
-    {
-        //执行接口调用
-        return $this->execInside($parame);
-    }
     /*接口扩展*/
 }
